@@ -32,5 +32,7 @@ public class User {
 
     String git_nickname;
 
+    String status;
+
 
 }
