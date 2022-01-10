@@ -1,2 +1,11 @@
-package com.devthink.devthink_server.controllers;public class ReviewController {
+package com.devthink.devthink_server.controllers;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/reviews")
+public class ReviewController {
+
+
 }
