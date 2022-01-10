@@ -7,32 +7,25 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class User {
+public class Book {
     @Id
     @GeneratedValue
     Long id;
 
-    String email;
+    int isbn;
 
-    String nickName;
+    float score;
 
-    String phoneNum;
-
-    String role;
-
-    String stack;
-
-    String password;
-
-    int point;
-
-    String git_NickName;
-  
     String status;
 
+    @OneToMany
+    List<Review> reviews = new ArrayList<>();;
 }
