@@ -8,8 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 public class ReviewResponseDto {
     private final Long id;
-    private final String user_id;
-    private final String book_id;
+    private final Long user_id;
+    private final Integer book_id;
     private final String content;
     private final Float score;
+    private final String status;
 }
