@@ -1,24 +1,28 @@
 package com.devthink.devthink_server.controllers;
 
-import com.devthink.devthink_server.domain.Post;
-import com.devthink.devthink_server.infra.PostRepository;
-import lombok.RequiredArgsConstructor;
+import com.devthink.devthink_server.dto.PostDto;
+import com.devthink.devthink_server.service.PostService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
 
-    private final PostRepository postRepository;
+    private final PostService postService;
+
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     @PostMapping("/write")
-    public Post write(@RequestBody Post post){
-        postRepository.save(post);
-        return post;
+    public PostDto write(@RequestBody PostDto postDto){
+        postService.savePost(postDto);
+        return postDto;
     }
 
 }
