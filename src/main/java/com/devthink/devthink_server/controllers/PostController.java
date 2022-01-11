@@ -23,6 +23,12 @@ public class PostController {
         return PostService.getPostlist();
     }
 
+    @GetMapping("/{id}")
+    public PostDto findById(@PathVariable Long id){
+        return PostService.getPost(id);
+
+    }
+
     @PostMapping("/write")
     public PostDto write(@RequestBody PostDto postDto){
         postService.savePost(postDto);
