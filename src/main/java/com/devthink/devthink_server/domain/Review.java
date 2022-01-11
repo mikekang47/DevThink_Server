@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,7 +32,13 @@ public class Review {
 
     String content;
 
-    Float Score;
+    Float score;
 
-    String status;
+    @Builder
+    public Review(User user, Book book, String content, Float score) {
+        this.user = user;
+        this.book = book;
+        this.content = content;
+        this.score = score;
+    }
 }
