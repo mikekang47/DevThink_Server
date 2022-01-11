@@ -2,6 +2,7 @@ package com.devthink.devthink_server.domain;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,8 +17,8 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class Post {
+@Builder
+public class Post extends BaseTimeEntity{
     @Id
     @GeneratedValue
     Long id;
@@ -25,7 +26,6 @@ public class Post {
     @ManyToOne(fetch = LAZY)
     User user;
 
-    @ManyToOne(fetch = LAZY)
     //Category category;
 
     String title;
