@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -41,6 +42,24 @@ public class PostService {
         }
         return postDtoList;
 
+
+    }
+
+    @Transactional
+    public PostDto getPost(Long id){
+        Optional<Post> postWrapper = postRepository.findById(id);
+        Post post = postWrapper.get();
+
+        PostDto postDto = PostDto.builder()
+                .id(post.getId())
+                .user_id(post.getUser_id())
+                .category_id(post.getCategory_id())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .status(post.getStatus())
+                .build();
+
+        return postDto;
 
     }
 }
