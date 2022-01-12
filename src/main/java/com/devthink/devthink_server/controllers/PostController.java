@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/posts")
 public class PostController {
 
     private final PostService postService;
@@ -19,8 +19,15 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> list(){
-        return postService.getPostList();
+    public List<Post> list(@RequestParam(value="page", defaultValue = "1") Integer pageNum){
+        List<Post> postList = postService.getPostList(pageNum);
+        Integer[] pageList = postService.getPageList(pageNum);
+
+        for (Integer integer : pageList) {
+            System.out.println("integer = " + integer);
+        }
+        return postList;
+
     }
 
     @GetMapping("/{id}")
@@ -34,10 +41,20 @@ public class PostController {
         return postService.savePost(postDto);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Post update(@PathVariable Long id, @RequestBody PostDto postDto){
         return postService.update(id, postDto);
     }
 
+    @DeleteMapping("/{id}")
+    public void deletePost(@PathVariable Long id)
+    {
+        postService.deletePost(id);
+    }
+
+    @GetMapping("/search")
+    public List<Post> search(@RequestParam(value = "keyword") String keyword) {
+        return postService.searchPosts(keyword);
+    }
 
 }
