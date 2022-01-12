@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,5 +32,13 @@ public class Comment {
     String content;
 
     String status;
+
+    @Builder
+    public Comment(User user, Review review, String content, String status) {
+        this.user = user;
+        this.review = review;
+        this.content = content;
+        this.status = status;
+    }
 
 }
