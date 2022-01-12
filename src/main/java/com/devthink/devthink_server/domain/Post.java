@@ -1,37 +1,35 @@
 package com.devthink.devthink_server.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
-import static javax.persistence.FetchType.LAZY;
+import javax.persistence.*;
 
 @Entity
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseTimeEntity{
     @Id
     @GeneratedValue
     Long id;
 
-    @ManyToOne(fetch = LAZY)
-    User user;
+    Long user_id;
 
-    //Category category;
+    Long category_id;
 
     String title;
 
     String content;
 
     String status;
+
+    @Builder
+    public Post(Long id, Long user_id, String title, String content, String status) {
+        this.id = id;
+        this.user_id =user_id;
+        this.title = title;
+        this.content = content;
+        this.status = status;
+    }
 
 }
