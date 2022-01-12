@@ -1,18 +1,17 @@
 package com.devthink.devthink_server.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserData {
+public class UserResultData {
     private Long id;
 
     @NotBlank
@@ -29,7 +28,7 @@ public class UserData {
     @NotBlank
     private String role;
 
-    private String stack;
+    private List<String> stack;
 
     private String blogAddr;
 

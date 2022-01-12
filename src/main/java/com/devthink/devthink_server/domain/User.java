@@ -22,7 +22,6 @@ public class User {
 
     private String role;
 
-    @Column
     @ElementCollection(targetClass = String.class)
     private List<String> stack;
     
