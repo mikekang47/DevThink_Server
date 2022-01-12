@@ -30,8 +30,8 @@ public class CommentController {
     }
 
     /**
-     * 새로운 Comment를 생성합니다.
-     * @return
+     * 입력된 comment 정보로 새로운 Comment를 생성합니다.
+     * @return 생성된 Comment의 id 값
      */
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
