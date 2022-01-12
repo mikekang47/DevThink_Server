@@ -28,11 +28,11 @@ public class CommentService {
     }
 
     /**
-     * 새로운 Comment를 등록합니다.
+     * 입력된 comment 정보로 새로운 Comment를 생성합니다.
      * @param user Comment를 생성하려고 하는 User
      * @param review Comment가 달리게 되는 Review
      * @param commentRequestDto
-     * @return
+     * @return 생성된 Comment의 id 값
      */
     public String createComment(User user, Review review, CommentRequestDto commentRequestDto) {
         Comment comment = commentRepository.save(
