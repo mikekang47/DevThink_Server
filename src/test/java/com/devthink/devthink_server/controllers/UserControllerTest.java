@@ -36,6 +36,8 @@ public class UserControllerTest {
 
             return User.builder()
                     .email(userRegistrationData.getEmail())
+                    .nickname(userRegistrationData.getNickname())
+                    .role(userRegistrationData.getRole())
                     .build();
         });
 
@@ -47,10 +49,13 @@ public class UserControllerTest {
         mvc.perform(
                 post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"test@email.com\"}")
+                        .content("{\"email\":\"tester@email.com\"," +
+                                "\"nickname\":\"Tester\",\"role\":\"senior\"}")
         )
                 .andExpect(status().isCreated())
-                .andExpect(content().string(containsString("\"email\":\"test@email.com\"")));
+                .andExpect(content().string(containsString("\"email\":\"tester@email.com\"")))
+                .andExpect(content().string(containsString("Test")))
+                .andExpect(content().string(containsString("senior")));
 
         verify(userService).registerUser(any(UserRegistrationData.class));
     }
