@@ -2,7 +2,9 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.User;
-import com.devthink.devthink_server.dto.UserData;
+import com.devthink.devthink_server.dto.UserRegistrationData;
+import com.devthink.devthink_server.dto.UserResultData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,16 +29,21 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    @Test
-    void registerUser() throws Exception {
-        given(userService.registerUser(any(UserData.class))).will(invocation -> {
-            UserData userData = invocation.getArgument(0);
-            
+    @BeforeEach
+    void setUp() {
+        given(userService.registerUser(any(UserRegistrationData.class))).will(invocation -> {
+            UserRegistrationData userRegistrationData = invocation.getArgument(0);
+
             return User.builder()
-                    .email(userData.getEmail())
+                    .email(userRegistrationData.getEmail())
                     .build();
         });
 
+
+    }
+
+    @Test
+    void 올바른_회원정보로_회원가입을_하려는_경우() throws Exception {
         mvc.perform(
                 post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -45,6 +52,16 @@ public class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().string(containsString("\"email\":\"test@email.com\"")));
 
-        verify(userService).registerUser(any(UserData.class));
+        verify(userService).registerUser(any(UserRegistrationData.class));
+    }
+
+    @Test
+    void 올바르지_않은_회원정보로_회원가입을_하려는_경우() throws Exception {
+        mvc.perform(
+                post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")
+        )
+                .andExpect(status().isBadRequest());
     }
 }
