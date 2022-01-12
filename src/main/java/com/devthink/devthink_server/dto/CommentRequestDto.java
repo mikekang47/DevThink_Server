@@ -11,5 +11,4 @@ public class CommentRequestDto {
     private final Long user_id;
     private final Long review_id;
     private final String content;
-    private final String status;
 }
