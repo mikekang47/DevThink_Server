@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Comment;
+import com.devthink.devthink_server.domain.CommentRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
