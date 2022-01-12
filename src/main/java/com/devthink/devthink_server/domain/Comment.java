@@ -14,6 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
@@ -32,13 +33,5 @@ public class Comment {
     String content;
 
     String status;
-
-    @Builder
-    public Comment(User user, Review review, String content, String status) {
-        this.user = user;
-        this.review = review;
-        this.content = content;
-        this.status = status;
-    }
 
 }
