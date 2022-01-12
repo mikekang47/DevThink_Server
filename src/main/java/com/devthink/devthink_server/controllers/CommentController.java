@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.CommentService;
 import com.devthink.devthink_server.domain.Comment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
