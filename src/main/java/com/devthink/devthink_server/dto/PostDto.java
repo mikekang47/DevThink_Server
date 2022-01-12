@@ -2,16 +2,16 @@ package com.devthink.devthink_server.dto;
 
 import com.devthink.devthink_server.domain.Post;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@RequiredArgsConstructor
 public class PostDto {
+
     private Long id;
+
+    private Long user_id;
 
     private String title;
 
@@ -24,15 +24,26 @@ public class PostDto {
     private LocalDateTime update_at;
 
     public Post toEntity(){
-        Post post = Post.builder()
+        Post build = Post.builder()
                 .id(id)
+                .user_id(user_id)
                 .title(title)
                 .content(content)
                 .status(status)
                 .build();
-        return post;
+        return build;
     }
 
+    @Builder
+    public PostDto(Long id, Long user_id, String title, String content, String status, LocalDateTime create_at, LocalDateTime update_at) {
+        this.id = id;
+        this.user_id = user_id;
+        this.title = title;
+        this.content = content;
+        this.status = status;
+        this.create_at = create_at;
+        this.update_at = update_at;
+    }
 
 
 }
