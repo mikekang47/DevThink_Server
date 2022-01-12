@@ -32,4 +32,13 @@ public class PostService {
     public Optional<Post> getPost(Long id){
         return postRepository.findById(id);
     }
+
+    public Post update(Long id, PostDto postDto){
+        Post post = postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당 게시물이 없습니다. " + id));
+
+        post.update(postDto.getTitle(), postDto.getContent());
+        return postRepository.save(post);
+
+    }
 }
