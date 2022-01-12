@@ -3,14 +3,15 @@ package com.devthink.devthink_server.service;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
 import com.devthink.devthink_server.infra.PostRepository;
+import com.github.dozermapper.core.Mapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class PostService {
     private PostRepository postRepository;
 
@@ -18,48 +19,17 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    @Transactional
-    public Long savePost(PostDto postDto){
-        return postRepository.save(postDto.toEntity()).getId();
-    }
-
-    @Transactional
-    public List<PostDto> getPostList(){
-        List<Post> posts = postRepository.findAll();
-        List<PostDto> postDtoList = new ArrayList<>();
-
-        for (Post post : posts) {
-            PostDto postDto = PostDto.builder()
-                    .id(post.getId())
-                    .user_id(post.getUser_id())
-                    .category_id(post.getCategory_id())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .status(post.getStatus())
-                    .build();
-
-            postDtoList.add(postDto);
-        }
-        return postDtoList;
-
+    public Post savePost(PostDto postDto){
+        return postRepository.save(postDto.toEntity());
 
     }
 
-    @Transactional
-    public PostDto getPost(Long id){
-        Optional<Post> postWrapper = postRepository.findById(id);
-        Post post = postWrapper.get();
+    public List<Post> getPostList(){
+       return postRepository.findAll();
 
-        PostDto postDto = PostDto.builder()
-                .id(post.getId())
-                .user_id(post.getUser_id())
-                .category_id(post.getCategory_id())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .status(post.getStatus())
-                .build();
+    }
 
-        return postDto;
-
+    public Optional<Post> getPost(Long id){
+        return postRepository.findById(id);
     }
 }
