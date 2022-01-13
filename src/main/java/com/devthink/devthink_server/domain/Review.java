@@ -18,21 +18,21 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor
 public class Review {
     @Id
-    @GeneratedValue
-    Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = LAZY)
-    User user;
+    private User user;
 
     @ManyToOne(fetch = LAZY)
-    Book book;
+    private Book book;
+
+    private String content;
+
+    private Float score;
 
     @OneToMany
-    List<Comment> comments = new ArrayList<>();
-
-    String content;
-
-    Float score;
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Review(User user, Book book, String content, Float score) {
