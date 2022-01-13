@@ -3,7 +3,6 @@ package com.devthink.devthink_server.controllers;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.UserRegistrationData;
-import com.devthink.devthink_server.dto.UserResultData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,4 +68,7 @@ public class UserControllerTest {
         )
                 .andExpect(status().isBadRequest());
     }
+
+
+
 }
