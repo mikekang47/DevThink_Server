@@ -2,14 +2,18 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.BookService;
 import com.devthink.devthink_server.application.ReviewService;
+import com.devthink.devthink_server.common.Error;
+import com.devthink.devthink_server.common.ErrorMessage;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReviewRequestDto;
-import com.devthink.devthink_server.dto.ReviewResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/reviews")
@@ -25,10 +29,10 @@ public class ReviewController {
      * @param reviewRequestDto (userId, bookIsbn, content, score)
      * @return reviewId (새로 생성된 리뷰 아이디)
      */
-    @PostMapping("/")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String createReview(@RequestBody ReviewRequestDto reviewRequestDto){
-        //TODO: user_id 로 User 가져오기
+        //TODO: userId 로 User 가져오기
         User user = new User();
         user.setId(reviewRequestDto.getUserId());
         // Isbn 으로 Book 가져오기
@@ -39,16 +43,21 @@ public class ReviewController {
 
 
     /**
-     * 리뷰 조회 API
+     * 리뷰 상세 조회 API
      * [GET] /reviews/:reviewId
      * @param reviewId (조회 할 리뷰 아이디)
-     * @return Review (해당 리뷰)
+     * @return
      */
     @GetMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ReviewResponseDto getReview(@PathVariable("reviewId") Long reviewId){
-        return reviewService.getReview(reviewId);
+    public ResponseEntity<Object> getReview(@PathVariable("reviewId") Long reviewId){
+        Optional<Review> review = reviewService.getReviewById(reviewId);
+        if(review.isEmpty()){
+            return ResponseEntity.badRequest().body(new Error(HttpStatus.BAD_REQUEST, ErrorMessage.NO_SUCH_REVIEW));
+        } else{
+            return ResponseEntity.ok().body(review.get().toReviewResponseDto());
+        }
     }
 
 }

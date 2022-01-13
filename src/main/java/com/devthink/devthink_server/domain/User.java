@@ -3,23 +3,25 @@ package com.devthink.devthink_server.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Getter
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     String email;
 
-    String nickName;
+    String nickname;
 
     String phoneNum;
 
@@ -29,10 +31,10 @@ public class User {
 
     String password;
 
-    int point;
+    String blogAddr;
 
-    String git_NickName;
-  
-    String status;
+    String gitNickname;
+
+    int point;
 
 }
