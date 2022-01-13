@@ -16,6 +16,8 @@ import static org.mockito.Mockito.verify;
 
 
 class UserServiceTest {
+    private final String EXISTED_EMAIL = "exited@email.com";
+
     private UserService userService;
 
     private final UserRepository userRepository = mock(UserRepository.class);
@@ -32,13 +34,16 @@ class UserServiceTest {
         given(userRepository.save(any(User.class))).will(invocation -> {
             User user = User.builder()
                     .id(13L)
-                    .email("test@email.com")
+                    .email(EXISTED_EMAIL)
                     .nickname("Test")
                     .role("senior")
                     .build();
 
             return user;
         });
+
+        
+
     }
 
     @Test
