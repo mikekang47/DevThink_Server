@@ -23,4 +23,14 @@ public class UserService {
         User user = mapper.map(userRegistrationData, User.class);
         return userRepository.save(user);
     }
+
+    public Boolean isDuplicateEmail(String userEmail) {
+        return userRepository.existsByEmail(userEmail);
+    }
+
+    public Boolean isDuplicateNickname(String userNickName) {
+        return userRepository.existsByNickname(userNickName);
+    }
+
+
 }
