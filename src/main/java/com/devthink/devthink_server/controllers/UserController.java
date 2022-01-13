@@ -9,9 +9,12 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.UserResultData;
 import com.devthink.devthink_server.dto.UserRegistrationData;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -23,11 +26,17 @@ public class UserController {
         this.userService = userService;
     }
 
-    /**
-     * valid한 사용자의 정보를 받아사어 사용자를 ㅅ앳
-     * @param userRegistrationData
-     * @return
-     */
+    @GetMapping("/emailCheck/{userEmail}")
+    public ResponseEntity<Boolean> checkEmail(@PathVariable String userEmail) {
+        return ResponseEntity.ok(userService.isDuplicateEmail(userEmail));
+    }
+
+    @GetMapping("/nicknameCheck/{{userNickname}")
+    public ResponseEntity<Boolean> checkNickname(@PathVariable String userNickname) {
+        return ResponseEntity.ok(userService.isDuplicateNickname(userNickname));
+    }
+
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     UserResultData create(@RequestBody @Valid UserRegistrationData userRegistrationData) {
