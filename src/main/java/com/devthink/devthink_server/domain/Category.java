@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,13 +11,14 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Category {
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
 }
