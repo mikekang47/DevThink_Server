@@ -1,9 +1,11 @@
 package com.devthink.devthink_server.dto;
 
+import com.github.dozermapper.core.Mapping;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,10 +20,6 @@ public class UserResultData {
     private String email;
 
     @NotBlank
-    @Size(min=8,max=15)
-    private String password;
-
-    @NotBlank
     @Size(max=8)
     private String nickname;
 
@@ -29,10 +27,12 @@ public class UserResultData {
     private String role;
 
     private List<String> stack;
-
+    
     private String blogAddr;
 
     private String gitNickname;
 
     private Integer point;
+
+    private String status;
 }
