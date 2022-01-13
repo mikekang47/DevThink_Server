@@ -7,10 +7,17 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 public class ReviewResponseDto {
+
     private final Long id;
-    private final Long user_id;
-    private final Integer book_id;
+
+    private final Long userId;
+
+    private final Integer bookIsbn;
+
     private final String content;
+
     private final Float score;
+
     private final String status;
+
 }
