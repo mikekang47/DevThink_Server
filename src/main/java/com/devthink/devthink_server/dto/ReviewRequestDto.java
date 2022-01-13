@@ -1,20 +1,19 @@
 package com.devthink.devthink_server.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewRequestDto {
 
-    private final Long userId;
+    private Long userId;
 
-    private final Integer bookIsbn;
+    private Integer bookIsbn;
 
-    private final String content;
+    private String content;
 
-    private final Float score;
+    private Float score;
 
 }
