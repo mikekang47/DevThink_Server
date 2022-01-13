@@ -1,19 +1,18 @@
 package com.devthink.devthink_server.dto;
 
-import com.github.dozermapper.core.Mapping;
+import com.devthink.devthink_server.domain.BaseTimeEntity;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
+
 
 @Getter
 @Builder
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResultData {
+public class UserResultData extends BaseTimeEntity {
     private Long id;
 
     @NotBlank
@@ -27,7 +26,7 @@ public class UserResultData {
     private String role;
 
     private List<String> stack;
-    
+
     private String blogAddr;
 
     private String gitNickname;

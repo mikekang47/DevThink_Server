@@ -1,21 +1,20 @@
 package com.devthink.devthink_server.dto;
 
+import com.devthink.devthink_server.domain.BaseTimeEntity;
 import com.github.dozermapper.core.Mapping;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegistrationData {
+public class UserRegistrationData extends BaseTimeEntity {
     @NotBlank
     @Mapping("email")
     private String email;
