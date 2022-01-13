@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -28,12 +29,21 @@ public class UserRegistrationData {
     @Mapping("role")
     private String role;
 
+    @Builder.Default
     @Mapping("stack")
-    private List<String> stack;
+    private List<String> stack = new ArrayList<>();
 
+    @Builder.Default
     @Mapping("blogAddr")
-    private String blogAddr;
+    private String blogAddr = "";
 
+    @Builder.Default
     @Mapping("gitNickname")
-    private String gitNickname;
+    private String gitNickname = "";
+
+    @Builder.Default
+    private Integer point = 0;
+
+    @Builder.Default
+    private String status = "active";
 }
