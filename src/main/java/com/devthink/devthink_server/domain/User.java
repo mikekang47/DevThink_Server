@@ -3,13 +3,14 @@ package com.devthink.devthink_server.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class User extends BaseTimeEntity{
     @Id
@@ -22,14 +23,26 @@ public class User extends BaseTimeEntity{
 
     private String role;
 
+    @Builder.Default
     @ElementCollection(targetClass = String.class)
-    private List<String> stack;
-    
-    private String blogAddr;
+    private List<String> stack = new ArrayList<>();
 
-    private String gitNickname;
+    @Builder.Default
+    private String blogAddr = "";
 
-    private Integer point;
+    @Builder.Default
+    private String gitNickname = "";
 
-    private String status;
+    @Builder.Default
+    private Integer point = 0;
+
+    @Builder.Default
+    private String status = "active";
+
+    public void changeWith(User source) {
+        nickname = source.getNickname();
+        role = source.getRole();
+        stack = source.getStack();
+        gitNickname = source.getGitNickname();
+    }
 }
