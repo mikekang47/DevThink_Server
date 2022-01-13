@@ -1,35 +1,32 @@
 package com.devthink.devthink_server.domain;
 
-
 import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Post extends BaseTimeEntity{
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    Long user_id;
+    private Long user_id;
 
-    Long category_id;
+    private Long category_id;
 
-    String title;
+    private String title;
 
-    String content;
+    private String content;
 
-    String status;
+    private String status;
 
-    @Builder
-    public Post(Long id, Long user_id, String title, String content, String status) {
-        this.id = id;
-        this.user_id =user_id;
+    public void update(String title, String content){
         this.title = title;
         this.content = content;
-        this.status = status;
     }
 
 }
