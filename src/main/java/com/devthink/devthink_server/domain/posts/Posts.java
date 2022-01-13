@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Entity //게시판 board에 대한 entity
 @Getter //getter 메서드 자동 추가
 @NoArgsConstructor  //기본생성자 자동추가
-
 public class Posts {
 
     @Id
