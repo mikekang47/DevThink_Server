@@ -38,4 +38,17 @@ public class ReviewController {
     }
 
 
+    /**
+     * 리뷰 조회 API
+     * [GET] /reviews/:reviewId
+     * @param reviewId (조회 할 리뷰 아이디)
+     * @return Review (해당 리뷰)
+     */
+    @GetMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ReviewResponseDto getReview(@PathVariable("reviewId") Long reviewId){
+        return reviewService.getReview(reviewId);
+    }
+
 }
