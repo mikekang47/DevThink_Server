@@ -8,6 +8,8 @@ import com.devthink.devthink_server.infra.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -28,14 +30,7 @@ public class ReviewService {
     }
 
     //리뷰 조회
-    public ReviewResponseDto getReview(Long reviewId) {
-        Review review = reviewRepository.getById(reviewId);
-        return ReviewResponseDto.builder()
-                .id(reviewId)
-                .bookIsbn(review.getBook().getIsbn())
-                .content(review.getContent())
-                .score(review.getScore())
-                .userId(review.getUser().getId())
-                .build();
+    public Optional<Review> getReviewById(Long reviewId) {
+        return reviewRepository.findById(reviewId);
     }
 }
