@@ -1,7 +1,7 @@
 package com.devthink.devthink_server.controller;
 
-import com.devthink.devthink_server.services.posts.PostsService;
-import com.devthink.devthink_server.dto.PostsSaveRequestDto;
+import com.devthink.devthink_server.application.PostsService;
+import com.devthink.devthink_server.dto.posts.PostsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

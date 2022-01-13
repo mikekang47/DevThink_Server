@@ -1,8 +1,8 @@
-package com.devthink.devthink_server.services.posts;
+package com.devthink.devthink_server.application;
 
 
 import com.devthink.devthink_server.domain.posts.PostsRepository;
-import com.devthink.devthink_server.dto.PostsSaveRequestDto;
+import com.devthink.devthink_server.dto.posts.PostsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.devthink.devthink_server.dto;
+package com.devthink.devthink_server.dto.posts;
 
 import com.devthink.devthink_server.domain.posts.Posts;
 import lombok.Builder;
