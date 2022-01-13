@@ -5,19 +5,25 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class ReviewResponseDto {
 
-    private final Long id;
+    private Long id;
 
-    private final Long userId;
+    private Long userId;
 
-    private final Integer bookIsbn;
+    private Integer bookIsbn;
 
-    private final String content;
+    private String content;
 
-    private final Float score;
+    private Float score;
 
-    private final String status;
+    @Builder
+    public ReviewResponseDto(Long id, Long userId,Integer bookIsbn,String content,Float score){
+        this.id = id;
+        this.userId = userId;
+        this.bookIsbn = bookIsbn;
+        this.content = content;
+        this.score = score;
+    }
 
 }
