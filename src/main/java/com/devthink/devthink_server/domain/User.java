@@ -30,4 +30,6 @@ public class User {
     private String gitNickname;
 
     private Integer point;
+
+    private String status;
 }
