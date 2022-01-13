@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.domain;
 
+import com.devthink.devthink_server.dto.ReviewResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,5 +41,16 @@ public class Review {
         this.book = book;
         this.content = content;
         this.score = score;
+    }
+
+    //TODO: comments 추가
+    public ReviewResponseDto toReviewResponseDto(){
+        return ReviewResponseDto.builder()
+                .id(id)
+                .userId(user.getId())
+                .bookIsbn(book.getIsbn())
+                .content(content)
+                .score(score)
+                .build();
     }
 }
