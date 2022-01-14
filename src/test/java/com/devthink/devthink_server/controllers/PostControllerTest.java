@@ -2,6 +2,7 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
+import com.devthink.devthink_server.errors.PostIdNotFoundException;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.devthink.devthink_server.service.PostService;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
@@ -22,6 +23,8 @@ import static org.mockito.Mockito.verify;
 
 class PostControllerTest {
 
+    private final Long NOT_EXISTED_ID = 2L;
+
     private PostService postService;
     private PostRepository postRepository = mock(PostRepository.class);
 
@@ -33,6 +36,7 @@ class PostControllerTest {
 
         given(postRepository.save(any(Post.class))).will(invocation -> {
             Post post = Post.builder()
+                    .id(1L)
                     .user_id(1L)
                     .category_id(1L)
                     .title("test")
@@ -47,6 +51,9 @@ class PostControllerTest {
                         .user_id(1L)
                         .build())
         );
+
+        given(postRepository.findById(NOT_EXISTED_ID))
+                .willThrow(new PostIdNotFoundException(NOT_EXISTED_ID));
 
     }
 
@@ -83,5 +90,19 @@ class PostControllerTest {
 
        verify(postRepository).findById(1L);
     }
+
+    @Test
+    void 올바르지_않은_정보로_글을_수정하려는_경우(){
+        PostDto postDto = PostDto.builder()
+                .title("test22")
+                .content("test22")
+                .build();
+
+        assertThatThrownBy(() -> postService.update(NOT_EXISTED_ID, postDto))
+                .isInstanceOf(PostIdNotFoundException.class);
+
+        verify(postRepository).findById(NOT_EXISTED_ID);
+    }
+
 
 }
