@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -40,6 +42,11 @@ class PostControllerTest {
             return post;
         });
 
+        given(postRepository.findById(1L)).willReturn(
+                Optional.of(Post.builder()
+                        .user_id(1L)
+                        .build())
+        );
 
     }
 
@@ -60,5 +67,21 @@ class PostControllerTest {
 
     }
 
+    @Test
+    void 올바른_정보로_글을_수정하려는_경우(){
+        PostDto postDto = PostDto.builder()
+                .title("test22")
+                .content("test22")
+                .build();
+
+        Long user_id =1L;
+        Post post = postService.update(user_id ,postDto);
+
+       assertThat(post.getUser_id()).isEqualTo(1L);
+       assertThat(post.getTitle()).isEqualTo("test");
+       assertThat(post.getContent()).isEqualTo("test");
+
+       verify(postRepository).findById(1L);
+    }
 
 }
