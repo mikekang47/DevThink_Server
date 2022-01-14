@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -31,11 +32,11 @@ public class ReviewController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String createReview(@RequestBody ReviewRequestDto reviewRequestDto){
+    public String createReview(@Valid @RequestBody ReviewRequestDto reviewRequestDto){
         //TODO: userId 로 User 가져오기
         User user = new User();
         user.setId(reviewRequestDto.getUserId());
-        // Isbn 으로 Book 가져오기
+        // Isbn 으로 Book을 가져온다.
         Book book = bookService.getBookByIsbn(reviewRequestDto.getBookIsbn());
         String reviewId = reviewService.createReview(user, book, reviewRequestDto);
         return reviewId;
@@ -45,7 +46,7 @@ public class ReviewController {
     /**
      * 리뷰 상세 조회 API
      * [GET] /reviews/:reviewId
-     * @param reviewId (조회 할 리뷰 아이디)
+     * @param reviewId (조회할 리뷰 아이디)
      * @return
      */
     @GetMapping("/{reviewId}")
@@ -56,6 +57,40 @@ public class ReviewController {
         if(review.isEmpty()){
             return ResponseEntity.badRequest().body(new Error(HttpStatus.BAD_REQUEST, ErrorMessage.NO_SUCH_REVIEW));
         } else{
+            return ResponseEntity.ok().body(review.get().toReviewResponseDto());
+        }
+    }
+
+    /**
+     * 리뷰 내용 수정 API
+     * [PATCH] /reviews/:reviewId/content
+     * @param reviewId (수정할 리뷰 아이디)
+     */
+    @PatchMapping("/{reviewId}/content")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Object> updateContent(@PathVariable("reviewId") Long reviewId, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
+        Optional<Review> review = reviewService.getReviewById(reviewId);
+        if(review.isEmpty()){
+            return ResponseEntity.badRequest().body(new Error(HttpStatus.BAD_REQUEST, ErrorMessage.NO_SUCH_REVIEW));
+        } else{
+            reviewService.updateContent(review.get(), reviewRequestDto.getContent());
+            return ResponseEntity.ok().body(review.get().toReviewResponseDto());
+        }
+    }
+
+    /**
+     * 리뷰 점수 수정 API
+     * [PATCH] /reviews/:reviewId/score
+     * @param reviewId (수정할 리뷰 아이디 )
+     */
+    @PatchMapping("/{reviewId}/score")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Object> updateScore(@PathVariable("reviewId") Long reviewId, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
+        Optional<Review> review = reviewService.getReviewById(reviewId);
+        if(review.isEmpty()){
+            return ResponseEntity.badRequest().body(new Error(HttpStatus.BAD_REQUEST, ErrorMessage.NO_SUCH_REVIEW));
+        } else{
+            reviewService.updateScore(review.get(),reviewRequestDto.getScore());
             return ResponseEntity.ok().body(review.get().toReviewResponseDto());
         }
     }

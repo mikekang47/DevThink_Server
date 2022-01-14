@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,16 +31,29 @@ public class Review {
 
     private String content;
 
-    private Float score;
+    private BigDecimal score;
 
-    @OneToMany
+    @OneToMany(mappedBy = "review")
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Review(User user, Book book, String content, Float score) {
+    public Review(User user, Book book, String content, BigDecimal score) {
         this.user = user;
         this.book = book;
         this.content = content;
+        this.score = score;
+    }
+
+    public void setBook(Book book){
+        this.book = book;
+        book.getReviews().add(this);
+    }
+
+    public void setContent(String content){
+        this.content = content;
+    }
+
+    public void setScore(BigDecimal score){
         this.score = score;
     }
 
@@ -53,4 +67,5 @@ public class Review {
                 .score(score)
                 .build();
     }
+
 }
