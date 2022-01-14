@@ -48,7 +48,7 @@ public class PostController {
      * @return id의 게시글
      */
     @GetMapping("/{id}")
-    public Optional<Post> findById(@PathVariable Long id){
+    public Post findById(@PathVariable Long id){
         return postService.getPost(id);
 
     }
@@ -97,4 +97,22 @@ public class PostController {
         return postService.search(keyword);
     }
 
+    /**
+     * 게시글의 정보를 받아 게시글을 dto 데이터로 변환하여 반환합니다.
+     * @param post 게시글 정보
+     * @return 입력된 dto 데이터로 변환된 값
+     */
+    private PostDto getPostData(Post post)
+    {
+        if(post == null)
+            return null;
+
+        return PostDto.builder()
+                .user_id(post.getUser_id())
+                .category_id(post.getCategory_id())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .status(post.getStatus())
+                .build();
+    }
 }
