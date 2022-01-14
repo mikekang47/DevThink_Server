@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserModificationData {
     @NotBlank(message = "닉네임을 입력해주세요.")
     @Size(max=8)

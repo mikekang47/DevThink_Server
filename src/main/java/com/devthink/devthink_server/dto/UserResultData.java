@@ -10,7 +10,6 @@ import java.util.List;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserResultData extends BaseTimeEntity {
     private Long id;

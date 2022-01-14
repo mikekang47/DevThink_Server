@@ -7,14 +7,12 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserRegistrationData extends BaseTimeEntity {
     @NotBlank(message = "이메일 주소를 입력하세요.")
     @Email
