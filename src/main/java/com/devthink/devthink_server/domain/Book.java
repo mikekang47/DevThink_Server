@@ -6,12 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Book {
@@ -21,19 +22,17 @@ public class Book {
 
     private Integer isbn;
 
-    private Float scoreTotal;
+    @Builder.Default
+    private Integer reviewCnt = 0;
 
-    private Integer reviewCnt;
+    @Builder.Default
+    private BigDecimal scoreAvg = new BigDecimal("0");
 
-    private Float scoreAvg;
-
-    @OneToMany
+    @Builder.Default
+    @OneToMany(mappedBy = "book")
     private List<Review> reviews = new ArrayList<>();
 
-    @Builder
-    public Book(Integer isbn) {
-        this.isbn = isbn;
-    }
+
 
 
 }
