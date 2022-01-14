@@ -21,6 +21,13 @@ class UserTest {
         assertThat(user.getRole()).isEqualTo("senior");
     }
 
+    @Test
+    void 삭제() {
+        User user = User.builder().build();
 
+        user.destroy();
 
+        assertThat(user.isDeleted()).isTrue();
+    }
+    
 }

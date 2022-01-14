@@ -18,10 +18,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,6 +58,9 @@ public class UserControllerTest {
                 });
 
         given(userService.updateUser(eq(NOT_EXISTED_ID), any(UserModificationData.class)))
+                .willThrow(new UserNotFoundException(NOT_EXISTED_ID));
+
+        given(userService.deleteUser(NOT_EXISTED_ID))
                 .willThrow(new UserNotFoundException(NOT_EXISTED_ID));
     }
 
@@ -124,6 +125,23 @@ public class UserControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(userService).updateUser(eq(NOT_EXISTED_ID), any(UserModificationData.class));
+    }
+
+    @Test
+    void 존재하는_회원을_삭제하는_경우() throws Exception {
+        mvc.perform(
+                delete("/users/1"))
+                .andExpect(status().isOk());
+
+        verify(userService).deleteUser(1L);
+    }
+
+    @Test
+    void 존재하지_않는_회원을_삭제하는_경우() throws Exception {
+        mvc.perform(delete("/users/100"))
+                .andExpect(status().isNotFound());
+
+        verify(userService).deleteUser(NOT_EXISTED_ID);
     }
 }
 

@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 class UserServiceTest {
     private final String EXISTED_EMAIL = "exited@email.com";
     private final Long NOT_EXISTED_ID = 1000L;
+    private final Long DELETED_ID = 200L;
 
     private UserService userService;
 
@@ -47,7 +48,7 @@ class UserServiceTest {
             return user;
         });
 
-        given(userRepository.findById(1L)).willReturn(
+        given(userRepository.findByIdAndDeletedIsFalse(1L)).willReturn(
                 Optional.of(User.builder()
                         .id(1L)
                         .email(EXISTED_EMAIL)
@@ -57,8 +58,12 @@ class UserServiceTest {
         given(userRepository.existsByEmail(EXISTED_EMAIL))
                 .willThrow(new UserEmailDuplicationException(EXISTED_EMAIL));
 
-        given(userRepository.findById(NOT_EXISTED_ID))
-                .willThrow(new UserNotFoundException(NOT_EXISTED_ID));
+        given(userRepository.findByIdAndDeletedIsFalse(NOT_EXISTED_ID))
+                .willReturn(Optional.empty());
+        
+        given(userRepository.findByIdAndDeletedIsFalse(DELETED_ID))
+                .willReturn(Optional.empty());
+        
     }
 
     @Test
@@ -90,11 +95,11 @@ class UserServiceTest {
         assertThat(user.getEmail()).isEqualTo(EXISTED_EMAIL);
         assertThat(user.getRole()).isEqualTo("senior");
 
-        verify(userRepository).findById(1L);
+        verify(userRepository).findByIdAndDeletedIsFalse(1L);
     }
 
     @Test
-    void 올바르지_않은_정보로_사용자정보를을_수정하려는는_경우() {
+    void 존재하지_않는_사용자정보를_수정하려는_경우() {
         UserModificationData modificationData = UserModificationData.builder()
                 .nickname("test")
                 .role("senior")
@@ -103,6 +108,37 @@ class UserServiceTest {
         assertThatThrownBy(() ->userService.updateUser(NOT_EXISTED_ID, modificationData))
                 .isInstanceOf(UserNotFoundException.class);
         
-        verify(userRepository).findById(NOT_EXISTED_ID);
+        verify(userRepository).findByIdAndDeletedIsFalse(NOT_EXISTED_ID);
+    }
+
+    @Test
+    void 삭제된_사용자정보를_수정하려는_경우() {
+        UserModificationData modificationData = UserModificationData.builder()
+                .nickname("test")
+                .role("senior")
+                .build();
+        Long userId = DELETED_ID;
+        assertThatThrownBy(
+                () -> userService.updateUser(userId, modificationData)
+        )
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    void 존재하는_식별자로_사용자를_삭제하려는_경우() {
+        User user = userService.deleteUser(1L);
+
+        assertThat(user.getId()).isEqualTo(1L);
+        assertThat(user.isDeleted()).isTrue();
+
+        verify(userRepository).findByIdAndDeletedIsFalse(1L);
+    }
+
+    @Test
+    void 존재하지_않는_식별자로_사용자를_삭제하려는_경우() {
+        assertThatThrownBy(() -> userService.deleteUser(DELETED_ID))
+                .isInstanceOf(UserNotFoundException.class);
+
+        verify(userRepository).findByIdAndDeletedIsFalse(DELETED_ID);
     }
 }
