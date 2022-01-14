@@ -37,7 +37,10 @@ public class User extends BaseTimeEntity{
     private Integer point = 0;
 
     @Builder.Default
-    private String status = "active";
+    private boolean deleted = false;
+
+    @Builder.Default
+    private Integer reported = 0;
 
     public void changeWith(User source) {
         nickname = source.getNickname();
@@ -45,4 +48,9 @@ public class User extends BaseTimeEntity{
         stack = source.getStack();
         gitNickname = source.getGitNickname();
     }
+
+    public void destroy() {
+        deleted = true;
+    }
+
 }
