@@ -5,6 +5,7 @@ import com.devthink.devthink_server.dto.PostDto;
 import com.devthink.devthink_server.service.PostService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,8 +39,9 @@ public class PostController {
      * @return 몇 페이지의 게시글 (기본값 6개의 게시글)
      */
     @GetMapping
-    public List<Post> list(@RequestParam(value="page", defaultValue = "1") int page){
-        return postService.list(page); // 불러올 페이지는 1부터 시작
+    public List<PostDto> list(@RequestParam(value="page", defaultValue = "1") int page){
+        List<Post> list = postService.list(page);
+        return getPostDtos(list);
     }
 
     /**
@@ -48,8 +50,9 @@ public class PostController {
      * @return id의 게시글
      */
     @GetMapping("/{id}")
-    public Post findById(@PathVariable Long id){
-        return postService.getPost(id);
+    public PostDto findById(@PathVariable Long id){
+        Post post = postService.getPost(id);
+        return getPostData(post);
 
     }
 
@@ -59,8 +62,9 @@ public class PostController {
      * @return  게시글 생성
      */
     @PostMapping("/write")
-    public Post write(@RequestBody PostDto postDto){
-        return postService.savePost(postDto);
+    public PostDto write(@RequestBody PostDto postDto){
+        Post post = postService.savePost(postDto);
+        return getPostData(post);
     }
 
     /**
@@ -71,8 +75,9 @@ public class PostController {
      */
 
     @PutMapping("/{id}")
-    public Post update(@PathVariable Long id, @RequestBody PostDto postDto){
-        return postService.update(id, postDto);
+    public PostDto update(@PathVariable Long id, @RequestBody PostDto postDto){
+        Post update = postService.update(id, postDto);
+        return getPostData(update);
     }
 
     /**
@@ -92,9 +97,25 @@ public class PostController {
      */
 
     @GetMapping("/search")
-    public List<Post> search(@RequestParam String keyword)
+    public List<PostDto> search(@RequestParam String keyword)
     {
-        return postService.search(keyword);
+        List<Post> search = postService.search(keyword);
+        List<PostDto> postDto = getPostDtos(search);
+        return postDto;
+    }
+
+    /**
+     * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
+     * @param posts entity List
+     * @return 입력된 dto 데이터로 변환된 list
+     */
+    private List<PostDto> getPostDtos(List<Post> posts) {
+        List<PostDto> postDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            postDtos.add(getPostData(post));
+        }
+        return postDtos;
     }
 
     /**
