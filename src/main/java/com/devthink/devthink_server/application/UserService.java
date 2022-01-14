@@ -73,7 +73,18 @@ public class UserService {
      * @return 찾았을 경우 사용자를 반환. 찾지 못했을 경우 error를 반환.
      */
     private User findUser(Long id) {
-        return userRepository.findById(id)
+        return userRepository.findByIdAndDeletedIsFalse(id)
                 .orElseThrow(()-> new UserNotFoundException(id));
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public User deleteUser(Long id) {
+        User user = findUser(id);
+        user.destroy();
+        return user;
     }
 }
