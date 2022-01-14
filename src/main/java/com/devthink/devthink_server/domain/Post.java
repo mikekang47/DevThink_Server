@@ -8,8 +8,9 @@ import javax.persistence.*;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseTimeEntity{
+
     @Id
     @GeneratedValue
     private Long id;
@@ -22,7 +23,8 @@ public class Post extends BaseTimeEntity{
 
     private String content;
 
-    private String status;
+    @Builder.Default
+    private String status = "active";
 
     public void update(String title, String content){
         this.title = title;
