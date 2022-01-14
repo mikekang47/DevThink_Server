@@ -75,6 +75,15 @@ public class UserController {
     }
 
     /**
+     * 입력한 사용자의 식별자 값을 전달받아, 해당하는 사용자를 삭제합니다.
+     * @param id 삭제하고자 하는 사용자의 식별자
+     */
+    @DeleteMapping("/{id}")
+    public void destroy(@PathVariable Long id) {
+        userService.deleteUser(id);
+    }
+    
+    /**
      * 사용자의 정보를 받아, 사용자를 dto 데이터로 변환하여 반환합니다.
      * @param user 사용자 정보
      * @return 입력된 dto 데이터로 변환된 값

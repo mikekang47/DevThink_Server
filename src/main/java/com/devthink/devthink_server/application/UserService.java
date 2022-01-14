@@ -78,9 +78,9 @@ public class UserService {
     }
 
     /**
-     *
-     * @param id
-     * @return
+     * 삭제하고자 하는 사용자의 식별자를 전달받아, 사용자를 찾아 삭제하고, 사용자를 반환합니다.
+     * @param id 삭제하고자 하는 사용자의 식별자
+     * @return 삭제된 사용자.
      */
     public User deleteUser(Long id) {
         User user = findUser(id);
