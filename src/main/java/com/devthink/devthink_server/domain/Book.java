@@ -33,6 +33,21 @@ public class Book {
     private List<Review> reviews = new ArrayList<>();
 
 
-
+    /**
+     * 리뷰 추가 로직
+     * 전체 점수 증가, 리뷰 수 증가, 점수 평균 계산
+     * @param
+     */
+    public void addReview(Review review) {
+        review.setBook(this);
+        this.reviewCnt++;
+        // 평점 계산
+        BigDecimal sum = new BigDecimal("0");
+        for (Review x : reviews){
+            sum = sum.add(x.getScore());
+            System.out.println(sum);
+        }
+        this.scoreAvg = sum.divide(new BigDecimal(reviewCnt.toString()));
+    }
 
 }
