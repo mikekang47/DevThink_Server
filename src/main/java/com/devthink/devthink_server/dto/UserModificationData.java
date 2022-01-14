@@ -35,7 +35,6 @@ public class UserModificationData {
     @Mapping("point")
     private Integer point;
 
-    @Mapping("status")
-    private String status;
-
+    @Mapping("deleted")
+    private boolean deleted;
 }

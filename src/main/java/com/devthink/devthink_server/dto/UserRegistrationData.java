@@ -39,5 +39,8 @@ public class UserRegistrationData extends BaseTimeEntity {
 
     private Integer point;
 
-    private String status;
+    @Mapping("deleted")
+    private boolean deleted;
+
+    
 }

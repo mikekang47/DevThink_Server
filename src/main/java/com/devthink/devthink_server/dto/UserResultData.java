@@ -32,5 +32,5 @@ public class UserResultData extends BaseTimeEntity {
 
     private Integer point;
 
-    private String status;
+    private boolean deleted;
 }
