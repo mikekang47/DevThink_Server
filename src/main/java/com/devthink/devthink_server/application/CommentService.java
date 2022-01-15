@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -25,6 +26,14 @@ public class CommentService {
      */
     public List<Comment> getComments() {
         return commentRepository.findAll();
+    }
+
+    /**
+     * 특정 Comment를 조회합니다.
+     * @return 조회된 Comment 또는 {@literal Optional#empty()}
+     */
+    public Optional<Comment> getComment(Long commentId) {
+        return commentRepository.findById(commentId);
     }
 
     /**
