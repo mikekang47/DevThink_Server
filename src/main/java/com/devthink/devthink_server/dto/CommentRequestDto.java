@@ -15,6 +15,9 @@ public class CommentRequestDto {
     @NotBlank
     private final Long user_id;
 
+    //TODO: link Post by post_id
+    //private final Long post_id;
+
     @NotBlank
     private final Long review_id;
 
