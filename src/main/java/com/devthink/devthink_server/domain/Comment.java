@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.domain;
 
+import com.devthink.devthink_server.dto.CommentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,5 +34,13 @@ public class Comment {
     String content;
 
     String status;
+
+    public CommentResponseDto toCommentResponseDto() {
+        return CommentResponseDto.builder()
+                .user_nickname(user.getNickName())
+                .user_role(user.getRole())
+                .content(content)
+                .build();
+    }
 
 }
