@@ -78,7 +78,7 @@ public class PostController {
      */
 
     @PutMapping("/{id}")
-    public PostDto update(@PathVariable Long id, @RequestBody PostDto postDto){
+    public PostDto update(@PathVariable Long id, @RequestBody @Valid PostDto postDto){
         Post update = postService.update(id, postDto);
         return getPostData(update);
     }
