@@ -3,6 +3,7 @@ package com.devthink.devthink_server.controllers;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
 import com.devthink.devthink_server.service.PostService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ public class PostController {
      * @return  게시글 생성
      */
     @PostMapping("/write")
+    @ResponseStatus(HttpStatus.CREATED)
     public PostDto write(@RequestBody PostDto postDto){
         Post post = postService.savePost(postDto);
         return getPostData(post);
