@@ -2,6 +2,7 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
+import com.devthink.devthink_server.errors.PostNotFoundException;
 import com.devthink.devthink_server.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,7 +19,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -73,7 +72,11 @@ class PostControllerTest {
 
                 });
 
+        given(postService.update(eq(100L), any(PostDto.class)))
+                .willThrow(new PostNotFoundException(100L));
 
+        given(postService.deletePost(eq(100L)))
+                .willThrow(new PostNotFoundException(100L));
     }
 
     @Test
@@ -133,6 +136,19 @@ class PostControllerTest {
         verify(postService).update(eq(1L), any(PostDto.class));
     }
 
+    @Test
+    void 존재하지_않는_글을_수정하려는_경우() throws Exception {
+        mvc.perform(
+                put("/posts/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"new\"," +
+                                "\"content\":\"new1\",\"status\":\"new2\"}")
+        )
+                .andExpect(status().isNotFound());
+
+        verify(postService).update(eq(100L), any(PostDto.class));
+    }
+
 
 
     @Test
@@ -142,6 +158,16 @@ class PostControllerTest {
                         .andExpect(status().isOk());
 
             verify(postService).deletePost(1L);
+
+    }
+
+    @Test
+    void 존재하지_않는_게시글을_삭제하는_경우() throws Exception{
+        mvc.perform(
+                delete("/posts/100"))
+                .andExpect(status().isNotFound());
+
+            verify(postService).deletePost(100L);
 
     }
 
