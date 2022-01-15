@@ -87,7 +87,6 @@ class PostControllerTest {
 
         verify(postService).getPost(eq(1L));
     }
-
     @Test
     void 올바른_정보로_글을_쓰려는_경우() throws Exception{
          mvc.perform(
@@ -105,7 +104,16 @@ class PostControllerTest {
 
         verify(postService).savePost(any(PostDto.class));
     }
+    @Test
+     void 올바르지_않은_정보로_글을_쓰려는_경우() throws Exception {
+        mvc.perform(
+                post("/posts/write")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")
+        )
+                .andExpect(status().isBadRequest());
 
+    }
 
     @Test
     void 올바른_정보로_글을_수정하려는_경우() throws Exception{
@@ -124,6 +132,8 @@ class PostControllerTest {
 
         verify(postService).update(eq(1L), any(PostDto.class));
     }
+
+
 
     @Test
     void 존재하는_게시글을_삭제하는_경우() throws Exception{

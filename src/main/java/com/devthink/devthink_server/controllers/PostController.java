@@ -6,6 +6,7 @@ import com.devthink.devthink_server.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class PostController {
      */
     @PostMapping("/write")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDto write(@RequestBody PostDto postDto){
+    public PostDto write(@RequestBody @Valid PostDto postDto){
         Post post = postService.savePost(postDto);
         return getPostData(post);
     }
