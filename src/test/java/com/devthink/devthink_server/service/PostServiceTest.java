@@ -2,7 +2,6 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
-import com.devthink.devthink_server.errors.PostIdNotFoundException;
 import com.devthink.devthink_server.errors.PostNotFoundException;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.devthink.devthink_server.service.PostService;
@@ -47,8 +46,10 @@ class PostServiceTest {
             return post;
         });
 
+
         given(postRepository.findById(1L)).willReturn(
                 Optional.of(Post.builder()
+                        .id(1L)
                         .user_id(1L)
                         .build())
         );
@@ -93,7 +94,7 @@ class PostServiceTest {
     }
 
     @Test
-    void 올바르지_않은_정보로_글을_수정하려는_경우(){
+    void 존재하지_않는_글을_수정하려는_경우(){
         PostDto postDto = PostDto.builder()
                 .title("test22")
                 .content("test22")
@@ -105,5 +106,19 @@ class PostServiceTest {
         verify(postRepository).findById(NOT_EXISTED_ID);
     }
 
+    @Test
+    void 존재하는_식별자로_글을_삭제하려는_경우(){
+        Post post = postService.deletePost(1L);
+
+        assertThat(post.getId()).isEqualTo(1L);
+        verify(postRepository).findById(1L);
+    }
+
+    @Test
+    void 존재하지_않는_식별자로_글을_삭제하는_경우(){
+        assertThatThrownBy(() -> postService.deletePost(NOT_EXISTED_ID))
+                .isInstanceOf(PostNotFoundException.class);
+
+    }
 
 }
