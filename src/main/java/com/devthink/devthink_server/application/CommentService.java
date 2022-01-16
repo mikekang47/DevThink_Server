@@ -53,4 +53,14 @@ public class CommentService {
         );
         return comment.getId().toString();
     }
+
+    /**
+     * commentId를 통하여 기존의 Comment를 수정합니다.
+     * @param comment 수정할 Comment
+     * @param content 수정할 content
+     */
+    public void updateComment(Comment comment, String content) {
+
+        comment.setContent(content);
+    }
 }
