@@ -43,4 +43,8 @@ public class Comment {
                 .build();
     }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
+
 }
