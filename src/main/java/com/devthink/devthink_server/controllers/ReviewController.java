@@ -82,6 +82,7 @@ public class ReviewController {
      * 리뷰 점수 수정 API
      * [PATCH] /reviews/:reviewId/score
      * @param reviewId (수정할 리뷰 아이디 )
+     * @return review(삭제된 리뷰)
      */
     @PatchMapping("/{reviewId}/score")
     @ResponseStatus(HttpStatus.OK)
@@ -95,4 +96,22 @@ public class ReviewController {
         }
     }
 
+    /**
+     * 리뷰 삭제 API
+     * [DELETE] /reviews/:reviewId
+     * @param reviewId
+     * @return review(삭제된 리뷰 객체)
+     */
+    @DeleteMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Object> deleteReview(@PathVariable("reviewId") Long reviewId){
+        Optional<Review> review = reviewService.getReviewById(reviewId);
+        if(review.isEmpty()){
+            return ResponseEntity.badRequest().body(new Error(HttpStatus.BAD_REQUEST, ErrorMessage.NO_SUCH_REVIEW));
+        } else{
+            reviewService.deleteReview(review.get());
+            return ResponseEntity.ok().body(review.get().toReviewResponseDto());
+        }
+
+    }
 }

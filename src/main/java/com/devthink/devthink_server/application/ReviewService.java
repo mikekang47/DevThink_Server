@@ -1,4 +1,5 @@
 package com.devthink.devthink_server.application;
+import com.devthink.devthink_server.common.Error;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
@@ -6,6 +7,7 @@ import com.devthink.devthink_server.dto.ReviewRequestDto;
 import com.devthink.devthink_server.infra.BookRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +34,6 @@ public class ReviewService {
                     .build()
         );
         review.getBook().addReview(review);
-        bookRepository.save(review.getBook());
         return review.getId().toString();
     }
 
@@ -51,6 +52,13 @@ public class ReviewService {
     @Transactional
     public void updateScore(Review review, BigDecimal score){
         review.setScore(score);
+    }
+
+
+    // 리뷰 삭제
+    @Transactional
+    public void deleteReview(Review review){
+        reviewRepository.delete(review);
     }
 
 }
