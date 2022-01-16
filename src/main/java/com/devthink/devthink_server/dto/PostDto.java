@@ -26,7 +26,8 @@ public class PostDto {
     private String content;
 
     @Mapping("status")
-    private String status;
+    @Builder.Default
+    private String status = "active";
 
 
 }
