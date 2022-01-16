@@ -48,16 +48,20 @@ public class CommentController {
 
     /**
      * commentId를 통하여 기존의 Comment를 수정합니다.
-     * @return 수정된 Comment의 id 값
+     * @return Comment 수정 결과 response
      */
     @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateComment(@PathVariable("commentId") Long commentId, @RequestBody CommentRequestDto commentRequestDto){
+        String content = commentRequestDto.getContent();
+        if (content.isBlank())      // 입력받은 request에서 content가 공란인지 확인합니다.
+            return ResponseEntity.badRequest().body(new Error(HttpStatus.BAD_REQUEST, ErrorMessage.COMMENT_CONTENT_EMPTY));
+
         Optional<Comment> comment = commentService.getComment(commentId);
-        if (comment.isEmpty()) {
+        if (comment.isEmpty()) {    // DB에 request 받은 해당 Comment가 존재하는지 확인합니다.
             return ResponseEntity.badRequest().body(new Error(HttpStatus.BAD_REQUEST, ErrorMessage.NO_SUCH_COMMENT));
         } else {
-            commentService.updateComment(commentId, commentRequestDto);
+            commentService.updateComment(comment.get(), content);
             return ResponseEntity.ok().body(comment.get().toCommentResponseDto());
         }
     }
