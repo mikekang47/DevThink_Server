@@ -18,4 +18,8 @@ public class Category extends BaseTimeEntity{
 
     private String name;
 
+    public void update(String name){
+        this.name = name;
+    }
+
 }
