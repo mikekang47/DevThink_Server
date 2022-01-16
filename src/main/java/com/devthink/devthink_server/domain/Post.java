@@ -23,8 +23,7 @@ public class Post extends BaseTimeEntity{
 
     private String content;
 
-    @Builder.Default
-    private String status = "active";
+    private String status;
 
     public void update(String title, String content){
         this.title = title;
