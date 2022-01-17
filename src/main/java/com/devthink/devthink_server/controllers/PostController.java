@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/posts")
+
 /**
  * 사용자의 HTTP 요청을 처리하는 클래스입니다.
  */
@@ -108,6 +109,19 @@ public class PostController {
     }
 
     /**
+     * id를 검색하여, id가 검색된 게시글의 조회수를 1 추가합니다.
+     * @param id 게시글의 id값
+     * @return id가 담긴 게시글의 정보
+     */
+    @GetMapping("/read/{id}")
+    public PostDto read(@PathVariable Long id)
+    {
+        Post post = postService.getPost(id);
+        postService.updateView(id);
+        return getPostData(post);
+    }
+
+    /**
      * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
      * @param posts entity List
      * @return 입력된 dto 데이터로 변환된 list
@@ -121,6 +135,7 @@ public class PostController {
         return postDtos;
     }
 
+
     /**
      * 게시글의 정보를 받아 게시글을 dto 데이터로 변환하여 반환합니다.
      * @param post 게시글 정보
@@ -131,12 +146,14 @@ public class PostController {
         if(post == null)
             return null;
 
-        return PostDto.builder()
+            return PostDto.builder()
                 .user_id(post.getUser_id())
                 .category_id(post.getCategory_id())
                 .title(post.getTitle())
+                    .hit(post.getHit())
+                    .status(post.getStatus())
                 .content(post.getContent())
-                .status(post.getStatus())
                 .build();
+
     }
 }
