@@ -1,13 +1,20 @@
 package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.domain.Category;
-import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.CategoryDto;
-import com.devthink.devthink_server.dto.PostDto;
 import com.devthink.devthink_server.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+/**
+ * 사용자의 HTTP 요청을 처리하는 클래스입니다.
+ */
+
+// 1. 카테고리 작성 -> POST /categories
+// 2. 카테고리 검색 -> GET /categories/{id}
+// 3. 글 업데이트 -> PUT /categories/{id}
+// 4. 글 삭제 -> DELETE /categories/{id}
 
 @RestController
 @RequestMapping("/categories")
@@ -58,10 +65,16 @@ public class CategoryController {
      * @param id 카테고리의 식별자
      */
     @DeleteMapping("/{id}")
-    public void deletePost(@PathVariable Long id)
+    public CategoryDto deletePost(@PathVariable Long id)
     {
         categoryService.deletePost(id);
     }
+
+    /**
+     * 카테고리의 정보를 받아 게시글을 dto 데이터로 변환하여 반환합니다.
+     * @param post 카테고리 정보
+     * @return 입력된 dto 데이터로 변환된 값
+     */
 
     private CategoryDto getCategoryData(Category category)
     {
