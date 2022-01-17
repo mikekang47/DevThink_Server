@@ -74,6 +74,7 @@ public class PostService {
      * @param postDto 수정하고자 하는 게시글의 내용
      * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
      */
+
     public Post update(Long id, PostDto postDto){
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(id));
@@ -104,5 +105,19 @@ public class PostService {
     {
         List<Post> postList = postRepository.findByTitleContaining(keyword);
         return postList;
+    }
+
+    /**
+     * 전달받은 id를 통하여 게시글을 찾고, 조회수를 1 추가합니다.
+     * @param id 찾고자 하는 게시글의 id값
+     * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환
+     */
+    public Post updateView(Long id)
+    {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException(id));
+
+        postRepository.updateView(id);
+        return post;
     }
 }
