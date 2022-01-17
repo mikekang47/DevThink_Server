@@ -7,32 +7,29 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
+import static javax.persistence.FetchType.LAZY;
+
+@Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class User {
+public class Comment {
     @Id
     @GeneratedValue
     Long id;
 
-    String email;
+    @ManyToOne(fetch = LAZY)
+    User user;
 
-    String nickName;
+    //Post post;
 
-    String phoneNum;
+    @ManyToOne(fetch = LAZY)
+    Review review;
 
-    String role;
+    String content;
 
-    String stack;
-
-    String password;
-
-    int point;
-
-    String git_NickName;
-  
     String status;
 
 }

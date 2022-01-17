@@ -50,6 +50,9 @@ dependencies {
     // MariaDB
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.3'
 
+    // DozerMapper
+    implementation 'com.github.dozermapper:dozer-core:6.5.2'
+
 }
 
 test {
