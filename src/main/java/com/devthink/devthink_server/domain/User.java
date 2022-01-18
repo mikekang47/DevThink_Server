@@ -3,7 +3,6 @@ package com.devthink.devthink_server.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,13 +18,14 @@ public class User extends BaseTimeEntity{
 
     private String email;
 
+    private String password;
+
     private String nickname;
 
     private String role;
 
-    @Builder.Default
     @ElementCollection(targetClass = String.class)
-    private List<String> stack = new ArrayList<>();
+    private List<String> stack;
 
     @Builder.Default
     private String blogAddr = "";
@@ -53,4 +53,7 @@ public class User extends BaseTimeEntity{
         deleted = true;
     }
 
+    public boolean authenticate(String password) {
+        return !deleted && password.equals(this.password);
+    }
 }
