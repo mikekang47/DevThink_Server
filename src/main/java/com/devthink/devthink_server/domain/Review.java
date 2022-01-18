@@ -18,7 +18,8 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Review {
+@Builder
+public class Review extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,14 +36,6 @@ public class Review {
 
     @OneToMany(mappedBy = "review")
     private List<Comment> comments = new ArrayList<>();
-
-    @Builder
-    public Review(User user, Book book, String content, BigDecimal score) {
-        this.user = user;
-        this.book = book;
-        this.content = content;
-        this.score = score;
-    }
 
     public void setBook(Book book){
         this.book = book;
@@ -65,6 +58,8 @@ public class Review {
                 .bookIsbn(book.getIsbn())
                 .content(content)
                 .score(score)
+                .createAt(getCreateAt())
+                .updateAt(getUpdateAt())
                 .build();
     }
 

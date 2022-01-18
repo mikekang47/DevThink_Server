@@ -1,12 +1,15 @@
 package com.devthink.devthink_server.dto;
 
 
+import com.devthink.devthink_server.domain.BaseTimeEntity;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 public class ReviewResponseDto {
 
     private Long id;
@@ -19,13 +22,8 @@ public class ReviewResponseDto {
 
     private BigDecimal score;
 
-    @Builder
-    public ReviewResponseDto(Long id, Long userId, Integer bookIsbn, String content, BigDecimal score){
-        this.id = id;
-        this.userId = userId;
-        this.bookIsbn = bookIsbn;
-        this.content = content;
-        this.score = score;
-    }
+    private LocalDateTime createAt;
+
+    private LocalDateTime updateAt;
 
 }
