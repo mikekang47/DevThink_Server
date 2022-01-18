@@ -29,5 +29,16 @@ class UserTest {
 
         assertThat(user.isDeleted()).isTrue();
     }
-    
+
+    @Test
+    void 인증() {
+        User user = User.builder()
+                .password("test")
+                .deleted(true)
+                .build();
+
+        assertThat(user.authenticate("test")).isFalse();
+        assertThat(user.authenticate("xxx")).isFalse();
+
+    }
 }
