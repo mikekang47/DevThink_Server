@@ -2,6 +2,7 @@ package com.devthink.devthink_server.domain;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,10 +16,11 @@ public class Room extends BaseTimeEntity{
 
     @Id
     @GeneratedValue
+    @Column(name = "ROOM_ID")
     private Long id;
 
     @Builder.Default
-    private String status = "active"
+    private String status = "active";
 
 
 }
