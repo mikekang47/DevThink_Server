@@ -44,11 +44,17 @@ public class UserController {
      * @param userNickname 입력한 사용자의 닉네임.
      * @return 이미 같은 닉네임이 있을 경우 true, 없을 경우 false 를 반한합니다.
      */
-    @GetMapping("/nicknameCheck/{{userNickname}")
+    @GetMapping("/nicknameCheck/{userNickname}")
     public ResponseEntity<Boolean> checkNickname(@PathVariable String userNickname) {
         return ResponseEntity.ok(userService.isDuplicateNickname(userNickname));
     }
 
+    @GetMapping("/{id}")
+    public UserResultData detail(@PathVariable Long id) {
+        User user = userService.getUser(id);
+        return getUserResultData(user);
+    }
+    
     /**
      * 입력한 valid한 사용자의 정보를 받아 사용자를 생성합니다.
      * @param userRegistrationData 입력한 valid한 사용자의 정보
