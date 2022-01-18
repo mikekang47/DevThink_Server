@@ -20,13 +20,9 @@ public class Letter extends BaseTimeEntity{
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "ROOM_ID")
-    private Room room;
+    private Long roomId;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "USER_ID")
-    private User user;
+    private Long userId;
 
     private String content;
 
