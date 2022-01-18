@@ -28,7 +28,7 @@ class JwtUtilTest {
 
         assertThat(token).isEqualTo("");
     }
-
+                                 
     @Test
     void decode() {
         Claims claims = jwtUtil.decode(TOKEN);
