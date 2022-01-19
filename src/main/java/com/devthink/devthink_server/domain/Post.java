@@ -23,7 +23,7 @@ public class Post extends BaseTimeEntity{
 
     private String content;
 
-    private int hit;
+    private Integer hit;
 
     private String status;
 
