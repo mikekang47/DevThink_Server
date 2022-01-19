@@ -26,7 +26,7 @@ public class PostDto {
     private String content;
 
     @Mapping("hit")
-    private int hit;
+    private Integer hit;
 
     @Mapping("status")
     @Builder.Default
