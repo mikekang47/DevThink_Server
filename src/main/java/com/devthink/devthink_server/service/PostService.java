@@ -2,11 +2,13 @@ package com.devthink.devthink_server.service;
 
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
+import com.devthink.devthink_server.dto.PostModificationData;
 import com.devthink.devthink_server.errors.PostNotFoundException;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +54,8 @@ public class PostService {
      * @return  page에 해당하는 게시글
      */
     public List<Post> list(int page){
-        Page<Post> pageList = postRepository.findAll(PageRequest.of(page - 1, 6, Sort.by(Sort.Direction.DESC, "id")));
+        Page<Post> pageList = postRepository.findAll(PageRequest.of(page - 1, 6,
+                Sort.by(Sort.Direction.DESC, "id")));
         return pageList.getContent();
     }
 
@@ -75,7 +78,7 @@ public class PostService {
      * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
      */
 
-    public Post update(Long id, PostDto postDto){
+    public Post update(Long id, PostModificationData postDto){
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(id));
 
@@ -97,17 +100,6 @@ public class PostService {
     }
 
     /**
-     * 전달받은 키워드를 이용하여 제목에 키워드가 담긴 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
-     * @param keyword 찾고자 하는 제목
-     * @return 찾았을 경우 게시글 반환, 찾지 못하면 error를 반환
-     */
-    public List<Post> search(String keyword)
-    {
-        List<Post> postList = postRepository.findByTitleContaining(keyword);
-        return postList;
-    }
-
-    /**
      * 전달받은 id를 통하여 게시글을 찾고, 조회수를 1 추가합니다.
      * @param id 찾고자 하는 게시글의 id값
      * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환
@@ -119,5 +111,17 @@ public class PostService {
 
         postRepository.updateView(id);
         return post;
+    }
+
+    /**
+     * 전달받은 keyword를 통하여 게시글을 찾고 페이징 처리합니다.
+     * @param keyword, pageable 키워드, 페이지
+     * @return 찾았을 경우 List<Post>를 반환
+     */
+
+    public List<Post> searchPage(String keyword, Pageable pageable){
+        List<Post> postList = postRepository.findByTitleContaining(keyword, pageable);
+        return postList;
+
     }
 }
