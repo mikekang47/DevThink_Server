@@ -41,12 +41,12 @@ public class UserController {
 
     /**
      * 사용자의 닉네임을 받아와 이미 저장되어 있는 닉네임인지 확인합니다.
-     * @param userNickname 입력한 사용자의 닉네임.
+     * @param nickname 입력한 사용자의 닉네임.
      * @return 이미 같은 닉네임이 있을 경우 true, 없을 경우 false 를 반한합니다.
      */
-    @GetMapping("/nicknameCheck/{userNickname}")
-    public ResponseEntity<Boolean> checkNickname(@PathVariable String userNickname) {
-        return ResponseEntity.ok(userService.isDuplicateNickname(userNickname));
+    @GetMapping("/nicknameCheck/{nickname}")
+    public ResponseEntity<Boolean> checkNickname(@PathVariable String nickname) {
+        return ResponseEntity.ok(userService.isDuplicateNickname(nickname));
     }
 
     @GetMapping("/{id}")
@@ -75,7 +75,10 @@ public class UserController {
      * @return 기존 사용자의 정보 수정
      */
     @PatchMapping("/{id}")
-    public UserResultData update(@PathVariable Long id, @RequestBody @Valid UserModificationData modificationData) {
+    public UserResultData update(
+                    @PathVariable Long id,
+                    @RequestBody @Valid UserModificationData modificationData
+    ) {
         User user = userService.updateUser(id, modificationData);
         return getUserResultData(user);
     }
@@ -85,6 +88,7 @@ public class UserController {
      * @param id 삭제하고자 하는 사용자의 식별자
      */
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void destroy(@PathVariable Long id) {
         userService.deleteUser(id);
     }
@@ -95,18 +99,18 @@ public class UserController {
      * @return 입력된 dto 데이터로 변환된 값
      */
     private UserResultData getUserResultData(User user) {
-        if(user == null) {
-            return null;
-        }
-
         return UserResultData.builder()
                 .id(user.getId())
+                .name(user.getName())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .role(user.getRole())
                 .stack(user.getStack())
+                .point(user.getPoint())
                 .blogAddr(user.getBlogAddr())
                 .gitNickname(user.getGitNickname())
+                .create_at(user.getCreateAt())
+                .update_at(user.getUpdateAt())
                 .build();
     }
 }
