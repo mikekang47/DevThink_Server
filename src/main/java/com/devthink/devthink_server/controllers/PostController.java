@@ -2,11 +2,18 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
+import com.devthink.devthink_server.dto.PostModificationData;
+import com.devthink.devthink_server.dto.PostResultData;
 import com.devthink.devthink_server.service.PostService;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +33,7 @@ import java.util.Optional;
 // 5. 페이지 가져오기 -> GET /posts?page=숫자
 // ----> 기본 1페이지, 6개의 게시글 가져오기, 최신 날짜순이 기본
 // 6. 키워드로 제목 검색 -> GET /posts/search?keyword=문자열
+// 7. 키워드로 제목 검색 & 페이징 처리 GET /posts/search?keyword=문자열&page=숫자
 // ----> 문자열이 제목인 게시글 가져오기
 
 public class PostController {
@@ -42,7 +50,7 @@ public class PostController {
      * @return 몇 페이지의 게시글 (기본값 6개의 게시글)
      */
     @GetMapping
-    public List<PostDto> list(@RequestParam(value="page", defaultValue = "1") int page){
+    public List<PostResultData> list(@RequestParam(value="page", defaultValue = "1") int page){
         List<Post> list = postService.list(page);
         return getPostDtos(list);
     }
@@ -53,7 +61,7 @@ public class PostController {
      * @return id의 게시글
      */
     @GetMapping("/{id}")
-    public PostDto findById(@PathVariable Long id){
+    public PostResultData findById(@PathVariable Long id){
         Post post = postService.getPost(id);
         return getPostData(post);
 
@@ -66,7 +74,7 @@ public class PostController {
      */
     @PostMapping("/write")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDto write(@RequestBody @Valid PostDto postDto){
+    public PostResultData write(@RequestBody @Valid PostDto postDto){
         Post post = postService.savePost(postDto);
         return getPostData(post);
     }
@@ -79,7 +87,7 @@ public class PostController {
      */
 
     @PutMapping("/{id}")
-    public PostDto update(@PathVariable Long id, @RequestBody @Valid PostDto postDto){
+    public PostResultData update(@PathVariable Long id, @RequestBody @Valid PostModificationData postDto){
         Post update = postService.update(id, postDto);
         return getPostData(update);
     }
@@ -94,19 +102,6 @@ public class PostController {
         postService.deletePost(id);
     }
 
-    /**
-     * keyword를 검색하여, keyword가 담긴 제목의 게시글을 탐색합니다.
-     * @param keyword 검색하는 제목
-     * @return keyword가 담긴 제목의 게시글
-     */
-
-    @GetMapping("/search")
-    public List<PostDto> search(@RequestParam String keyword)
-    {
-        List<Post> search = postService.search(keyword);
-        List<PostDto> postDto = getPostDtos(search);
-        return postDto;
-    }
 
     /**
      * id를 검색하여, id가 검색된 게시글의 조회수를 1 추가합니다.
@@ -114,7 +109,7 @@ public class PostController {
      * @return id가 담긴 게시글의 정보
      */
     @GetMapping("/read/{id}")
-    public PostDto read(@PathVariable Long id)
+    public PostResultData read(@PathVariable Long id)
     {
         Post post = postService.getPost(id);
         postService.updateView(id);
@@ -122,12 +117,27 @@ public class PostController {
     }
 
     /**
+     * keyword를 검색하여, keyword가 담긴 제목의 게시글을 탐색하고 페이징 처리하여 보여줍니다.
+     * @param keyword 검색하는 제목
+     * @return 페이징 처리된 keyword가 담긴 제목의 게시글
+     */
+    @GetMapping("/search")
+    public List<PostResultData> searchPage(String keyword
+            , @PageableDefault(size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable pageable)
+    {
+
+        List<Post> search = postService.searchPage(keyword, pageable);
+        List<PostResultData> postDto = getPostDtos(search);
+        return postDto;
+    }
+
+    /**
      * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
      * @param posts entity List
      * @return 입력된 dto 데이터로 변환된 list
      */
-    private List<PostDto> getPostDtos(List<Post> posts) {
-        List<PostDto> postDtos = new ArrayList<>();
+    private List<PostResultData> getPostDtos(List<Post> posts) {
+        List<PostResultData> postDtos = new ArrayList<>();
 
         for (Post post : posts) {
             postDtos.add(getPostData(post));
@@ -141,18 +151,23 @@ public class PostController {
      * @param post 게시글 정보
      * @return 입력된 dto 데이터로 변환된 값
      */
-    private PostDto getPostData(Post post)
+    private PostResultData getPostData(Post post)
     {
         if(post == null)
             return null;
 
-            return PostDto.builder()
-                .user_id(post.getUser_id())
-                .category_id(post.getCategory_id())
-                .title(post.getTitle())
+            return PostResultData.builder()
+
+                    .id(post.getId())
+                    .user_id(post.getUser_id())
+                    .category_id(post.getCategory_id())
+                    .title(post.getTitle())
                     .hit(post.getHit())
                     .status(post.getStatus())
-                .content(post.getContent())
+                    .content(post.getContent())
+                    .created_at(post.getCreate_at())
+                    .updated_at(post.getUpdate_at())
+
                 .build();
 
     }
