@@ -4,14 +4,19 @@ import com.devthink.devthink_server.domain.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
-
-@Getter
 @Builder
+@Getter
 @AllArgsConstructor
-public class PostResultData extends BaseTimeEntity {
+@NoArgsConstructor
+public class PostResultData {
     private Long id;
 
     private Long user_id;
@@ -24,7 +29,14 @@ public class PostResultData extends BaseTimeEntity {
     @NotBlank
     private String content;
 
-    private Integer hit;
+    @Builder.Default
+    private Integer hit = 0;
 
-    private String status;
+    @Builder.Default
+    private String status = "active";
+
+    private LocalDateTime created_at;
+
+    private LocalDateTime updated_at;
+
 }
