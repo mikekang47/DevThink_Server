@@ -54,9 +54,12 @@ dependencies {
     // DozerMapper
     implementation 'com.github.dozermapper:dozer-core:6.5.2'
 
-    // Spring Validation
-    implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.2'
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    //H2
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    runtimeOnly 'com.h2database:h2'
 }
 
 test {
