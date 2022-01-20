@@ -7,10 +7,10 @@ import java.util.List;
 
 
 @Getter
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Builder
+@NoArgsConstructor
 public class User extends BaseTimeEntity{
     @Id
     @GeneratedValue
@@ -20,21 +20,22 @@ public class User extends BaseTimeEntity{
 
     private String password;
 
+    private String name;
+
     private String nickname;
+
+    private String phoneNum;
 
     private String role;
 
     @ElementCollection(targetClass = String.class)
     private List<String> stack;
 
-    @Builder.Default
-    private String blogAddr = "";
+    private String blogAddr;
 
-    @Builder.Default
-    private String gitNickname = "";
-
-    @Builder.Default
-    private Integer point = 0;
+    private String gitNickname;
+    
+    private Integer point;
 
     @Builder.Default
     private boolean deleted = false;
@@ -47,8 +48,11 @@ public class User extends BaseTimeEntity{
         role = source.getRole();
         stack = source.getStack();
         gitNickname = source.getGitNickname();
+        blogAddr = source.getBlogAddr();
+        password = source.getPassword();
+        point = source.getPoint();
     }
-
+    
     public void destroy() {
         deleted = true;
     }
@@ -56,4 +60,5 @@ public class User extends BaseTimeEntity{
     public boolean authenticate(String password) {
         return !deleted && password.equals(this.password);
     }
+
 }
