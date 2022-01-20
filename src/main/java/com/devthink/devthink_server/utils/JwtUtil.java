@@ -27,7 +27,7 @@ public class JwtUtil {
 
     public Claims decode(String token) {
         if(token == null || token.isBlank()) {
-            throw new IndexOutOfBoundsException(token);
+            throw new InvalidTokenException(token);
         }
         try {
             return Jwts.parserBuilder()
@@ -38,8 +38,5 @@ public class JwtUtil {
         } catch (SignatureException e) {
             throw new InvalidTokenException(token);
         }
-
-
-        
     }
 }
