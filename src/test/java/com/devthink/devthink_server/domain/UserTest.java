@@ -23,7 +23,8 @@ class UserTest {
 
     @Test
     void 삭제() {
-        User user = User.builder().build();
+        User user = User.builder()
+                .build();
 
         user.destroy();
 

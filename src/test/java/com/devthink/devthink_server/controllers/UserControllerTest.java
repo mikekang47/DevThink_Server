@@ -1,10 +1,12 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.UserModificationData;
 import com.devthink.devthink_server.dto.UserRegistrationData;
 import com.devthink.devthink_server.errors.UserNotFoundException;
+import com.github.dozermapper.core.Mapping;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,65 +26,79 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
-public class UserControllerTest {
+class UserControllerTest {
     @Autowired
-    MockMvc mvc;
+    private MockMvc mockMvc;
 
     @MockBean
     private UserService userService;
-    private Long NOT_EXISTED_ID = 100L;
 
     @BeforeEach
     void setUp() {
-        given(userService.registerUser(any(UserRegistrationData.class))).will(invocation -> {
-            UserRegistrationData userRegistrationData = invocation.getArgument(0);
+        given(userService.registerUser(any(UserRegistrationData.class)))
+                .will(invocation -> {
+                    UserRegistrationData registrationData = invocation.getArgument(0);
+                    return User.builder()
+                            .id(13L)
+                            .email(registrationData.getEmail())
+                            .name(registrationData.getName())
+                            .password(registrationData.getPassword())
+                            .phoneNum(registrationData.getPhoneNum())
+                            .blogAddr(registrationData.getBlogAddr())
+                            .nickname(registrationData.getNickname())
+                            .role(registrationData.getRole())
+                            .build();
+                });
 
-            return User.builder()
-                    .id(13L)
-                    .email(userRegistrationData.getEmail())
-                    .nickname(userRegistrationData.getNickname())
-                    .role(userRegistrationData.getRole())
-                    .build();
-        });
 
         given(userService.updateUser(eq(1L), any(UserModificationData.class)))
                 .will(invocation -> {
                     Long id = invocation.getArgument(0);
-                    UserModificationData modificationData = invocation.getArgument(1);
+                    UserModificationData modificationData =
+                            invocation.getArgument(1);
                     return User.builder()
                             .id(id)
+                            .email("tester@example.com")
+                            .name("TEST")
                             .nickname(modificationData.getNickname())
-                            .email("tester@email.com")
+                            .phoneNum("01012341234")
+                            .password(modificationData.getPassword())
                             .role(modificationData.getRole())
                             .build();
                 });
 
-        given(userService.updateUser(eq(NOT_EXISTED_ID), any(UserModificationData.class)))
-                .willThrow(new UserNotFoundException(NOT_EXISTED_ID));
+        given(userService.updateUser(eq(100L), any(UserModificationData.class)))
+                .willThrow(new UserNotFoundException(100L));
 
-        given(userService.deleteUser(NOT_EXISTED_ID))
-                .willThrow(new UserNotFoundException(NOT_EXISTED_ID));
+        given(userService.deleteUser(100L))
+                .willThrow(new UserNotFoundException(100L));
     }
 
     @Test
-    void 올바른_회원정보로_회원가입을_하려는_경우() throws Exception {
-        mvc.perform(
+    void registerUserWithValidAttributes() throws Exception {
+        mockMvc.perform(
                         post("/users")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"email\":\"tester@email.com\"," +
-                                        "\"nickname\":\"Tester\",\"role\":\"senior\"}")
+                                .content("{\"email\":\"tester@example.com\"," +
+                                        "\"name\":\"Tester\",\"password\":\"test12345\",\"role\":\"junior\",\"nickname\":\"test\",\"phoneNum\":\"01012341234\"}")
                 )
                 .andExpect(status().isCreated())
-                .andExpect(content().string(containsString("\"email\":\"tester@email.com\"")))
-                .andExpect(content().string(containsString("Test")))
-                .andExpect(content().string(containsString("senior")));
+                .andExpect(content().string(
+                        containsString("\"id\":13")
+                ))
+                .andExpect(content().string(
+                        containsString("\"email\":\"tester@example.com\"")
+                ))
+                .andExpect(content().string(
+                        containsString("\"name\":\"Tester\"")
+                ));
 
         verify(userService).registerUser(any(UserRegistrationData.class));
     }
 
     @Test
-    void 올바르지_않은_회원정보로_회원가입을_하려는_경우() throws Exception {
-        mvc.perform(
+    void registerUserWithInvalidAttributes() throws Exception {
+        mockMvc.perform(
                         post("/users")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{}")
@@ -91,57 +107,60 @@ public class UserControllerTest {
     }
 
     @Test
-    void 올바른_회원정보로_회원정보를_수정하는_경우() throws Exception {
-        mvc.perform(
+    void updateUserWithValidAttributes() throws Exception {
+        mockMvc.perform(
                         patch("/users/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"nickname\":\"newTest\",\"role\":\"senior\"}")
+                                .content("{\"password\":\"test987654321\",\"role\":\"senior\",\"nickname\":\"test\",\"phoneNum\":\"01012341234\"}")
                 )
-                .andExpect(content().string(containsString("newTest")))
-                .andExpect(content().string(containsString("senior")))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"id\":1")
+                ))
+                .andExpect(content().string(
+                        containsString("\"name\":\"TEST\"")
+                ));
 
         verify(userService).updateUser(eq(1L), any(UserModificationData.class));
     }
 
-
     @Test
-    void 올바르지_않은_회원정보로_회원정보를_수정하는_경우() throws Exception {
-        mvc.perform(
+    void updateUserWithInvalidAttributes() throws Exception {
+        mockMvc.perform(
                         patch("/users/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"nickname\":\"\",\"role\":\"\"}")
+                                .content("{\"nickname\":\"\",\"password\":\"\"}")
                 )
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void 존재하지_않은_회원의_정보를_수정하는_경우() throws Exception {
-        mvc.perform(
+    void updateUserWithNotExsitedId() throws Exception {
+        mockMvc.perform(
                         patch("/users/100")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"nickname\":\"TEST\",\"role\":\"TEST\"}")
+                                .content("{\"password\":\"test987654321\",\"role\":\"senior\",\"nickname\":\"test\",\"phoneNum\":\"01012341234\"}")
                 )
                 .andExpect(status().isNotFound());
 
-        verify(userService).updateUser(eq(NOT_EXISTED_ID), any(UserModificationData.class));
+        verify(userService)
+                .updateUser(eq(100L), any(UserModificationData.class));
     }
 
     @Test
-    void 존재하는_회원을_삭제하는_경우() throws Exception {
-        mvc.perform(
-                delete("/users/1"))
-                .andExpect(status().isOk());
+    void destroyWithExistedId() throws Exception {
+        mockMvc.perform(delete("/users/1"))
+                .andExpect(status().isNoContent());
 
         verify(userService).deleteUser(1L);
     }
 
     @Test
-    void 존재하지_않는_회원을_삭제하는_경우() throws Exception {
-        mvc.perform(delete("/users/100"))
+    void destroyWithNotExistedId() throws Exception {
+        mockMvc.perform(delete("/users/100"))
                 .andExpect(status().isNotFound());
 
-        verify(userService).deleteUser(NOT_EXISTED_ID);
+        verify(userService).deleteUser(100L);
     }
 }
 
