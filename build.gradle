@@ -1,7 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.5.8'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'java'
 }
 
@@ -10,6 +10,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
+    asciidoctorExtensions
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -24,9 +25,11 @@ ext {
 }
 
 dependencies {
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    
     // Sprig data Jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.2'
-    runtimeOnly 'com.h2database:h2:2.0.206'
 
     // Spring Web
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.2'
@@ -40,7 +43,12 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.2'
 
     // Spring rest docs
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.5.RELEASE'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.5.RELEASE'
+
+    // Jackson for JSON.
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
 
     // Mockito
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.2'
@@ -54,12 +62,23 @@ dependencies {
     // DozerMapper
     implementation 'com.github.dozermapper:dozer-core:6.5.2'
 
-    // Validation
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Spring Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.2'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
+            'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+//    // Spring Security
+//    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.2'
+
 
     //H2
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2:2.0.206'
+
 }
 
 test {
@@ -70,4 +89,12 @@ test {
 asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+bootJar {
+    dependsOn asciidoctor
+    copy {
+        from "${asciidoctor.outputDir}"
+        into 'src/main/resources/static/docs'
+    }
 }
