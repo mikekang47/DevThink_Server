@@ -18,13 +18,9 @@ public class UserRoom extends BaseTimeEntity {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "USER_ID")
-    private User user;
+    private Long user_id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "ROOM_ID")
-    private Room room;
+    private Long room_id;
 
     @Builder.Default
     private String status = "active";
