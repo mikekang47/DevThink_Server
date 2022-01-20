@@ -11,13 +11,19 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
-@Builder
 @AllArgsConstructor
+@Builder
+@NoArgsConstructor
 public class UserModificationData {
     @NotBlank(message = "닉네임을 입력해주세요.")
     @Size(max=8)
     @Mapping("nickname")
     private String nickname;
+
+    @NotBlank(message = "비멀번호를 입력해주세요.")
+    @Size(min=8)
+    @Mapping("password")
+    private String password;
 
     @NotBlank(message = "직무를 선택해주세요.")
     @Mapping("role")
@@ -32,9 +38,8 @@ public class UserModificationData {
     @Mapping("gitNickname")
     private String gitNickname;
 
-    @Mapping("point")
     private Integer point;
 
-    @Mapping("deleted")
     private boolean deleted;
+    
 }
