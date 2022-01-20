@@ -45,15 +45,20 @@ public class LetterController {
     }
 
     /**
-     * 보낸 쪽지 확인
+     * 유저 방에 있는 보낸 쪽지와 받은 쪽지 모두 확인
      */
     @GetMapping
-    public List<LetterDto> checkMessage(@RequestParam Long user_id, @RequestParam Long room_id)
+    public List<LetterDto> getMessage(@RequestParam Long user_id, @RequestParam Long room_id)
     {
         List<Letter> messages = letterService.getMessage(user_id, room_id);
         return getLetterDtos(messages);
     }
 
+    /**
+     * List<letter>를 List<LetterDto>로 변환합니다.
+     * @param letters
+     * @return
+     */
     private List<LetterDto> getLetterDtos(List<Letter> letters) {
         List<LetterDto> letterDtos = new ArrayList<>();
 
@@ -63,7 +68,6 @@ public class LetterController {
         }
         return letterDtos;
     }
-
 
     /**
      * 게시글의 정보를 받아 게시글을 dto 데이터로 변환하여 반환합니다.
@@ -75,8 +79,9 @@ public class LetterController {
             return null;
 
         return LetterDto.builder()
-                .userId(letter.getUserId())
                 .roomId(letter.getRoomId())
+                .sendId(letter.getSendId())
+                .recvId(letter.getRecvId())
                 .content(letter.getContent())
                 .create_at(letter.getCreate_at())
                 .build();
