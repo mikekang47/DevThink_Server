@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.domain;
 
+
 import lombok.*;
 
 import javax.persistence.*;
@@ -62,3 +63,4 @@ public class User extends BaseTimeEntity{
     }
 
 }
+

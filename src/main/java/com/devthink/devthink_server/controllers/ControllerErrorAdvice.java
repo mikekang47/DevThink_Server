@@ -1,8 +1,10 @@
 package com.devthink.devthink_server.controllers;
 
+
 import com.devthink.devthink_server.errors.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -39,4 +41,11 @@ public class ControllerErrorAdvice {
     public ErrorResponse handInvalidAccessTokenException() {
         return new ErrorResponse("Invalid access token");
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ErrorResponse handleUserNotFound() {
+        return new ErrorResponse("Review not found");
+    }
 }
+

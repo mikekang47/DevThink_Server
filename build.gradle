@@ -30,7 +30,6 @@ dependencies {
     
     // Sprig data Jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.2'
-    runtimeOnly 'com.h2database:h2:2.0.206'
 
     // Spring Web
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.2'
@@ -63,6 +62,7 @@ dependencies {
     // DozerMapper
     implementation 'com.github.dozermapper:dozer-core:6.5.2'
 
+
     // Spring Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.2'
 
@@ -73,6 +73,12 @@ dependencies {
 
 //    // Spring Security
 //    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.2'
+
+
+    //H2
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    runtimeOnly 'com.h2database:h2:2.0.206'
+
 }
 
 test {
