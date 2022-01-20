@@ -4,6 +4,8 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.domain.UserRepository;
 import com.devthink.devthink_server.dto.UserModificationData;
 import com.devthink.devthink_server.dto.UserRegistrationData;
+import com.devthink.devthink_server.errors.UserEmailDuplicationException;
+import com.devthink.devthink_server.errors.UserNickNameDuplicationException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.stereotype.Service;
@@ -19,9 +21,19 @@ public class UserService {
     private final UserRepository userRepository;
     private final Mapper mapper;
 
+
     public UserService(UserRepository userRepository, Mapper mapper) {
         this.userRepository = userRepository;
         this.mapper = mapper;
+    }
+
+    /**
+     * 전달받은 사용자 식별자를 통해 사용자를 조회합니다.
+     * @param id 사용자 식별자
+     * @return 식별자와 일치하는 식별자를 가진 사용자.
+     */
+    public User getUser(Long id) {
+        return findUser(id);
     }
 
     /**
@@ -30,6 +42,14 @@ public class UserService {
      * @return 사용자의 정보를 DB에 저장.
      */
     public User registerUser(UserRegistrationData userRegistrationData) {
+        String email = userRegistrationData.getEmail();
+        if(userRepository.existsByEmail(email)) {
+            throw new UserEmailDuplicationException(email);
+        }
+        String nickname = userRegistrationData.getNickname();
+        if(userRepository.existsByNickname(nickname)) {
+            throw new UserNickNameDuplicationException(nickname);
+        }
         User user = mapper.map(userRegistrationData, User.class);
         return userRepository.save(user);
     }
@@ -37,19 +57,27 @@ public class UserService {
     /**
      * 전달받은 사용자 email과 같은 email이 DB에 존재하는지 확인합니다.
      * @param userEmail 전달받은 사용자 email
-     * @return DB에 존재 여부. 존재하면 true, 존재하지 않으면 false를 반환합니다.
+     * @return DB에 존재 여부. 존재하면 exception, 존재하지 않으면 false를 반환합니다.
      */
     public Boolean isDuplicateEmail(String userEmail) {
-        return userRepository.existsByEmail(userEmail);
+        if(userRepository.existsByEmail(userEmail)) {
+            throw new UserEmailDuplicationException(userEmail);
+        } else {
+            return false;
+        }
     }
 
     /**
      * 전달받은 사용자 userNickName과 같은 userNickName이 DB에 존재하는지 확인합니다.
      * @param userNickName 전달받은 사용자의 userNickName
-     * @return DB에 존재 여부. 존재하면 true, 존재하지 않으면 false를 반환합니다.
+     * @return DB에 존재 여부. 존재하면 exception, 존재하지 않으면 false를 반환합니다.
      */
     public Boolean isDuplicateNickname(String userNickName) {
-        return userRepository.existsByNickname(userNickName);
+        if(userRepository.existsByNickname(userNickName)) {
+            throw new UserNickNameDuplicationException(userNickName);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -87,4 +115,6 @@ public class UserService {
         user.destroy();
         return user;
     }
+
+
 }
