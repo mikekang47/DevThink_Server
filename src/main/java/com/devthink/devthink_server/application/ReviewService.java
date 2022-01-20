@@ -3,6 +3,7 @@ import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReviewRequestDto;
+import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.infra.BookRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,8 +37,9 @@ public class ReviewService {
     }
 
     //리뷰 조회
-    public Optional<Review> getReviewById(Long reviewId) {
-        return reviewRepository.findById(reviewId);
+    public Review getReviewById(Long id) {
+        return reviewRepository.findByIdAndDeletedIsFalse(id)
+                .orElseThrow(() -> new ReviewNotFoundException(id));
     }
 
     // 리뷰 내용 수정
