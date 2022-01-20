@@ -56,7 +56,9 @@ public class ReviewService {
     // 리뷰 삭제
     @Transactional
     public void deleteReview(Review review){
-        reviewRepository.delete(review);
+        review.setDeleted(true);
+        review.getBook().downReviewCnt();
+        review.getBook().setScoreAvg(bookRepository.calcScoreAvg(review.getBook().getId()));
     }
 
 }

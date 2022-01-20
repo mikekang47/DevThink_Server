@@ -34,6 +34,9 @@ public class Review extends BaseTimeEntity {
 
     private BigDecimal score;
 
+    @Builder.Default
+    private Boolean deleted = Boolean.FALSE;
+
     @OneToMany(mappedBy = "review")
     private List<Comment> comments = new ArrayList<>();
 
@@ -49,6 +52,8 @@ public class Review extends BaseTimeEntity {
     public void setScore(BigDecimal score){
         this.score = score;
     }
+
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 
     //TODO: comments 추가
     public ReviewResponseDto toReviewResponseDto(){
