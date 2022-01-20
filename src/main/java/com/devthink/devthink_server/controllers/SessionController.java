@@ -4,10 +4,7 @@ import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.dto.SessionRequestData;
 import com.devthink.devthink_server.dto.SessionResponseData;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/session")
 @RestController
@@ -21,16 +18,15 @@ public class SessionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SessionResponseData createSession(SessionRequestData sessionRequestData) {
+    public SessionResponseData login(@RequestBody SessionRequestData sessionRequestData) {
         String email = sessionRequestData.getEmail();
         String password = sessionRequestData.getPassword();
 
-        String accessToken = authenticationService.login();
+        String accessToken = authenticationService.login(email, password);
 
         return SessionResponseData.builder()
                 .accessToken(accessToken)
                 .build();
-
 
     }
 
