@@ -34,14 +34,13 @@ public class LetterService {
     }
 
     /**
-     * 해당 유저 id의 해당 방번호에 해당하는 받은 쪽지, 보낸 쪽지를 구현합니다.
+     * 해당 유저 id의 해당 방번호에 해당하는 받은 쪽지, 보낸 쪽지를 조회합니다.
      * @param user_id
      * @param room_id
      * @return
      */
     public List<Letter> getMessage(Long user_id, Long room_id){
-        List<Letter> letters = letterRepository.findByUserIdAndRoomId(user_id, room_id);
+        List<Letter> letters = letterRepository.findView(user_id, room_id);
         return letters;
     }
-
 }
