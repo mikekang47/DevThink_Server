@@ -16,7 +16,6 @@ public class Room extends BaseTimeEntity{
 
     @Id
     @GeneratedValue
-    @Column(name = "ROOM_ID")
     private Long id;
 
     @Builder.Default
