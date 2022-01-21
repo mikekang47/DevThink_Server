@@ -53,6 +53,14 @@ public class CommentService {
     }
 
     /**
+     * 특정 Review의 Comment를 조회합니다.
+     * @return 특정 리뷰에 작성된 Comment 리스트
+     */
+    public List<Comment> getReviewComments(Long reviewIdx) {
+        return commentRepository.findByReview_Id(reviewIdx);
+    }
+
+    /**
      * 입력된 comment 정보로 새로운 Comment를 생성합니다.
      * @param user Comment를 생성하려고 하는 User
      * @param review Comment가 달리게 되는 Review
