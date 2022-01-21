@@ -1,5 +1,6 @@
-package com.devthink.devthink_server.domain;
+package com.devthink.devthink_server.infra;
 
+import com.devthink.devthink_server.domain.Comment;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
