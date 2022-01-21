@@ -37,7 +37,7 @@ public class Comment {
 
     public CommentResponseDto toCommentResponseDto() {
         return CommentResponseDto.builder()
-                .user_nickname(user.getNickName())
+                .user_nickname(user.getNickname())
                 .user_role(user.getRole())
                 .content(content)
                 .build();
