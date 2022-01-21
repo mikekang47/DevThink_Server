@@ -37,6 +37,14 @@ public class CommentService {
     }
 
     /**
+     * 특정 사용자의 Comment를 조회합니다.
+     * @return 특정 사용자가 작성한 Comment 리스트
+     */
+    public List<Comment> getUserComments(Long userIdx) {
+        return commentRepository.findByUser_Id(userIdx);
+    }
+
+    /**
      * 입력된 comment 정보로 새로운 Comment를 생성합니다.
      * @param user Comment를 생성하려고 하는 User
      * @param review Comment가 달리게 되는 Review
