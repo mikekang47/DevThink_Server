@@ -1,7 +1,7 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.User;
-import com.devthink.devthink_server.domain.UserRepository;
+import com.devthink.devthink_server.infra.UserRepository;
 import com.devthink.devthink_server.errors.LoginFailException;
 import com.devthink.devthink_server.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
