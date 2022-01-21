@@ -53,6 +53,15 @@ public class CommentController {
     }
 
     /**
+     * 특정 Review의 Comment를 조회합니다.
+     * @return 특정 리뷰에 작성된 Comment 리스트
+     */
+    @GetMapping("/review/{reviewIdx}")
+    public List<Comment> getReviewComments(@PathVariable("reviewIdx") Long reviewIdx) {
+        return commentService.getReviewComments(reviewIdx);
+    }
+
+    /**
      * 입력된 comment 정보로 새로운 Comment를 생성합니다.
      * @return 생성된 Comment의 id 값
      */
