@@ -26,11 +26,21 @@ public class CommentController {
 
     /**
      * 모든 Comment를 조회합니다.
-     * @return
+     * @return DB 상에 존재하는 모든 Comment 리스트
      */
     @GetMapping
     public List<Comment> getComments() {
         return commentService.getComments();
+    }
+
+
+    /**
+     * 특정 사용자의 Comment를 조회합니다.
+     * @return 특정 사용자가 작성한 Comment 리스트
+     */
+    @GetMapping("/user/{userIdx}")
+    public List<Comment> getUserComments(@PathVariable("userIdx") Long userIdx) {
+        return commentService.getUserComments(userIdx);
     }
 
     /**
