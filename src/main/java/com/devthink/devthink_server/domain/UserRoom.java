@@ -22,7 +22,6 @@ public class UserRoom extends BaseTimeEntity {
 
     private Long room_id;
 
-    @Builder.Default
-    private String status = "active";
+    private String status;
 
 }
