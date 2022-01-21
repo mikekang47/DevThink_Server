@@ -3,12 +3,9 @@ package com.devthink.devthink_server.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -21,11 +18,10 @@ public class Letter extends BaseTimeEntity{
     @GeneratedValue
     private Long id;
 
-    private Long roomId;
+    @Builder.Default
+    private Long roomId = 0L;
 
-    private Long sendId;    // 메시지 보낸 사람
-
-    private Long recvId;    // 메시지 읽을 사람
+    private Long userId;
 
     private String content;
 
