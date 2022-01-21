@@ -18,7 +18,7 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment {
+public class Comment extends BaseTimeEntity{
     @Id
     @GeneratedValue
     Long id;
