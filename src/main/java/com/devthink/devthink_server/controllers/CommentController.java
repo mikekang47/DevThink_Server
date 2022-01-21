@@ -4,8 +4,6 @@ import com.devthink.devthink_server.application.CommentService;
 import com.devthink.devthink_server.common.Error;
 import com.devthink.devthink_server.common.ErrorMessage;
 import com.devthink.devthink_server.domain.Comment;
-import com.devthink.devthink_server.domain.Review;
-import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.CommentRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,9 +66,7 @@ public class CommentController {
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     public String createComment(@RequestBody CommentRequestDto commentRequestDto){
-        User user = null; //TODO: user_id 로 User 가져오기
-        Review review = null; //TODO: review_id 로 Review 가져오기
-        return commentService.createComment(user, review, commentRequestDto);
+        return commentService.createComment(commentRequestDto);
     }
 
 
