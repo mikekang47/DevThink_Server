@@ -44,6 +44,15 @@ public class CommentController {
     }
 
     /**
+     * 특정 Post의 Comment를 조회합니다.
+     * @return 특정 게시물에 작성된 Comment 리스트
+     */
+    @GetMapping("/post/{postIdx}")
+    public List<Comment> getPostComments(@PathVariable("postIdx") Long postIdx) {
+        return commentService.getPostComments(postIdx);
+    }
+
+    /**
      * 입력된 comment 정보로 새로운 Comment를 생성합니다.
      * @return 생성된 Comment의 id 값
      */
