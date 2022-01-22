@@ -4,26 +4,29 @@ import com.github.dozermapper.core.Mapping;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class LetterAddData {
 
     @Mapping("roomId")
     private Long roomId;
 
-    @Mapping("sendId")
-    private Long sendId;  // 메시지 보낸 사람
+    @Mapping("senderId")
+    private Long senderId;  // 발신자
 
-    @Mapping("recvId")
-    private Long recvId; // 메시지 받는 사람
+    @Mapping("targetId")
+    private Long targetId; // 수신자
 
     @NotBlank(message = "쪽지의 내용을 입력해주세요.")
     @Mapping("content")
     private String content;
 
+    @Mapping("readCheck")
+    private Integer readCheck;
 
+    public LetterAddData(){
+        this.readCheck = 0;
+    }
 }
