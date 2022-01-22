@@ -13,16 +13,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class LetterResultData {
 
-    private Long room_id;
+    private Long roomId;
 
-    private Long user_id;
+    private Long senderId;
+
+    private Long targetId;
 
     private String content;
 
     private LocalDateTime view_at;
 
-    private Integer read_chk;
-
-    // 보낸 시각
     private LocalDateTime create_at;
+
+    private Integer readCheck;
 }
