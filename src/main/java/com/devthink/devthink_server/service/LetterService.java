@@ -2,13 +2,14 @@ package com.devthink.devthink_server.service;
 
 import com.devthink.devthink_server.domain.Letter;
 import com.devthink.devthink_server.dto.LetterAddData;
+import com.devthink.devthink_server.dto.LetterResultData;
 import com.devthink.devthink_server.infra.LetterRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @Service
@@ -23,64 +24,45 @@ public class LetterService {
     }
 
     /**
-     * 메시지 작성
+     * 메시지 작성(DB 저장)
      * @param dto
      */
     public void addMessage(LetterAddData dto){
-
-
-        Letter RecvData = getLetterData(dto, dto.getRecvId());
-        Letter SendData = getLetterData(dto, dto.getSendId());
-
-        letterRepository.save(RecvData);
-        letterRepository.save(SendData);
+        Letter letter = mapper.map(dto, Letter.class);
+        letterRepository.save(letter);
 
     }
 
     /**
-     * 해당 유저 id의 해당 방번호에 해당하는 받은 쪽지, 보낸 쪽지를 조회합니다.
-     * @param user_id
-     * @param room_id
-     * @return
+     * user_id의 메시지 리스트 가져오기
      */
-    public List<Letter> getMessage(Long user_id, Long room_id){
-        List<Letter> letters = letterRepository.findByUserIdAndRoomIdOrderByIdDesc(user_id, room_id);
-        return letters;
-    }
+    public ArrayList<Letter> messageList(Long user_id) {
+        // 메시지 리스트에 나타낼 것들: 가장 최근 메시지, 보낸 사람 id
+        ArrayList<Letter> list = letterRepository.getMessageList(user_id);
 
+        for (Letter letter : list) {
+            // 현재 사용자가 안읽은 메시지의 개수를 가져옵니다.
+            Long unread = letterRepository.countUnread(user_id, letter.getRoomId());
+
+            // 읽지 않은 메시지 갯수를 letter에 change 합니다.
+            letter.change(unread);
+
+            // 메시지 상대 id를 세팅합니다.
+            if(user_id == letter.getSenderId())
+            {
+                letter.changeOtherId(letter.getTargetId());
+            }
+            else{
+                letter.changeOtherId(letter.getSenderId());
+            }
+
+        }
+        return list;
+    }
 
     /**
-     * 유저의 특정방의 최근쪽지를 조회합니다.
-     * @param dto
-     * @param user_id
-     * @return
+     * room 별 메시지 내용을 가져옵니다.
      */
-    public Letter getRecentSms(Long user_id, Long room_id)
-    {
-        return letterRepository.
-                findFirstByUserIdAndRoomIdOrderByIdDesc(user_id, room_id);
-    }
-
-    /**
-     * 유저의 roomid의 최댓값을 불러옵니다.
-     */
-    public Long getMaxRoomId(Long user_id)
-    {
-        return letterRepository.getMaxRoomId(user_id);
-    }
-
-    private Letter getLetterData(LetterAddData dto, Long user_id)
-    {
-        if(dto == null)
-            return null;
-
-        return Letter.builder()
-                .userId(user_id)
-                .roomId(dto.getRoomId())
-                .content(dto.getContent())
-                .build();
-
-    }
 
 
 
