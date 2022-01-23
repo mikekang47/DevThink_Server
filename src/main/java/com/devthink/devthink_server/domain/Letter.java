@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 import java.time.LocalDateTime;
 
-
 @Entity
 @Getter
 @Builder
@@ -18,17 +17,29 @@ public class Letter extends BaseTimeEntity{
     @GeneratedValue
     private Long id;
 
-    @Builder.Default
-    private Long roomId = 0L;
+    private Long roomId;
 
-    private Long userId;
+    private Long senderId;  // 발신자
+
+    private Long targetId;  // 수신자
 
     private String content;
 
-    private LocalDateTime view_at; // 메시지 읽은 시간
+    private LocalDateTime view_at; // 열람일자
 
-    @Builder.Default
-    private Integer read_chk = 0; // 읽었으면 1, 안읽었으면 0
+    private Integer readCheck;
 
+    private Long unread; // 안 읽은 메시지 갯수
+
+    private Long other_id; // 현재 사용자의 메시지 상대 id를 담는다.
+
+    public void change(Long unread){
+        this.unread = unread;
+    }
+
+    public void changeOtherId(Long other_id)
+    {
+        this.other_id = other_id;
+    }
 
 }
