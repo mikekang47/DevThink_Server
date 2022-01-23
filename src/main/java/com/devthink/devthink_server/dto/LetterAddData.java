@@ -14,10 +14,10 @@ public class LetterAddData {
     private Long roomId;
 
     @Mapping("senderId")
-    private Long senderId;  // 발신자
+    private Long senderId;  // 쪽지 보낸 사람
 
     @Mapping("targetId")
-    private Long targetId; // 수신자
+    private Long targetId; // 쪽지 받은 사람
 
     @NotBlank(message = "쪽지의 내용을 입력해주세요.")
     @Mapping("content")
