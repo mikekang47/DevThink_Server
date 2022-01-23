@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.List;
 
 @Transactional
 @Service
@@ -24,8 +23,8 @@ public class LetterService {
     }
 
     /**
-     * 메시지 작성(DB 저장)
-     * @param dto
+     * 사용자로부터 메시지 정보를 받아 데이터베이스에 저장합니다.
+     * @param dto 사용자 메시지 입력 데이터
      */
     public void addMessage(LetterAddData dto){
         Letter letter = mapper.map(dto, Letter.class);
@@ -34,7 +33,9 @@ public class LetterService {
     }
 
     /**
-     * user_id의 메시지 리스트 가져오기
+     * 전달받은 user_id(유저 아이디)를 통해 방 별 메시지 리스트를 불러옵니다.
+     * @param user_id 보여주고자 하는 유저 고유 아이디값
+     * @return ArrayList<Letter> 메시지 리스트 값 반환
      */
     public ArrayList<Letter> messageList(Long user_id) {
         // 메시지 리스트에 나타낼 것들: 가장 최근 메시지, 보낸 사람 id
@@ -48,22 +49,26 @@ public class LetterService {
             letter.change(unread);
 
             // 메시지 상대 id를 세팅합니다.
-            if(user_id == letter.getSenderId())
-            {
+            if(user_id == letter.getSenderId()) {
                 letter.changeOtherId(letter.getTargetId());
             }
             else{
                 letter.changeOtherId(letter.getSenderId());
             }
-
         }
         return list;
     }
 
     /**
-     * room 별 메시지 내용을 가져옵니다.
+     * 전달 받은 유저의 방 별 메시지 내용을 가져오고, 조회수를 업데이트 합니다.
+     * @param user_id 조회하고자 하는 유저 id
+     *        room_id 조회하고자 하는 유저의 방 id
+     * @return ArrayList<Letter> 메시지 리스트 값 반환
      */
-
-
-
+    public ArrayList<Letter> roomContentList(Long user_id, Long room_id)
+    {
+        ArrayList<Letter> roomLists = letterRepository.getRoomLists(user_id, room_id);
+        letterRepository.MessageReadCheck(user_id, room_id);
+        return roomLists;
+    }
 }
