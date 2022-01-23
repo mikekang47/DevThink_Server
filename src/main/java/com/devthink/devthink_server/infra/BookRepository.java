@@ -18,10 +18,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> getBookByIsbn(int isbn);
 
-    Page<Book> findAllOrderByScoreAvgDesc(Pageable pageable); // 평점 높은 순
-    Page<Book> findAllOrderByScoreAvg(Pageable pageable); // 평점 낮은 순
-    Page<Book> findAllOrderByReviewCntDesc(Pageable pageble); // 인기순 (리뷰 수 순)
-    Page<Book> findAllOrderByCreateAtDesc(Pageable pageable); // 최신순
+    List<Book> findAllOrderByScoreAvgDesc(Pageable pageable); // 평점 높은 순
+    List<Book> findAllOrderByScoreAvg(Pageable pageable); // 평점 낮은 순
+    List<Book> findAllOrderByReviewCntDesc(Pageable pageble); // 인기순 (리뷰 수 순)
+    List<Book> findAllOrderByCreateAtDesc(Pageable pageable); // 최신순
     Optional<Book> findTopByReviewCnt(); // 베스트 리뷰
 
     @Query(value = "select round(avg(score),2) from Review where book_id = :id and deleted = false")
