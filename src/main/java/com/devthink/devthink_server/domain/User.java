@@ -17,7 +17,6 @@ import javax.persistence.Id;
 public class User {
     @Id
     @GeneratedValue
-    @Column(name ="USER_ID")
     Long id;
 
     String email;
