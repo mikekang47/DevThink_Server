@@ -1,14 +1,11 @@
 package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.domain.Letter;
-import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.LetterAddData;
 import com.devthink.devthink_server.dto.LetterListData;
+import com.devthink.devthink_server.dto.LetterModificationData;
 import com.devthink.devthink_server.dto.LetterResultData;
-import com.devthink.devthink_server.dto.PostResultData;
 import com.devthink.devthink_server.service.LetterService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -56,8 +53,8 @@ public class LetterController {
     @GetMapping
     public List<LetterListData> messageList(@RequestParam Long user_id)
     {
-        ArrayList<Letter> letters = letterService.messageList(user_id);
-        return getLetterListDtos(letters);
+        ArrayList<LetterModificationData> letters = letterService.messageList(user_id);
+        return getLetterLists(letters);
     }
 
     /**
@@ -68,40 +65,57 @@ public class LetterController {
     @GetMapping("/rooms")
     public List<LetterResultData> MessageRoomList(@RequestParam Long user_id, @RequestParam Long room_id)
     {
-        ArrayList<Letter> letters = letterService.roomContentList(user_id, room_id);
+        ArrayList<LetterModificationData> letters = letterService.roomContentList(user_id, room_id);
         return getLetterDtos(letters);
 
     }
 
-
     /**
-     * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
-     * @param letters entity List
-     * @return 입력된 dto 데이터로 변환된 list
+     * LetterModifyData를 받아 LetterListData로 변환합니다.
+     * @param letter  변환하고자 하는 데이터
+     * @return LetterListData 방 별 리스트 데이터
      */
-    private List<LetterResultData> getLetterDtos(List<Letter> letters) {
-        List<LetterResultData> letterDtos = new ArrayList<>();
+    private LetterListData getLetterListData(LetterModificationData letter){
+        if(letter == null)
+            return null;
 
-        for (Letter letter : letters) {
-            letterDtos.add(getLetterData(letter));
-        }
-        return letterDtos;
+        return LetterListData.builder()
+                .unread(letter.getUnread())
+                .otherId(letter.getOther_id())
+                .content(letter.getContent())
+                .roomId(letter.getRoomId())
+                .create_at(letter.getCreate_at())
+                .build();
     }
 
     /**
-     * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
-     * @param letters entity List
-     * @return 입력된 dto 데이터로 변환된 list
+     * LetterModifyData List를 받아 LetterListData List 데이터로 변환하여 반환합니다.
+     * @param letters 변환하고자 하는 letterModifyData List
+     * @return 입력된 LetterListData 데이터로 변환된 list
      */
-    private List<LetterListData> getLetterListDtos(List<Letter> letters) {
+    private List<LetterListData> getLetterLists(List<LetterModificationData> letters) {
         List<LetterListData> letterDtos = new ArrayList<>();
 
-        for (Letter letter : letters) {
+        for (LetterModificationData letter : letters) {
             letterDtos.add(getLetterListData(letter));
         }
         return letterDtos;
     }
 
+
+    /**
+     * LetterModifyData List를 받아 LetterResultData List 데이터로 변환하여 반환합니다.
+     * @param letters LetterModifyData List
+     * @return LetterResultData로 변환된 list
+     */
+    private List<LetterResultData> getLetterDtos(List<LetterModificationData> letters) {
+        List<LetterResultData> letterDtos = new ArrayList<>();
+
+        for (LetterModificationData letter : letters) {
+            letterDtos.add(getLetterResultData(letter));
+        }
+        return letterDtos;
+    }
 
     /**
      * 쪽지의 정보를 받아 쪽지를 dto 데이터로 변환하여 반환합니다.
@@ -125,23 +139,26 @@ public class LetterController {
     }
 
     /**
-     * 쪽지의 정보를 받아 쪽지를 dto 데이터로 변환하여 반환합니다.
+     * LetterModifyData를 받아 쪽지를 LetterResult 데이터로 변환하여 반환합니다.
      * @param letter 쪽지 정보
-     * @return 입력된 dto 데이터로 변환된 값
+     * @return 입력된 LetterResult 데이터로 변환된 값
      */
-    private LetterListData getLetterListData(Letter letter)
+    private LetterResultData getLetterResultData(LetterModificationData letter)
     {
         if(letter == null)
             return null;
 
-        return LetterListData.builder()
+        return LetterResultData.builder()
                 .content(letter.getContent())
-                .otherId(letter.getOther_id())
-                .create_at(letter.getCreate_at())
+                .readCheck(letter.getReadCheck())
                 .roomId(letter.getRoomId())
-                .unread(letter.getUnread())
+                .senderId(letter.getSenderId())
+                .targetId(letter.getTargetId())
+                .create_at(letter.getCreate_at())
                 .build();
 
     }
+
+
 
 }
