@@ -21,8 +21,6 @@ public class LetterResultData {
 
     private String content;
 
-    private LocalDateTime view_at;
-
     private LocalDateTime create_at;
 
     private Integer readCheck;
