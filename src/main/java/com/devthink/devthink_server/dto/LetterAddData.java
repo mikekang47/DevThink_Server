@@ -29,4 +29,9 @@ public class LetterAddData {
     public LetterAddData(){
         this.readCheck = 0;
     }
+
+    public void changeRoomId(Long roomId)
+    {
+        this.roomId = roomId;
+    }
 }
