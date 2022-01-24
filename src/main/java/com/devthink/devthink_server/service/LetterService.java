@@ -2,6 +2,8 @@ package com.devthink.devthink_server.service;
 
 import com.devthink.devthink_server.domain.Letter;
 import com.devthink.devthink_server.dto.LetterAddData;
+import com.devthink.devthink_server.dto.LetterModificationData;
+import com.devthink.devthink_server.dto.LetterResultData;
 import com.devthink.devthink_server.infra.LetterRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.data.domain.PageRequest;
@@ -62,11 +64,16 @@ public class LetterService {
      * @param user_id 보여주고자 하는 유저 고유 아이디값
      * @return ArrayList<Letter> 메시지 리스트 값 반환
      */
-    public ArrayList<Letter> messageList(Long user_id) {
+    public ArrayList<LetterModificationData> messageList(Long user_id) {
         // 메시지 리스트에 나타낼 것들: 가장 최근 메시지, 보낸 사람 id
         ArrayList<Letter> list = letterRepository.getMessageList(user_id);
+        ArrayList<LetterModificationData> letterList = new ArrayList<>();
 
         for (Letter letter : list) {
+            letterList.add(mapper.map(letter, LetterModificationData.class));
+        }
+
+        for (LetterModificationData letter : letterList) {
             // 현재 사용자가 안읽은 메시지의 개수를 가져옵니다.
             Long unread = letterRepository.countUnread(user_id, letter.getRoomId());
 
@@ -81,7 +88,7 @@ public class LetterService {
                 letter.changeOtherId(letter.getSenderId());
             }
         }
-        return list;
+        return letterList;
     }
 
     /**
@@ -90,10 +97,16 @@ public class LetterService {
      *        room_id 조회하고자 하는 유저의 방 id
      * @return ArrayList<Letter> 메시지 리스트 값 반환
      */
-    public ArrayList<Letter> roomContentList(Long user_id, Long room_id)
+    public ArrayList<LetterModificationData> roomContentList(Long user_id, Long room_id)
     {
         ArrayList<Letter> roomLists = letterRepository.getRoomLists(user_id, room_id);
+        ArrayList<LetterModificationData> LetterLists = new ArrayList<>();
+
+        for (Letter roomList : roomLists) {
+            LetterLists.add(mapper.map(roomList, LetterModificationData.class));
+
+        }
         letterRepository.MessageReadCheck(user_id, room_id);
-        return roomLists;
+        return LetterLists;
     }
 }
