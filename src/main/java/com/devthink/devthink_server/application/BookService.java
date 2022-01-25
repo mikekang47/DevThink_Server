@@ -44,11 +44,11 @@ public class BookService {
     }
 
     /**
-     * 평점 높은 순으로 Book List를 가져온다.
+     * Pagination 적용한 책 List 가져오기
      * @return Book List
      */
-    public List<Book> getBooksOrderByScoreAvgDesc(){
-        return bookRepository.findAllByOrderByScoreAvgDesc();
+    public Page<Book> list(Pageable pageable){
+        return bookRepository.findAllByReviewCntNot(0,pageable);
     }
 
 }
