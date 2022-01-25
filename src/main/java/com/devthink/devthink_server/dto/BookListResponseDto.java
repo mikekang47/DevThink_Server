@@ -3,18 +3,14 @@ package com.devthink.devthink_server.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Builder
 public class BookListResponseDto {
 
-    private Long id;
+    private BookResponseDto bestBook;
 
-    private Integer isbn;
-
-    private Integer reviewCnt;
-
-    private BigDecimal scoreAvg;
+    private List<BookResponseDto> bookList;
 
 }
