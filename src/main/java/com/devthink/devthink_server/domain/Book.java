@@ -1,5 +1,7 @@
 package com.devthink.devthink_server.domain;
 
+import com.devthink.devthink_server.dto.BookListResponseDto;
+import com.devthink.devthink_server.dto.ReviewResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,15 @@ public class Book extends BaseTimeEntity {
 
     public void downReviewCnt(){
         reviewCnt--;
+    }
+
+    public BookListResponseDto toBookListResponseDto(){
+        return BookListResponseDto.builder()
+                .id(id)
+                .isbn(isbn)
+                .reviewCnt(reviewCnt)
+                .scoreAvg(scoreAvg)
+                .build();
     }
 
 }

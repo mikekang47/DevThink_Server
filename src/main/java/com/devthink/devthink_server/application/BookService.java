@@ -3,6 +3,7 @@ package com.devthink.devthink_server.application;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.infra.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +47,8 @@ public class BookService {
      * 평점 높은 순으로 Book List를 가져온다.
      * @return Book List
      */
-    public List<Book> getBooksOrderByScoreAvgDesc(Pageable pageable){
-        return bookRepository.findAllOrderByScoreAvgDesc(pageable);
+    public List<Book> getBooksOrderByScoreAvgDesc(){
+        return bookRepository.findAllByOrderByScoreAvgDesc();
     }
 
 }
