@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class LikeData {
+    private Long id;
+
     private Long userId;
 
     private Long postId;
