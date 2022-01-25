@@ -1,7 +1,3 @@
-// 1. 가입 -> POST /users
-// 2. 사용자 정보 갱신 -> PUT/PATCH /users/{id}
-// ----> 자기 정보만 갱신 가능.
-// 3. 탈퇴 -> DELETE /users/{id}
 package com.devthink.devthink_server.controllers;
 
 
