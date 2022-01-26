@@ -18,10 +18,8 @@ public class Like extends BaseTimeEntity{
     @Id
     @GeneratedValue
     private Long id;
-    
+
     private Long userId;
 
     private Long postId;
-
-
 }
