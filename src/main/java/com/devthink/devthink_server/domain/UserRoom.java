@@ -18,9 +18,9 @@ public class UserRoom extends BaseTimeEntity {
     @GeneratedValue
     private Long id;
 
-    private Long user_id;
+    private Long userId;
 
-    private Long room_id;
+    private Long roomId;
 
     private String status;
 
