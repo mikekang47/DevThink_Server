@@ -1,9 +1,9 @@
 package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.BookService;
-import com.devthink.devthink_server.domain.Book;
-import com.devthink.devthink_server.dto.BookListResponseDto;
+import com.devthink.devthink_server.dto.BookResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +24,21 @@ public class BookController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public BookListResponseDto list(Pageable pageable) {
-        return BookListResponseDto.builder()
-                .bestBook(bookService.getBestBookByReviewCnt())
-                .bookList(bookService.list(pageable))
-                .build();
+    public Page<BookResponseDto> list(Pageable pageable) {
+        return bookService.getBooks(pageable);
     }
+
+    /**
+     * 리뷰가 가장 많이 달린 책을 가져온다.
+     * [GET] /books/most
+     * @return BookResponseDto 리뷰가 가장 많이 달린 책
+     */
+    @GetMapping("/most")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public BookResponseDto mostOne() {
+        return bookService.getMostReviewCntBook();
+    }
+
 
 }
