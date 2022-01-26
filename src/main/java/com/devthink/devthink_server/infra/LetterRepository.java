@@ -29,7 +29,7 @@ public interface LetterRepository extends JpaRepository<Letter, Long> {
 
     // 메시지 읽음 처리하기
     @Modifying
-    @Query("update Letter u set u.readCheck = 1, u.view_at = :date where u.roomId = :roomId and " +
+    @Query("update Letter u set u.readCheck = 1, u.viewAt = :date where u.roomId = :roomId and " +
             "u.readCheck = 0 and u.targetId = :userId")
     int MessageReadCheck(Long userId, Long roomId, LocalDateTime date);
 
@@ -46,4 +46,5 @@ public interface LetterRepository extends JpaRepository<Letter, Long> {
     @Query("select u from Letter u where (u.targetId = :targetId " +
             "and u.senderId = :senderId) or (u.senderId = :targetId and u.targetId = :senderId)")
     List<Letter> selectRoom(Long targetId, Long senderId, Pageable pageable);
+
 }
