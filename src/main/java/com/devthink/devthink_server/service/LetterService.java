@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +107,9 @@ public class LetterService {
             LetterLists.add(mapper.map(roomList, LetterModificationData.class));
 
         }
-        letterRepository.MessageReadCheck(user_id, room_id);
+        // 해당 방에 존재하는 메시지중 받는 사람이 user_id 인 메시지를 읽음 처리 하고, 메시지 확인 시각을 업데이트 합니다.
+        LocalDateTime date = LocalDateTime.now();
+        letterRepository.MessageReadCheck(user_id, room_id, date);
         return LetterLists;
     }
 }
