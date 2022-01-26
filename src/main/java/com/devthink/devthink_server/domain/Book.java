@@ -23,6 +23,12 @@ public class Book extends BaseTimeEntity {
 
     private Integer isbn;
 
+    private String name;
+
+    private String writer;
+
+    private String imgUrl;
+
     @Builder.Default
     private Integer reviewCnt = 0;
 
