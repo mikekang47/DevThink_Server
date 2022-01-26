@@ -3,6 +3,8 @@ package com.devthink.devthink_server.application;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.dto.BookRequestDto;
 import com.devthink.devthink_server.dto.BookResponseDto;
+import com.devthink.devthink_server.errors.BookNotFoundException;
+import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.infra.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +25,17 @@ public class BookService {
     private final BookRepository bookRepository;
 
     /**
-     * 입력된 isbn 정보로 Book을 조회하며, 없으면 새로운 Book을 생성한다.
+     * 입력된 id 값으로 Book 을 가져옵니다.
+     * @param id
+     * @return 조회된 Book 객체
+     */
+    public Book getBookById(long id){
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+    }
+
+    /**
+     * 입력된 isbn 정보로 Book을 조회하며, 없으면 새로운 Book을 생성합니다.
      * @param bookRequestDto (책에 대한 정보)
      * @return 조회 혹은 생성된 Book 객체
      */
@@ -37,7 +49,7 @@ public class BookService {
     }
 
     /**
-     * 입력된 isbn 정보로 새로운 Book 을 등록한다.
+     * 입력된 isbn 정보로 새로운 Book 을 등록합니다.
      * @param bookRequestDto (책에 대한 정보)
      * @return 생성된 Book 객체
      */
@@ -53,7 +65,7 @@ public class BookService {
     }
 
     /**
-     * Pagination 을 적용한 책 List를 가져온다.
+     * Pagination 을 적용한 책 List를 가져옵니다.
      * @return BookResponseDto
      */
     public Page<BookResponseDto> getBooks(Pageable pageable){
@@ -67,7 +79,7 @@ public class BookService {
 
 
     /**
-     * 리뷰 수가 가장 많은 책을 가져온다.
+     * 리뷰 수가 가장 많은 책을 가져옵니다.
      * @return BookResponseDTO, 데이터가 없는 경우 null
      */
     public BookResponseDto getMostReviewCntBook(){
