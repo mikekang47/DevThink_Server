@@ -1,11 +1,14 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.LetterService;
 import com.devthink.devthink_server.domain.Letter;
 import com.devthink.devthink_server.dto.LetterAddData;
 import com.devthink.devthink_server.dto.LetterListData;
 import com.devthink.devthink_server.dto.LetterModificationData;
 import com.devthink.devthink_server.dto.LetterResultData;
-import com.devthink.devthink_server.service.LetterService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -38,6 +41,8 @@ public class LetterController {
      * @return String 쪽지 성공 여부 문자열로 반환
      */
     @PostMapping
+    @ApiOperation(value = "메시지 전송",
+            notes = "사용자로부터 메시지 정보를 받아 메시지 리스트에서 쪽지를 보냅니다.")
     public LetterResultData messageSendInlist(@RequestBody @Valid LetterAddData letterAddData)
     {
         Letter letter = letterService.addMessage(letterAddData);
@@ -51,6 +56,11 @@ public class LetterController {
      * 해당 room에서 안읽은 메시지 갯수)
      */
     @GetMapping
+    @ApiOperation(value = "메시지 리스트",
+            notes = "사용자로부터 유저 고유 id를 받아 방 별 메시지 리스트를 반환합니다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "user_id", dataType = "Long", value = "유저 고유 아이디")})
+
     public List<LetterListData> messageList(@RequestParam Long user_id)
     {
         ArrayList<LetterModificationData> letters = letterService.messageList(user_id);
@@ -63,6 +73,13 @@ public class LetterController {
      * @return List<LetterResultData> 사용자의 방 번호에서 주고받은 메시지
      */
     @GetMapping("/rooms")
+    @ApiOperation(value = "메시지 내용 가져오기",
+            notes = "사용자로부터 유저 고유 id와 방 id를 받아 메시지 내용을 가져옵니다.")
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "user_id", dataType = "Long", value = "유저 고유 아이디"),
+            @ApiImplicitParam(name = "room_id", dataType = "Long", value = "방 아이디")
+    })
     public List<LetterResultData> MessageRoomList(@RequestParam Long user_id, @RequestParam Long room_id)
     {
         ArrayList<LetterModificationData> letters = letterService.roomContentList(user_id, room_id);
@@ -81,10 +98,11 @@ public class LetterController {
 
         return LetterListData.builder()
                 .unread(letter.getUnread())
-                .otherId(letter.getOther_id())
+                .otherId(letter.getOtherId())
                 .content(letter.getContent())
                 .roomId(letter.getRoomId())
-                .create_at(letter.getCreate_at())
+                .createAt(letter.getCreateAt())
+                .image(letter.getProfile())
                 .build();
     }
 
@@ -133,8 +151,8 @@ public class LetterController {
                 .roomId(letter.getRoomId())
                 .senderId(letter.getSenderId())
                 .targetId(letter.getTargetId())
-                .create_at(letter.getCreateAt())
-                .view_at(letter.getView_at())
+                .createAt(letter.getCreateAt())
+                .viewAt(letter.getViewAt())
                 .build();
 
     }
@@ -155,8 +173,8 @@ public class LetterController {
                 .roomId(letter.getRoomId())
                 .senderId(letter.getSenderId())
                 .targetId(letter.getTargetId())
-                .create_at(letter.getCreate_at())
-                .view_at(letter.getView_at())
+                .createAt(letter.getCreateAt())
+                .viewAt(letter.getViewAt())
                 .build();
 
     }
