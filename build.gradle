@@ -1,8 +1,12 @@
 plugins {
     id 'org.springframework.boot' version '2.5.8'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'org.asciidoctor.convert' version '2.4.0'
     id 'java'
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
 }
 
 group = 'com.devthink'
@@ -76,13 +80,13 @@ dependencies {
 
 
     //H2
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    runtimeOnly 'com.h2database:h2:2.0.206'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.6.2'
+    runtimeOnly 'com.h2database:h2:2.1.210'
+    
 
 }
 
 test {
-    outputs.dir snippetsDir
     useJUnitPlatform()
 }
 
