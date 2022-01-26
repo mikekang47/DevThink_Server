@@ -1,7 +1,6 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Comment;
-import com.devthink.devthink_server.domain.UserRepository;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
 import com.devthink.devthink_server.infra.CommentRepository;
@@ -9,6 +8,7 @@ import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.CommentRequestDto;
 import com.devthink.devthink_server.infra.ReviewRepository;
+import com.devthink.devthink_server.infra.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
