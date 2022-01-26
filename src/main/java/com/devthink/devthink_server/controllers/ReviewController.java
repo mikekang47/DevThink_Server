@@ -3,6 +3,7 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.BookService;
 import com.devthink.devthink_server.application.ReviewService;
+import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.common.Error;
 import com.devthink.devthink_server.common.ErrorMessage;
 import com.devthink.devthink_server.domain.Book;
@@ -25,6 +26,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final BookService bookService;
+    private final UserService userService;
 
     /**
      * 리뷰 등록 API
@@ -35,10 +37,7 @@ public class ReviewController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String createReview(@Valid @RequestBody ReviewRequestDto reviewRequestDto){
-        //TODO: userId 로 User 가져오기
-        User user = new User();
-        user.setId(reviewRequestDto.getUserId());
-        // Isbn 으로 Book을 가져온다.
+        User user = userService.getUser(reviewRequestDto.getUserId());
         Book book = bookService.getBookByIsbn(reviewRequestDto.getBookIsbn());
         String id = reviewService.createReview(user, book, reviewRequestDto);
         return id;
