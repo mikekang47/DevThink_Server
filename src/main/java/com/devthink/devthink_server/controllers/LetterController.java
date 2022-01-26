@@ -133,7 +133,7 @@ public class LetterController {
                 .roomId(letter.getRoomId())
                 .senderId(letter.getSenderId())
                 .targetId(letter.getTargetId())
-                .create_at(letter.getCreate_at())
+                .create_at(letter.getCreateAt())
                 .view_at(letter.getView_at())
                 .build();
 
