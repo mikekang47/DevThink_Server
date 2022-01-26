@@ -1,5 +1,4 @@
 package com.devthink.devthink_server.application;
-
 import com.devthink.devthink_server.domain.Letter;
 import com.devthink.devthink_server.dto.LetterAddData;
 import com.devthink.devthink_server.dto.LetterModificationData;
@@ -13,6 +12,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 사용자의 요청을 받아, 실제 내부에서 작동하는 클래스 입니다.
@@ -34,10 +34,10 @@ public class LetterService {
 
     /**
      * 사용자로부터 메시지 정보를 받아 메시지 리스트에서 메시지를 보냅니다.
-     * @param dto 사용자 메시지 입력 데이터
-     * @return Letter 사용자가 보낸 메시지
-     */
-    public Letter addMessage(LetterAddData dto){
+             * @param dto 사용자 메시지 입력 데이터
+             * @return Letter 사용자가 보낸 메시지
+             */
+        public Letter addMessage(LetterAddData dto){
 
         // RoomId가 0인 경우 프로필에서 보낸 것이고, 0이 아니면 메시지 리스트에서 보낸 것으로 구분
         if(dto.getRoomId() == 0){
@@ -81,8 +81,19 @@ public class LetterService {
             // 현재 사용자가 안읽은 메시지의 개수를 가져옵니다.
             Long unread = letterRepository.countUnread(user_id, letter.getRoomId());
 
+            String image = null;
+            if(user_id == letter.getSenderId())
+            {
+                    image = userRepository.findImageUrlById(letter.getTargetId());
+            }
+            else if(user_id == letter.getTargetId())
+            {
+                    image = userRepository.findImageUrlById(letter.getSenderId());
+            }
+
             // 읽지 않은 메시지 갯수를 letter에 change 합니다.
             letter.change(unread);
+            letter.setProfile(image);
 
 
             // 메시지 유저 아이디를 기준으로 상대 id를 세팅합니다.
