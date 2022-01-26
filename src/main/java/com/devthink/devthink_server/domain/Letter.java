@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +26,7 @@ public class Letter extends BaseTimeEntity{
 
     private String content; // 쪽지 내용
 
-    private LocalDateTime view_at; // 열람일자
+    private LocalDateTime viewAt; // 열람일자
 
     private Integer readCheck;  // 수신 확인
 
