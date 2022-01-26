@@ -23,5 +23,8 @@ public class LetterResultData {
 
     private LocalDateTime create_at;
 
+    private LocalDateTime view_at;
+
     private Integer readCheck;
+
 }
