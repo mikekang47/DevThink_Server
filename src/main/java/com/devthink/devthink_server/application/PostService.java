@@ -1,8 +1,8 @@
-package com.devthink.devthink_server.service;
+package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
-import com.devthink.devthink_server.errors.PostNotFoundException;
+import com.devthink.devthink_server.errors.PostIdNotFoundException;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.data.domain.Page;
@@ -63,7 +63,7 @@ public class PostService {
      */
     public Post getPost(Long id){
         return postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id));
+                .orElseThrow(() -> new PostIdNotFoundException(id));
 
     }
 
@@ -76,7 +76,7 @@ public class PostService {
      */
     public Post update(Long id, PostDto postDto){
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id));
+                .orElseThrow(() -> new PostIdNotFoundException(id));
 
         post.update(postDto.getTitle(), postDto.getContent());
         return postRepository.save(post);
@@ -89,7 +89,7 @@ public class PostService {
      */
     public Post deletePost(Long id){
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id));
+                .orElseThrow(() -> new PostIdNotFoundException(id));
 
         postRepository.deleteById(id);
         return post;

@@ -1,4 +1,4 @@
-package com.devthink.devthink_server.service;
+package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Category;
 import com.devthink.devthink_server.dto.CategoryDto;

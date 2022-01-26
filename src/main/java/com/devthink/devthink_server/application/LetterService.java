@@ -1,10 +1,10 @@
-package com.devthink.devthink_server.service;
+package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Letter;
 import com.devthink.devthink_server.dto.LetterAddData;
 import com.devthink.devthink_server.dto.LetterModificationData;
-import com.devthink.devthink_server.dto.LetterResultData;
 import com.devthink.devthink_server.infra.LetterRepository;
+import com.devthink.devthink_server.infra.UserRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,10 +22,13 @@ import java.util.List;
 public class LetterService {
 
     private final LetterRepository letterRepository;
+    private final UserRepository userRepository;
+
     private final Mapper mapper;
 
-    public LetterService(LetterRepository letterRepository, Mapper mapper) {
+    public LetterService(LetterRepository letterRepository,UserRepository userRepository, Mapper mapper) {
         this.letterRepository = letterRepository;
+        this.userRepository = userRepository;
         this.mapper = mapper;
     }
 
@@ -80,6 +83,7 @@ public class LetterService {
 
             // 읽지 않은 메시지 갯수를 letter에 change 합니다.
             letter.change(unread);
+
 
             // 메시지 유저 아이디를 기준으로 상대 id를 세팅합니다.
             if(user_id == letter.getSenderId()) {
