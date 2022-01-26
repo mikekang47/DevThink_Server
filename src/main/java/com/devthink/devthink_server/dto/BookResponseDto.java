@@ -13,6 +13,12 @@ public class BookResponseDto {
 
     private Integer isbn;
 
+    private String name;
+
+    private String writer;
+
+    private String imgUrl;
+
     private Integer reviewCnt;
 
     private BigDecimal scoreAvg;
