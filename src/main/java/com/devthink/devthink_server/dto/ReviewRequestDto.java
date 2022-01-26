@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 @Getter
@@ -14,8 +15,9 @@ public class ReviewRequestDto {
 
     private Long userId;
 
-    private Integer bookIsbn;
+    private BookRequestDto book;
 
+    @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
     @DecimalMin("0") @DecimalMax("5")

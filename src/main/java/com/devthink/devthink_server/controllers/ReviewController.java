@@ -34,7 +34,7 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@Valid @RequestBody ReviewRequestDto reviewRequestDto){
         User user = userService.getUser(reviewRequestDto.getUserId());
-        Book book = bookService.getBookByIsbn(reviewRequestDto.getBookIsbn());
+        Book book = bookService.getBookByIsbn(reviewRequestDto.getBook());
         String id = reviewService.createReview(user, book, reviewRequestDto);
         return id;
     }

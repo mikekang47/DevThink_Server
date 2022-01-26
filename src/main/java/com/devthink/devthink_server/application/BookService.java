@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Book;
+import com.devthink.devthink_server.dto.BookRequestDto;
 import com.devthink.devthink_server.dto.BookResponseDto;
 import com.devthink.devthink_server.infra.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,13 @@ public class BookService {
 
     /**
      * 입력된 isbn 정보로 Book을 조회하며, 없으면 새로운 Book을 생성한다.
-     * @param isbn 도서 API 에서 가져온 ISBN
+     * @param bookRequestDto (책에 대한 정보)
      * @return 조회 혹은 생성된 Book 객체
      */
-    public Book getBookByIsbn(int isbn){
-        Optional<Book> book = bookRepository.getBookByIsbn(isbn);
+    public Book getBookByIsbn(BookRequestDto bookRequestDto){
+        Optional<Book> book = bookRepository.getBookByIsbn(bookRequestDto.getIsbn());
         if (book.isEmpty()) {
-            return createBook(isbn);
+            return createBook(bookRequestDto);
         } else {
             return book.get();
         }
@@ -37,12 +38,17 @@ public class BookService {
 
     /**
      * 입력된 isbn 정보로 새로운 Book 을 등록한다.
-     * @param isbn 도서 API 에서 가져온 ISBN
+     * @param bookRequestDto (책에 대한 정보)
      * @return 생성된 Book 객체
      */
     @Transactional
-    public Book createBook(int isbn){
-        Book book = Book.builder().isbn(isbn).build();
+    public Book createBook(BookRequestDto bookRequestDto){
+        Book book = Book.builder()
+                .isbn(bookRequestDto.getIsbn())
+                .name(bookRequestDto.getName())
+                .writer(bookRequestDto.getWriter())
+                .imgUrl(bookRequestDto.getImgUrl())
+                .build();
         return bookRepository.save(book);
     }
 
