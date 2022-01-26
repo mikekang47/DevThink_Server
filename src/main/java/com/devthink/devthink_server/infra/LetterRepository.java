@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,9 @@ public interface LetterRepository extends JpaRepository<Letter, Long> {
 
     // 메시지 읽음 처리하기
     @Modifying
-    @Query("update Letter u set u.readCheck = 1 where u.roomId = :roomId and " +
+    @Query("update Letter u set u.readCheck = 1, u.view_at = :date where u.roomId = :roomId and " +
             "u.readCheck = 0 and u.targetId = :userId")
-    int MessageReadCheck(Long userId, Long roomId);
+    int MessageReadCheck(Long userId, Long roomId, LocalDateTime date);
 
     // 메시지 이력이 있는지 검색하고, 게시글 개수 반환하기
     @Query("select count(u.id) from Letter u " +
