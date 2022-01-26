@@ -1,8 +1,11 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.CategoryService;
 import com.devthink.devthink_server.domain.Category;
 import com.devthink.devthink_server.dto.CategoryDto;
-import com.devthink.devthink_server.service.CategoryService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,6 +34,8 @@ public class CategoryController {
      * @return
      */
     @PostMapping
+    @ApiOperation(value = "카테고리 저장",
+            notes = "카테고리 정보를 받아 카테고리 작성하기")
     public Category save(@RequestBody CategoryDto categoryDto)
     {
         return categoryService.savePost(categoryDto);
@@ -42,6 +47,10 @@ public class CategoryController {
      * @return id의 카테고리
      */
     @GetMapping("/{id}")
+    @ApiOperation(value = "카테고리 검색",
+            notes = "카테고리의 id를 검색하여 게시글을 가져옵니다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", dataType = "Long", value = "카테고리 고유 아이디")})
     public CategoryDto findById(@PathVariable Long id){
         Category data = categoryService.getCategory(id);
         return getCategoryData(data);
@@ -55,6 +64,8 @@ public class CategoryController {
      * @return 기존 게시글의 정보 수정
      */
     @PutMapping("/{id}")
+    @ApiOperation(value = "카테고리 변경",
+            notes = "입력한 카테고리의 고유 식별자 값과 카테고리의 정보를 받아, 기존의 카테고리를 변경합니다.")
     public CategoryDto update(@PathVariable Long id, @RequestBody @Valid CategoryDto categoryDto){
         Category update = categoryService.update(id, categoryDto);
         return getCategoryData(update);
@@ -65,14 +76,18 @@ public class CategoryController {
      * @param id 카테고리의 식별자
      */
     @DeleteMapping("/{id}")
-    public CategoryDto deletePost(@PathVariable Long id)
-    {
+    @ApiOperation(value = "카테고리 삭제",
+            notes = "입력한 카테고리의 고유 id 값을 받아 카테고리를 삭제합니다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", dataType = "Long", value = "카테고리 고유 아이디")})
+    public void deletePost(@PathVariable Long id) {
         categoryService.deletePost(id);
+
     }
 
     /**
      * 카테고리의 정보를 받아 게시글을 dto 데이터로 변환하여 반환합니다.
-     * @param post 카테고리 정보
+     * @param category 카테고리 정보
      * @return 입력된 dto 데이터로 변환된 값
      */
 
@@ -82,8 +97,8 @@ public class CategoryController {
             return null;
 
         return CategoryDto.builder()
-                .user_id(category.getId())
-                .name(category_getName())
+                .id(category.getId())
+                .name(category.getName())
                 .build();
     }
 }
