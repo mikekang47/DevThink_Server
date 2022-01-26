@@ -15,9 +15,9 @@ public class Post extends BaseTimeEntity{
     @GeneratedValue
     private Long id;
 
-    private Long user_id;
+    private Long userId;
 
-    private Long category_id;
+    private Long categoryId;
 
     private String title;
 
