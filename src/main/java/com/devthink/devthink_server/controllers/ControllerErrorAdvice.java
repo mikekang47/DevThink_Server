@@ -44,8 +44,15 @@ public class ControllerErrorAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ReviewNotFoundException.class)
-    public ErrorResponse handleUserNotFound() {
+    public ErrorResponse handleReviewNotFound() {
         return new ErrorResponse("Review not found");
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PostIdNotFoundException.class)
+    public ErrorResponse handlePostNotFound() {
+        return new ErrorResponse("Post not found");
+    }
+
 }
 
