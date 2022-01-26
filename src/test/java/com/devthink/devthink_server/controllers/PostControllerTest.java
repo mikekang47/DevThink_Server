@@ -1,9 +1,9 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
-import com.devthink.devthink_server.errors.PostNotFoundException;
-import com.devthink.devthink_server.service.PostService;
+import com.devthink.devthink_server.errors.PostIdNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,10 +73,10 @@ class PostControllerTest {
                 });
 
         given(postService.update(eq(100L), any(PostDto.class)))
-                .willThrow(new PostNotFoundException(100L));
+                .willThrow(new PostIdNotFoundException(100L));
 
         given(postService.deletePost(eq(100L)))
-                .willThrow(new PostNotFoundException(100L));
+                .willThrow(new PostIdNotFoundException(100L));
     }
 
     @Test
@@ -99,7 +99,7 @@ class PostControllerTest {
                                 "\"content\":\"Tester\",\"status\":\"active\"}")
 
                 )
-                 .andExpect(status().isOk())
+                 .andExpect(status().isCreated())
                  .andExpect(content().string(containsString("\"title\":\"tester\"")))
                  .andExpect(content().string(containsString("Tester")))
                  .andExpect(content().string(containsString("active")));
