@@ -1,7 +1,7 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.User;
-import com.devthink.devthink_server.domain.UserRepository;
+import com.devthink.devthink_server.infra.UserRepository;
 import com.devthink.devthink_server.dto.UserModificationData;
 import com.devthink.devthink_server.dto.UserRegistrationData;
 import com.devthink.devthink_server.errors.UserEmailDuplicationException;
