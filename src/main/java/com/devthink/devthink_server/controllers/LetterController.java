@@ -118,9 +118,9 @@ public class LetterController {
     }
 
     /**
-     * 쪽지의 정보를 받아 쪽지를 dto 데이터로 변환하여 반환합니다.
+     * 쪽지의 정보를 받아 쪽지를 dto 데이터(LetterResultData)로 변환하여 반환합니다.
      * @param letter 쪽지 정보
-     * @return 입력된 dto 데이터로 변환된 값
+     * @return 입력된 dto 데이터(LetterResultData)로 변환된 값
      */
     private LetterResultData getLetterData(Letter letter)
     {
@@ -134,6 +134,7 @@ public class LetterController {
                 .senderId(letter.getSenderId())
                 .targetId(letter.getTargetId())
                 .create_at(letter.getCreate_at())
+                .view_at(letter.getView_at())
                 .build();
 
     }
@@ -141,7 +142,7 @@ public class LetterController {
     /**
      * LetterModifyData를 받아 쪽지를 LetterResult 데이터로 변환하여 반환합니다.
      * @param letter 쪽지 정보
-     * @return 입력된 LetterResult 데이터로 변환된 값
+     * @return LetterResult 데이터로 변환된 값
      */
     private LetterResultData getLetterResultData(LetterModificationData letter)
     {
@@ -155,10 +156,9 @@ public class LetterController {
                 .senderId(letter.getSenderId())
                 .targetId(letter.getTargetId())
                 .create_at(letter.getCreate_at())
+                .view_at(letter.getView_at())
                 .build();
 
     }
-
-
 
 }
