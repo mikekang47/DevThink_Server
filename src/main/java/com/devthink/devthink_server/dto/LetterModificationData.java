@@ -22,23 +22,25 @@ public class LetterModificationData {
 
     private String content;
 
-    private LocalDateTime view_at; // 열람일자
+    private LocalDateTime viewAt; // 열람일자
 
-    private LocalDateTime create_at;
+    private LocalDateTime createAt;
 
     private Integer readCheck;
 
     private Long unread; // 안 읽은 메시지 갯수
 
-    private Long other_id; // 현재 사용자의 메시지 상대 id를 담는다.
+    private Long otherId; // 현재 사용자의 메시지 상대 id를 담는다.
+
+    private String profile;
 
     public void change(Long unread){
         this.unread = unread;
     }
 
-    public void changeOtherId(Long other_id)
+    public void changeOtherId(Long otherId)
     {
-        this.other_id = other_id;
+        this.otherId = otherId;
     }
 
 }
