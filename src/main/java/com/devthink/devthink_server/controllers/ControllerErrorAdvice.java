@@ -53,5 +53,11 @@ public class ControllerErrorAdvice {
     public ErrorResponse handleLikeNotFound() {
         return new ErrorResponse("Like not found");
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PostIdNotFoundException.class)
+    public ErrorResponse handlePostNotFound() {
+        return new ErrorResponse("Post not found");
+    }
 }
 
