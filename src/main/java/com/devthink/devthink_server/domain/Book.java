@@ -1,7 +1,6 @@
 package com.devthink.devthink_server.domain;
 
-import com.devthink.devthink_server.dto.BookListResponseDto;
-import com.devthink.devthink_server.dto.ReviewResponseDto;
+import com.devthink.devthink_server.dto.BookResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,8 +51,8 @@ public class Book extends BaseTimeEntity {
         reviewCnt--;
     }
 
-    public BookListResponseDto toBookListResponseDto(){
-        return BookListResponseDto.builder()
+    public BookResponseDto toBookResponseDto(){
+        return BookResponseDto.builder()
                 .id(id)
                 .isbn(isbn)
                 .reviewCnt(reviewCnt)

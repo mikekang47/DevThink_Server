@@ -1,6 +1,8 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Book;
+import com.devthink.devthink_server.dto.BookListResponseDto;
+import com.devthink.devthink_server.dto.BookResponseDto;
 import com.devthink.devthink_server.infra.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -45,10 +48,28 @@ public class BookService {
 
     /**
      * Pagination 적용한 책 List 가져오기
-     * @return Book List
+     * @return BookResponseDto List
      */
-    public Page<Book> list(Pageable pageable){
-        return bookRepository.findAllByReviewCntNot(0,pageable);
+    public List<BookResponseDto> list(Pageable pageable){
+        return bookRepository.findAllByReviewCntNot(0,pageable)
+                .stream()
+                .map(Book::toBookResponseDto)
+                .collect(Collectors.toList());
     }
+
+
+    /**
+     * 리뷰 수 가장 많은 책 가져오기
+     * @return BookResponseDTO
+     */
+    public BookResponseDto getBestBookByReviewCnt(){
+        if(bookRepository.findTopByOrderByReviewCntDesc().isEmpty()) {
+            return null;
+        } else {
+            return bookRepository.findTopByOrderByReviewCntDesc().get().toBookResponseDto();
+        }
+    }
+
+
 
 }

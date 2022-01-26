@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/books")
@@ -26,11 +24,11 @@ public class BookController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<BookListResponseDto> list(Pageable pageable) {
-        return bookService.list(pageable)
-                .stream()
-                .map(Book::toBookListResponseDto)
-                .collect(Collectors.toList());
+    public BookListResponseDto list(Pageable pageable) {
+        return BookListResponseDto.builder()
+                .bestBook(bookService.getBestBookByReviewCnt())
+                .bookList(bookService.list(pageable))
+                .build();
     }
 
 }
