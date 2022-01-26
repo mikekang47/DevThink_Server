@@ -1,11 +1,11 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Book;
-import com.devthink.devthink_server.dto.BookListResponseDto;
 import com.devthink.devthink_server.dto.BookResponseDto;
 import com.devthink.devthink_server.infra.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,7 @@ public class BookService {
     private final BookRepository bookRepository;
 
     /**
-     * 입력된 isbn 정보로 Book을 조회하며, 없으면 새로운 Book을 생성합니다.
+     * 입력된 isbn 정보로 Book을 조회하며, 없으면 새로운 Book을 생성한다.
      * @param isbn 도서 API 에서 가져온 ISBN
      * @return 조회 혹은 생성된 Book 객체
      */
@@ -36,7 +36,7 @@ public class BookService {
     }
 
     /**
-     * 입력된 isbn 정보로 새로운 Book 을 등록합니다.
+     * 입력된 isbn 정보로 새로운 Book 을 등록한다.
      * @param isbn 도서 API 에서 가져온 ISBN
      * @return 생성된 Book 객체
      */
@@ -47,22 +47,24 @@ public class BookService {
     }
 
     /**
-     * Pagination 적용한 책 List 가져오기
-     * @return BookResponseDto List
+     * Pagination 을 적용한 책 List를 가져온다.
+     * @return BookResponseDto
      */
-    public List<BookResponseDto> list(Pageable pageable){
-        return bookRepository.findAllByReviewCntNot(0,pageable)
+    public Page<BookResponseDto> getBooks(Pageable pageable){
+        Page<Book> bookPage = bookRepository.findAllByReviewCntNot(0,pageable);
+        List<BookResponseDto> bookResponseDtos = bookPage
                 .stream()
                 .map(Book::toBookResponseDto)
                 .collect(Collectors.toList());
+        return new PageImpl<>(bookResponseDtos,pageable,bookPage.getTotalElements());
     }
 
 
     /**
-     * 리뷰 수 가장 많은 책 가져오기
-     * @return BookResponseDTO
+     * 리뷰 수가 가장 많은 책을 가져온다.
+     * @return BookResponseDTO, 데이터가 없는 경우 null
      */
-    public BookResponseDto getBestBookByReviewCnt(){
+    public BookResponseDto getMostReviewCntBook(){
         if(bookRepository.findTopByOrderByReviewCntDesc().isEmpty()) {
             return null;
         } else {
