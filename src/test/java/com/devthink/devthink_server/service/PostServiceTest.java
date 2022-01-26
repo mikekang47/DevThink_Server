@@ -1,14 +1,12 @@
-package com.devthink.devthink_server.controllers;
+package com.devthink.devthink_server.service;
 
+import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
-import com.devthink.devthink_server.errors.PostNotFoundException;
+import com.devthink.devthink_server.errors.PostIdNotFoundException;
 import com.devthink.devthink_server.infra.PostRepository;
-import com.devthink.devthink_server.service.PostService;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +53,7 @@ class PostServiceTest {
         );
 
         given(postRepository.findById(NOT_EXISTED_ID))
-                .willThrow(new PostNotFoundException(NOT_EXISTED_ID));
+                .willThrow(new PostIdNotFoundException(NOT_EXISTED_ID));
 
     }
 
@@ -101,7 +99,7 @@ class PostServiceTest {
                 .build();
 
         assertThatThrownBy(() -> postService.update(NOT_EXISTED_ID, postDto))
-                .isInstanceOf(PostNotFoundException.class);
+                .isInstanceOf(PostIdNotFoundException.class);
 
         verify(postRepository).findById(NOT_EXISTED_ID);
     }
@@ -117,7 +115,7 @@ class PostServiceTest {
     @Test
     void 존재하지_않는_식별자로_글을_삭제하는_경우(){
         assertThatThrownBy(() -> postService.deletePost(NOT_EXISTED_ID))
-                .isInstanceOf(PostNotFoundException.class);
+                .isInstanceOf(PostIdNotFoundException.class);
 
     }
 
