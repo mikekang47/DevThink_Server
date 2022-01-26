@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.dto;
 
 import com.github.dozermapper.core.Mapping;
+import io.swagger.annotations.ApiParam;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
