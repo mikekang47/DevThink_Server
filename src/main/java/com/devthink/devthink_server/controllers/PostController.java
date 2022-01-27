@@ -1,22 +1,28 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.CategoryService;
 import com.devthink.devthink_server.application.PostService;
+import com.devthink.devthink_server.application.UserService;
+import com.devthink.devthink_server.domain.Category;
 import com.devthink.devthink_server.domain.Post;
-import com.devthink.devthink_server.dto.PostDto;
+import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.PostRequestData;
+import com.devthink.devthink_server.dto.PostResponseData;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
 @RequestMapping("/posts")
+@RequiredArgsConstructor
 /**
  * 사용자의 HTTP 요청을 처리하는 클래스입니다.
  */
@@ -33,10 +39,8 @@ import java.util.Optional;
 public class PostController {
 
     private final PostService postService;
-
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
+    private final UserService userService;
+    private final CategoryService categoryService;
 
     /**
      * 사용자가 페이지를 요청하면 몇 페이지의 게시글을 가져옵니다.
@@ -44,12 +48,13 @@ public class PostController {
      * @return 몇 페이지의 게시글 (기본값 6개의 게시글)
      */
     @GetMapping
-    @ApiOperation(value = "게시글 리스트", notes = "사용자가 페이지를 요청하면 해당하는 페이지의 게시글을 가져옵니다.")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "게시글 리스트", notes = "사용자가 페이지를 요청하면 해당하는 페이지를 가져옵니다.")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", dataType = "int", example ="1", value = "게시글의 페이지")})
-    public List<PostDto> list(@RequestParam(value="page", defaultValue = "1") int page){
+    public List<PostResponseData> list(@RequestParam(value="page", defaultValue = "1") int page){
         List<Post> list = postService.list(page);
-        return getPostDtos(list);
+        return getPostList(list);
     }
 
     /**
@@ -58,10 +63,11 @@ public class PostController {
      * @return id의 게시글
      */
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 검색", notes = "게시글의 id를 검색하여 게시글을 가져옵니다.")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", dataType = "Long", value = "게시글 고유 아이디")})
-    public PostDto findById(@PathVariable Long id){
+    public PostResponseData findById(@PathVariable Long id){
         Post post = postService.getPost(id);
         return getPostData(post);
 
@@ -69,32 +75,36 @@ public class PostController {
 
     /**
      * 입력한 게시글의 정보(유저 id, 카테고리 id, 제목, 내용, status)를 입력받아 게시글을 생성합니다.
-     * @param postDto 입력한 vaild한 게시글의 정보
+     * @param postRequestData 입력한 vaild한 게시글의 정보
      * @return  게시글 생성
      */
     @PostMapping("/write")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "게시글 등록",
             notes = "입력한 게시글의 정보(유저 id, 카테고리 id, 제목, 내용, status)를 입력받아 게시글을 생성합니다.")
-    public PostDto write(@RequestBody @Valid PostDto postDto){
-        Post post = postService.savePost(postDto);
+    public PostResponseData write(@RequestBody @Valid PostRequestData postRequestData){
+        User user = userService.getUser(postRequestData.getUserId());
+        Category category = categoryService.getCategory(postRequestData.getCategoryId());
+
+        Post post = postService.savePost(user, category, postRequestData);
         return getPostData(post);
     }
 
     /**
      * 입력한 게시글의 식별자 값과 valid한 게시글의 정보를 받아, 기존의 게시글을 입력한 정보로 변경합니다.
      * @param id 게시글의 식별자
-     * @param postDto 제목, 내용, status
+     * @param postRequestData 제목, 내용, status
      * @return 기존 게시글의 정보 수정
      */
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 수정",
             notes = "입력한 게시글의 식별자 값과 valid한 게시글의 정보를 받아, 기존의 게시글을 입력한 정보로 변경합니다.")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", dataType = "Long", value = "게시글 고유 아이디")})
-    public PostDto update(@PathVariable Long id, @RequestBody @Valid PostDto postDto){
-        Post update = postService.update(id, postDto);
+    public PostResponseData update(@PathVariable Long id, @RequestBody @Valid PostRequestData postRequestData){
+        Post update = postService.update(id, postRequestData);
         return getPostData(update);
     }
 
@@ -103,6 +113,7 @@ public class PostController {
      * @param id 게시글의 식별자
      */
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 삭제", notes = "입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", dataType = "Long", value = "게시글 고유 아이디")})
@@ -118,29 +129,41 @@ public class PostController {
      */
 
     @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 검색",
             notes = "사용자로부터 keyword를 받아, 제목이 keyword인 게시글을 반환합니다.")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", dataType = "Long", value = "검색하고자 하는 게시글 제목")})
-    public List<PostDto> search(@RequestParam String keyword)
+    public List<PostResponseData> search(@RequestParam String keyword)
     {
         List<Post> search = postService.search(keyword);
-        List<PostDto> postDto = getPostDtos(search);
-        return postDto;
+        List<PostResponseData> postRequestData = getPostList(search);
+        return postRequestData;
     }
+
+    /**
+     * 베스트 게시글 가져오기 API
+     */
+   // @GetMapping("/best")
+   // @ResponseStatus(HttpStatus.OK)
+   // public PostResponseData searchBest(@RequestParam Long categoryId)
+   // {
+   //     Post bestPost = postService.getBestPost(categoryId);
+   //     return getPostData(bestPost);
+   // }
 
     /**
      * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
      * @param posts entity List
      * @return 입력된 dto 데이터로 변환된 list
      */
-    private List<PostDto> getPostDtos(List<Post> posts) {
-        List<PostDto> postDtos = new ArrayList<>();
+    private List<PostResponseData> getPostList(List<Post> posts) {
+        List<PostResponseData> postRequestData = new ArrayList<>();
 
         for (Post post : posts) {
-            postDtos.add(getPostData(post));
+            postRequestData.add(getPostData(post));
         }
-        return postDtos;
+        return postRequestData;
     }
 
     /**
@@ -148,17 +171,20 @@ public class PostController {
      * @param post 게시글 정보
      * @return 입력된 dto 데이터로 변환된 값
      */
-    private PostDto getPostData(Post post)
+    private PostResponseData getPostData(Post post)
     {
         if(post == null)
             return null;
 
-        return PostDto.builder()
-                .userId(post.getUserId())
-                .categoryId(post.getCategoryId())
+        return PostResponseData.builder()
+                .user_id(post.getUser().getId())
+                .category_id(post.getCategory().getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .status(post.getStatus())
+                .updateAt(post.getUpdateAt())
+                .createAt(post.getCreateAt())
+                .like(post.getLike())
                 .build();
     }
 }
