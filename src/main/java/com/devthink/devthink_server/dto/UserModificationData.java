@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.dto;
 
 import com.github.dozermapper.core.Mapping;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
+@ApiModel("사용자 수정 정보")
 public class UserModificationData {
     @NotBlank(message = "닉네임을 입력해주세요.")
     @Size(max=8)
