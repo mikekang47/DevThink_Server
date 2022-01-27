@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.dto;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
+@ApiModel("사용자 가입 완료 정보")
 public class UserResultData {
     private Long id;
 
