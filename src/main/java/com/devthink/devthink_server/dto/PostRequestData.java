@@ -11,14 +11,14 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDto {
+public class PostRequestData {
 
-    @Mapping("user_id")
+    @Mapping("userId")
     @ApiModelProperty(value = "유저 아이디", example = "1")
     @ApiParam(value = "유저 아이디", example = "1")
     private Long userId;
 
-    @Mapping("category_id")
+    @Mapping("categoryId")
     @ApiModelProperty(value = "카테고리 아이디", example = "1")
     @ApiParam(value = "카테고리 아이디", example = "1")
     private Long categoryId;
@@ -34,12 +34,6 @@ public class PostDto {
     @ApiParam(value = "내용", example = "example1")
     @Mapping("content")
     private String content;
-
-    @Mapping("status")
-    @ApiModelProperty(value = "글 상태", example = "active")
-    @ApiParam(value = "글 상태", example = "active")
-    @Builder.Default
-    private String status = "active";
 
 
 }
