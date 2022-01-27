@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Comment;
+import com.devthink.devthink_server.errors.CommentNotFoundException;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
 import com.devthink.devthink_server.infra.CommentRepository;
@@ -42,8 +43,9 @@ public class CommentService {
      * 특정 Comment를 조회합니다.
      * @return 조회된 Comment 또는 {@literal Optional#empty()}
      */
-    public Optional<Comment> getComment(Long commentId) {
-        return commentRepository.findById(commentId);
+    public Comment getComment(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
     }
 
     /**
