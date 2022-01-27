@@ -1,16 +1,14 @@
 package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.CommentService;
-import com.devthink.devthink_server.common.Error;
-import com.devthink.devthink_server.common.ErrorMessage;
 import com.devthink.devthink_server.domain.Comment;
 import com.devthink.devthink_server.dto.CommentRequestDto;
+import com.devthink.devthink_server.dto.CommentResponseDto;
+import com.devthink.devthink_server.errors.CommentContentEmptyException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/comments")
@@ -76,17 +74,13 @@ public class CommentController {
      */
     @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> updateComment(@PathVariable("commentId") Long commentId, @RequestBody CommentRequestDto commentRequestDto){
+    public CommentResponseDto updateComment(@PathVariable("commentId") Long commentId, @RequestBody CommentRequestDto commentRequestDto){
         String content = commentRequestDto.getContent();
         if (content.isBlank())      // 입력받은 request에서 content가 공란인지 확인합니다.
-            return ResponseEntity.badRequest().body(new Error(HttpStatus.BAD_REQUEST, ErrorMessage.COMMENT_CONTENT_EMPTY));
+            throw new CommentContentEmptyException();
 
-        Optional<Comment> comment = commentService.getComment(commentId);
-        if (comment.isEmpty()) {    // DB에 request 받은 해당 Comment가 존재하는지 확인합니다.
-            return ResponseEntity.badRequest().body(new Error(HttpStatus.BAD_REQUEST, ErrorMessage.NO_SUCH_COMMENT));
-        } else {
-            commentService.updateComment(comment.get(), content);
-            return ResponseEntity.ok().body(comment.get().toCommentResponseDto());
-        }
+        Comment comment = commentService.getComment(commentId);
+        commentService.updateComment(comment, content);
+        return comment.toCommentResponseDto();
     }
 }
