@@ -1,8 +1,11 @@
 package com.devthink.devthink_server.application;
 
+import com.devthink.devthink_server.domain.Category;
 import com.devthink.devthink_server.domain.Post;
-import com.devthink.devthink_server.dto.PostDto;
-import com.devthink.devthink_server.errors.PostIdNotFoundException;
+import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.PostRequestData;
+import com.devthink.devthink_server.errors.CategoryNotFoundException;
+import com.devthink.devthink_server.errors.PostNotFoundException;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.data.domain.Page;
@@ -11,6 +14,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.PublicKey;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -29,12 +36,20 @@ public class PostService {
 
     /**
      * 전달받은 게시글 데이터로 새로운 게시글을 DB에 저장합니다.
-     * @param postDto 게시글 데이터
+     * @param postRequestData 게시글 데이터
      * @return  사용자의 정보를 DB에 저장.
      */
-    public Post savePost(PostDto postDto){
-        Post post = mapper.map(postDto, Post.class);
-        return postRepository.save(post);
+    public Post savePost(User user, Category category, PostRequestData postRequestData){
+        Post post = postRepository.save(
+                Post.builder()
+                        .title(postRequestData.getTitle())
+                        .content(postRequestData.getContent())
+                        .user(user)
+                        .category(category)
+                        .build()
+        );
+
+        return post;
     }
 
     /**
@@ -63,7 +78,7 @@ public class PostService {
      */
     public Post getPost(Long id){
         return postRepository.findById(id)
-                .orElseThrow(() -> new PostIdNotFoundException(id));
+                .orElseThrow(() -> new PostNotFoundException(id));
 
     }
 
@@ -71,14 +86,14 @@ public class PostService {
      * 전달받은 게시글의 식별자와 수정하고자 하는 게시글의 내용을 이용하여 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
      * 있으면 게시글을 수정하여 DB에 저장합니다.
      * @param id 찾고자 하는 게시글의 식별자
-     * @param postDto 수정하고자 하는 게시글의 내용
+     * @param postRequestData 수정하고자 하는 게시글의 내용
      * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
      */
-    public Post update(Long id, PostDto postDto){
+    public Post update(Long id, PostRequestData postRequestData){
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostIdNotFoundException(id));
+                .orElseThrow(() -> new PostNotFoundException(id));
 
-        post.update(postDto.getTitle(), postDto.getContent());
+        post.update(postRequestData.getTitle(), postRequestData.getContent());
         return postRepository.save(post);
     }
 
@@ -89,7 +104,7 @@ public class PostService {
      */
     public Post deletePost(Long id){
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostIdNotFoundException(id));
+                .orElseThrow(() -> new PostNotFoundException(id));
 
         postRepository.deleteById(id);
         return post;
@@ -105,4 +120,18 @@ public class PostService {
         List<Post> postList = postRepository.findByTitleContaining(keyword);
         return postList;
     }
+
+    /**
+     * 베스트 게시글 DB에서 가져오기
+     */
+   // public Post getBestPost(Long categoryId)
+   // {
+        LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(23,59,59));
+        //Post post = postRepository.findCreateAtBetween(start, end)
+               // .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+
+       // return post;
+  //  }
+
 }
