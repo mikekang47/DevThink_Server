@@ -49,7 +49,7 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(PostIdNotFoundException.class)
+    @ExceptionHandler(PostNotFoundException.class)
     public ErrorResponse handlePostNotFound() {
         return new ErrorResponse("Post not found");
     }
