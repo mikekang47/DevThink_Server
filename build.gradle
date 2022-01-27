@@ -62,7 +62,6 @@ dependencies {
     // DozerMapper
     implementation 'com.github.dozermapper:dozer-core:6.5.2'
 
-
     // Spring Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.2'
 
@@ -74,10 +73,18 @@ dependencies {
 //    // Spring Security
 //    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.2'
 
+    // Swagger2 gradle
+    implementation (group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'){
+        exclude module: 'swagger-annotations' exclude module: 'swagger-models'
+    }
+    implementation "io.swagger:swagger-annotations:1.5.21"
+    implementation "io.swagger:swagger-models:1.5.21"
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
     //H2
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    runtimeOnly 'com.h2database:h2:2.0.206'
+    runtimeOnly 'com.h2database:h2'
+
 
 }
 
