@@ -54,5 +54,17 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Post not found");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CommentContentEmptyException.class)
+    public ErrorResponse handleCommentContentEmpty() {
+        return new ErrorResponse("Comment content cannot be empty");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ErrorResponse handleCommentNotFound() {
+        return new ErrorResponse("Comment not found");
+    }
+
 }
 
