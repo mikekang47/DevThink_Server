@@ -9,6 +9,8 @@ import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReviewRequestDto;
 import com.devthink.devthink_server.dto.ReviewResponseDto;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,7 @@ public class ReviewController {
      * @return 새로 생성된 리뷰 아이디
      */
     @PostMapping
+    @ApiOperation(value = "리뷰 등록", notes = "전달된 정보에 따라 리뷰를 등록합니다.")
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@Valid @RequestBody ReviewRequestDto reviewRequestDto){
         User user = userService.getUser(reviewRequestDto.getUserId());
@@ -47,9 +50,10 @@ public class ReviewController {
      * @return ReviewResponseDto (조회한 리뷰 정보 )
      */
     @GetMapping("/{id}")
+    @ApiOperation(value = "리뷰 상세 조회", notes = "식별자 값의 리뷰를 상세 조회합니다.")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ReviewResponseDto detail(@PathVariable("id") Long id){
+    public ReviewResponseDto detail(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
         Review review = reviewService.getReviewById(id);
         return review.toReviewResponseDto();
     }
@@ -61,8 +65,9 @@ public class ReviewController {
      * @param id (수정할 리뷰 아이디)
      */
     @PatchMapping("/{id}/content")
+    @ApiOperation(value = "리뷰 내용 수정", notes = "식별자 값의 리뷰 내용을 전달된 내용으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto updateContent(@PathVariable("id") Long id, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
+    public ReviewResponseDto updateContent(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
         Review review = reviewService.getReviewById(id);
         reviewService.updateContent(review, reviewRequestDto.getContent());
         return review.toReviewResponseDto();
@@ -76,8 +81,9 @@ public class ReviewController {
      * @return ReviewResponseDto (삭제된 리뷰 )
      */
     @PatchMapping("/{id}/score")
+    @ApiOperation(value = "리뷰 별점 수정", notes = "식별자 값의 리뷰 별점을 전달된 별점으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto updateScore(@PathVariable("id") Long id, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
+    public ReviewResponseDto updateScore(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
         Review review = reviewService.getReviewById(id);
         reviewService.updateScore(review,reviewRequestDto.getScore());
         return review.toReviewResponseDto();
@@ -91,8 +97,9 @@ public class ReviewController {
      * @return review(삭제된 리뷰 정보 )
      */
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "리뷰 삭제", notes = "식별자 값의 리뷰를 삭제합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto destroy(@PathVariable("id") Long id){
+    public ReviewResponseDto destroy(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
         Review review = reviewService.getReviewById(id);
         reviewService.deleteReview(review);
         return review.toReviewResponseDto();
