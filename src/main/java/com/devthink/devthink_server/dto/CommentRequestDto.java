@@ -13,11 +13,11 @@ import javax.validation.constraints.Size;
 public class CommentRequestDto {
 
     @NotBlank
-    private final Long user_id;
+    private final Long userId;
 
-    private final Long post_id;
+    private final Long postId;
 
-    private final Long review_id;
+    private final Long reviewId;
 
     @NotBlank
     @Size(min=1)
