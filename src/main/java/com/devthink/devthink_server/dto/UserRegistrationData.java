@@ -3,7 +3,6 @@ package com.devthink.devthink_server.dto;
 import com.devthink.devthink_server.domain.BaseTimeEntity;
 import com.github.dozermapper.core.Mapping;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.*;
 
@@ -45,7 +44,7 @@ public class UserRegistrationData extends BaseTimeEntity {
     @NotBlank(message = "닉네임을 입력해주세요.")
     @Size(max=8)
     @Mapping("nickname")
-    @ApiModelProperty(value = "사용자 닉네임", example = "싱크싱크")
+    @ApiParam(value = "사용자 닉네임", required = true, example = "싱크싱크")
     private String nickname;
 
     @NotBlank(message = "직무를 선택해주세요.")
