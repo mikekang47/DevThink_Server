@@ -14,15 +14,15 @@ import static javax.persistence.FetchType.LAZY;
 public class Post extends BaseTimeEntity{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "CATEGORY_ID")
+    @JoinColumn(name = "category_id")
     private Category category;
 
     private String title;
@@ -33,7 +33,7 @@ public class Post extends BaseTimeEntity{
 
     //ToDO 좋아요 기능 추가 할것
     @Builder.Default
-    private Integer like =0;
+    private Integer likeNumber = 0;
 
     public void update(String title, String content){
         this.title = title;
