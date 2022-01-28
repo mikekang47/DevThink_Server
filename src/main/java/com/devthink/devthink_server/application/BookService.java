@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Book;
+import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.dto.BookRequestDto;
 import com.devthink.devthink_server.dto.BookResponseDto;
 import com.devthink.devthink_server.errors.BookNotFoundException;
@@ -65,8 +66,8 @@ public class BookService {
     }
 
     /**
-     * Pagination 을 적용한 책 List를 가져옵니다.
-     * @return BookResponseDto
+     * Pagination 을 적용한 책 리스트를 가져옵니다.
+     * @return Page 단위의 책 리스트
      */
     public Page<BookResponseDto> getBooks(Pageable pageable){
         Page<Book> bookPage = bookRepository.findAllByReviewCntNot(0,pageable);
@@ -90,6 +91,17 @@ public class BookService {
         }
     }
 
-
+    /**
+     * 책 이름에 검색어가 포함 된 책을 조회합니다.
+     * @return 조회된 책 리스트
+     */
+    public Page<BookResponseDto> getSearchBooks(String search, Pageable pageable){
+        Page<Book> bookPage = bookRepository.findAllByNameContaining(search, pageable);
+        List<BookResponseDto> bookResponseDtos = bookPage
+                .stream()
+                .map(Book::toBookResponseDto)
+                .collect(Collectors.toList());
+        return new PageImpl<>(bookResponseDtos,pageable,bookPage.getTotalElements());
+    }
 
 }

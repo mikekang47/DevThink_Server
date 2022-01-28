@@ -19,11 +19,16 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> getBookByIsbn(int isbn);
 
-    //리뷰 수가 0이 아닌 책을 pageable 규칙에 따라 가져온다
+    //리뷰 수가 0이 아닌 책 리스트를 pageable 규칙에 따라 가져온다
     Page<Book> findAllByReviewCntNot(int reviewCnt, Pageable pageable);
 
-    Optional<Book> findTopByOrderByReviewCntDesc(); // 베스트 리뷰
+    // 리뷰 수가 가장 많은 책을 가져온다.
+    Optional<Book> findTopByOrderByReviewCntDesc();
 
-    @Query(value = "select round(avg(score),2) from Review where book_id = :id and deleted = false")
+    // 주어진 id값에 해당하는 책의 평점을 계산하여 가져온다.
+    @Query(value = "select avg(score) from Review where book_id = :id and deleted = false")
     BigDecimal calcScoreAvg(@Param("id") long id);
+
+    // 책 이름에 검색어가 포함 된 책 리스트를 pageable 규칙에 따라 가져온다
+    Page<Book> findAllByNameContaining(String search, Pageable pageable);
 }
