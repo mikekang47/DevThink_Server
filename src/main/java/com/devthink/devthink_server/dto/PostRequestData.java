@@ -13,12 +13,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class PostRequestData {
 
-    @Mapping("userId")
     @ApiModelProperty(value = "유저 아이디", example = "1")
     @ApiParam(value = "유저 아이디", example = "1")
     private Long userId;
 
-    @Mapping("categoryId")
     @ApiModelProperty(value = "카테고리 아이디", example = "1")
     @ApiParam(value = "카테고리 아이디", example = "1")
     private Long categoryId;
