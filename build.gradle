@@ -79,11 +79,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     runtimeOnly 'com.h2database:h2:2.0.206'
 
-    // Swagger UI
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    //Swagger UI
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
-    implementation 'org.javassist:javassist:3.23.1-GA'
 }
 
 test {
