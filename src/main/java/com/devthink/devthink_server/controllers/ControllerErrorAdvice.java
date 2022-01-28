@@ -54,5 +54,11 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Post not found");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(BookNotFoundException.class)
+    public ErrorResponse handleBookNotFound() {
+        return new ErrorResponse("Book not found");
+    }
+
 }
 
