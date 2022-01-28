@@ -144,13 +144,17 @@ public class PostController {
     /**
      * 베스트 게시글 가져오기 API
      */
-   // @GetMapping("/best")
-   // @ResponseStatus(HttpStatus.OK)
-   // public PostResponseData searchBest(@RequestParam Long categoryId)
-   // {
-   //     Post bestPost = postService.getBestPost(categoryId);
-   //     return getPostData(bestPost);
-   // }
+    @GetMapping("/best")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "베스트 게시글 가져오기",
+            notes = "사용자로부터 카테고리 id를 받아, 베스트 게시글을 가져옵니다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "categoryId", dataType = "Long", value = "카테고리 아이디")})
+    public PostResponseData searchBest(@RequestParam Long categoryId)
+    {
+        Post bestPost = postService.getBestPost(categoryId);
+        return getPostData(bestPost);
+    }
 
     /**
      * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
@@ -177,14 +181,15 @@ public class PostController {
             return null;
 
         return PostResponseData.builder()
-                .user_id(post.getUser().getId())
                 .category_id(post.getCategory().getId())
+                .user_id(post.getUser().getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .status(post.getStatus())
                 .updateAt(post.getUpdateAt())
                 .createAt(post.getCreateAt())
-                .like(post.getLike())
+                .like(post.getLikeNumber())
+                .id(post.getId())
                 .build();
     }
 }
