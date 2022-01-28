@@ -44,8 +44,8 @@ public class PostService {
                 Post.builder()
                         .title(postRequestData.getTitle())
                         .content(postRequestData.getContent())
-                        .user(user)
                         .category(category)
+                        .user(user)
                         .build()
         );
 
@@ -124,14 +124,13 @@ public class PostService {
     /**
      * 베스트 게시글 DB에서 가져오기
      */
-   // public Post getBestPost(Long categoryId)
-   // {
+    public Post getBestPost(Long categoryId)
+    {
         LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
-        LocalDateTime end = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(23,59,59));
-        //Post post = postRepository.findCreateAtBetween(start, end)
-               // .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
 
-       // return post;
-  //  }
+        List<Post> bestPosts = postRepository.getBestPosts(start, end, PageRequest.of(0, 1));
+        return bestPosts.get(0);
+    }
 
 }
