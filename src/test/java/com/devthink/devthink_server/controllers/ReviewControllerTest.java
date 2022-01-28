@@ -2,7 +2,11 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.BookService;
 import com.devthink.devthink_server.application.ReviewService;
+import com.devthink.devthink_server.application.UserService;
+import com.devthink.devthink_server.domain.Book;
+import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +32,25 @@ class ReviewControllerTest {
 
     @MockBean
     private BookService bookService;
+
+    @MockBean
+    private UserService userService;
+
+    @BeforeEach
+    void setUp() {
+        User user = User.builder().id(1L).build();
+        Book book = Book.builder().isbn(1).build();
+
+        Review review = Review.builder()
+                .id(5L)
+                .user(user)
+                .book(book)
+                .content("유용한 책입니다.")
+                .build();
+        review.toReviewResponseDto();
+
+        given(reviewService.getReviewById(5L)).willReturn(review);
+    }
 
     @Test
     public void review_create_success() throws Exception {

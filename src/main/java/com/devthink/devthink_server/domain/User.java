@@ -39,6 +39,9 @@ public class User extends BaseTimeEntity{
     private Integer point;
 
     @Builder.Default
+    private String imageUrl = "";
+
+    @Builder.Default
     private boolean deleted = false;
 
     @Builder.Default

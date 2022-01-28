@@ -65,8 +65,9 @@ public class CategoryController {
      * @param id 카테고리의 식별자
      */
     @DeleteMapping("/{id}")
-    public void deletePost(@PathVariable Long id)  {
+    public void deletePost(@PathVariable Long id) {
         categoryService.deletePost(id);
+
     }
 
     /**
