@@ -1,10 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 import com.devthink.devthink_server.dto.ReviewResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -16,9 +13,9 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +35,7 @@ public class Review extends BaseTimeEntity {
     private Boolean deleted = Boolean.FALSE;
 
     @OneToMany(mappedBy = "review")
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
     public void setBook(Book book){
