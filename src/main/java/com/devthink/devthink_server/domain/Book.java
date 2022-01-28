@@ -61,6 +61,9 @@ public class Book extends BaseTimeEntity {
         return BookResponseDto.builder()
                 .id(id)
                 .isbn(isbn)
+                .name(name)
+                .writer(writer)
+                .imgUrl(imgUrl)
                 .reviewCnt(reviewCnt)
                 .scoreAvg(scoreAvg)
                 .build();
