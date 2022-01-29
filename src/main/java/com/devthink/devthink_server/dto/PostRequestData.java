@@ -6,13 +6,13 @@ import io.swagger.annotations.ApiParam;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostRequestData {
-
     @ApiModelProperty(value = "유저 아이디", example = "1")
     @ApiParam(value = "유저 아이디", example = "1")
     private Long userId;
@@ -22,16 +22,20 @@ public class PostRequestData {
     private Long categoryId;
 
     @NotBlank(message = "제목을 입력해주세요.")
+    @Size(min=1)
     @ApiModelProperty(value = "제목", example = "example")
     @ApiParam(value = "제목", example = "example")
     @Mapping("title")
     private String title;
 
     @NotBlank(message = "글의 내용을 입력해주세요.")
+    @Size(min=1)
     @ApiModelProperty(value = "내용", example = "example1")
     @ApiParam(value = "내용", example = "example1")
     @Mapping("content")
     private String content;
 
+    private String imageUrl;
 
+    private Integer heart;
 }
