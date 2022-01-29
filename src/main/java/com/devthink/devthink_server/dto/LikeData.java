@@ -15,4 +15,7 @@ public class LikeData {
     private Long userId;
 
     private Long postId;
+
+    private Long commentId;
+
 }
