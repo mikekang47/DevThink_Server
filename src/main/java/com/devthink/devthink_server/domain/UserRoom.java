@@ -23,5 +23,4 @@ public class UserRoom extends BaseTimeEntity {
     private Long roomId;
 
     private String status;
-
 }
