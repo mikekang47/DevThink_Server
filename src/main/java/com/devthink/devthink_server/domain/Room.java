@@ -20,6 +20,4 @@ public class Room extends BaseTimeEntity{
 
     @Builder.Default
     private String status = "active";
-
-
 }
