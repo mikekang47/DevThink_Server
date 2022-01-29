@@ -22,4 +22,6 @@ public class Like extends BaseTimeEntity{
     private Long userId;
 
     private Long postId;
+
+    private Long commentId;
 }
