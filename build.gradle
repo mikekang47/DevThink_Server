@@ -74,13 +74,15 @@ dependencies {
 //    // Spring Security
 //    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.2'
 
-
     //H2
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    runtimeOnly 'com.h2database:h2:2.0.206'
+    runtimeOnly 'com.h2database:h2'
 
     //Swagger UI
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+    // https://mvnrepository.com/artifact/org.javassist/javassist
+    implementation group: 'org.javassist', name: 'javassist', version: '3.27.0-GA'
+
 
 }
 
