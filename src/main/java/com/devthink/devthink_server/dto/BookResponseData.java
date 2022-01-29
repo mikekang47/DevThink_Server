@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Getter
 @Builder
 @ApiModel(value="책 조회 결과 정보")
-public class BookResponseDto {
+public class BookResponseData {
 
     @ApiModelProperty(value = "책 식별자", example = "1")
     private Long id;

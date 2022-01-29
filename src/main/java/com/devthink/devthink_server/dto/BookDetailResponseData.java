@@ -10,11 +10,11 @@ import java.util.List;
 @Getter
 @Builder
 @ApiModel(value="책 상세 조회 결과 정보")
-public class BookDetailResponseDto {
+public class BookDetailResponseData {
 
-    BookResponseDto book;
+    BookResponseData book;
 
     @ApiModelProperty(value = "리뷰 리스트")
-    List<ReviewResponseDto> reviews;
+    List<ReviewResponseData> reviews;
 
 }

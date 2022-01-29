@@ -1,6 +1,6 @@
 package com.devthink.devthink_server.domain;
 
-import com.devthink.devthink_server.dto.BookResponseDto;
+import com.devthink.devthink_server.dto.BookResponseData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -54,8 +54,8 @@ public class Book extends BaseTimeEntity {
         reviewCnt--;
     }
 
-    public BookResponseDto toBookResponseDto(){
-        return BookResponseDto.builder()
+    public BookResponseData toBookResponseDto(){
+        return BookResponseData.builder()
                 .id(id)
                 .isbn(isbn)
                 .name(name)

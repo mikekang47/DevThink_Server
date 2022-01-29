@@ -7,8 +7,8 @@ import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
-import com.devthink.devthink_server.dto.ReviewRequestDto;
-import com.devthink.devthink_server.dto.ReviewResponseDto;
+import com.devthink.devthink_server.dto.ReviewRequestData;
+import com.devthink.devthink_server.dto.ReviewResponseData;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -29,16 +29,16 @@ public class ReviewController {
     /**
      * 입력한 valid한 리뷰 정보를 받아 리뷰를 생성합니다.
      * [POST] /reviews
-     * @param reviewRequestDto (userId, bookIsbn, content, score)
+     * @param reviewRequestData (userId, bookIsbn, content, score)
      * @return 새로 생성된 리뷰 아이디
      */
     @PostMapping
     @ApiOperation(value = "리뷰 등록", notes = "전달된 정보에 따라 리뷰를 등록합니다.")
     @ResponseStatus(HttpStatus.CREATED)
-    public String create(@Valid @RequestBody ReviewRequestDto reviewRequestDto){
-        User user = userService.getUser(reviewRequestDto.getUserId());
-        Book book = bookService.getBookByIsbn(reviewRequestDto.getBook());
-        String id = reviewService.createReview(user, book, reviewRequestDto);
+    public String create(@Valid @RequestBody ReviewRequestData reviewRequestData){
+        User user = userService.getUser(reviewRequestData.getUserId());
+        Book book = bookService.getBookByIsbn(reviewRequestData.getBook());
+        String id = reviewService.createReview(user, book, reviewRequestData);
         return id;
     }
 
@@ -53,7 +53,7 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 상세 조회", notes = "식별자 값의 리뷰를 상세 조회합니다.")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ReviewResponseDto detail(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
+    public ReviewResponseData detail(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
         Review review = reviewService.getReviewById(id);
         return review.toReviewResponseDto();
     }
@@ -67,9 +67,9 @@ public class ReviewController {
     @PatchMapping("/{id}/content")
     @ApiOperation(value = "리뷰 내용 수정", notes = "식별자 값의 리뷰 내용을 전달된 내용으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto updateContent(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
+    public ReviewResponseData updateContent(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData){
         Review review = reviewService.getReviewById(id);
-        reviewService.updateContent(review, reviewRequestDto.getContent());
+        reviewService.updateContent(review, reviewRequestData.getContent());
         return review.toReviewResponseDto();
     }
 
@@ -83,9 +83,9 @@ public class ReviewController {
     @PatchMapping("/{id}/score")
     @ApiOperation(value = "리뷰 별점 수정", notes = "식별자 값의 리뷰 별점을 전달된 별점으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto updateScore(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
+    public ReviewResponseData updateScore(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData){
         Review review = reviewService.getReviewById(id);
-        reviewService.updateScore(review,reviewRequestDto.getScore());
+        reviewService.updateScore(review, reviewRequestData.getScore());
         return review.toReviewResponseDto();
     }
 
@@ -99,7 +99,7 @@ public class ReviewController {
     @DeleteMapping("/{id}")
     @ApiOperation(value = "리뷰 삭제", notes = "식별자 값의 리뷰를 삭제합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto destroy(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
+    public ReviewResponseData destroy(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
         Review review = reviewService.getReviewById(id);
         reviewService.deleteReview(review);
         return review.toReviewResponseDto();

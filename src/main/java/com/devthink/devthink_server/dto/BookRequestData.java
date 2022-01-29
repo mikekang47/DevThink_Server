@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ApiModel(value="책 등록 요청 정보")
-public class BookRequestDto {
+public class BookRequestData {
 
     @ApiModelProperty(value = "책 isbn 번호", example = "8960773417")
     private Integer isbn;

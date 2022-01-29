@@ -2,9 +2,8 @@ package com.devthink.devthink_server.application;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
-import com.devthink.devthink_server.dto.ReviewRequestDto;
-import com.devthink.devthink_server.dto.ReviewResponseDto;
-import com.devthink.devthink_server.errors.BookNotFoundException;
+import com.devthink.devthink_server.dto.ReviewRequestData;
+import com.devthink.devthink_server.dto.ReviewResponseData;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.infra.BookRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
@@ -30,13 +29,13 @@ public class ReviewService {
      * @return 생성 된 리뷰 id
      */
     @Transactional
-    public String createReview(User user, Book book, ReviewRequestDto reviewRequestDto){
+    public String createReview(User user, Book book, ReviewRequestData reviewRequestData){
         Review review = reviewRepository.save(
             Review.builder()
                     .user(user)
                     .book(book)
-                    .content(reviewRequestDto.getContent())
-                    .score(reviewRequestDto.getScore())
+                    .content(reviewRequestData.getContent())
+                    .score(reviewRequestData.getScore())
                     .build()
         );
         review.getBook().addReview(review);
@@ -59,7 +58,7 @@ public class ReviewService {
      * @param bookId
      * @return 조회된 리뷰 리스트
      */
-    public List<ReviewResponseDto> getReviewsByBookId(long bookId){
+    public List<ReviewResponseData> getReviewsByBookId(long bookId){
         return reviewRepository.findAllByBookId(bookId)
                 .stream()
                 .map(Review::toReviewResponseDto)

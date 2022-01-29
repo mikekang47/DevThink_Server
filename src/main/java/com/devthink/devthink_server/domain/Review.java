@@ -1,6 +1,6 @@
 package com.devthink.devthink_server.domain;
 
-import com.devthink.devthink_server.dto.ReviewResponseDto;
+import com.devthink.devthink_server.dto.ReviewResponseData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -54,8 +54,8 @@ public class Review extends BaseTimeEntity {
     public void setDeleted(boolean deleted) { this.deleted = deleted; }
 
     //TODO: comments 추가
-    public ReviewResponseDto toReviewResponseDto(){
-        return ReviewResponseDto.builder()
+    public ReviewResponseData toReviewResponseDto(){
+        return ReviewResponseData.builder()
                 .id(id)
                 .userId(user.getId())
                 .bookIsbn(book.getIsbn())
