@@ -3,7 +3,6 @@ package com.devthink.devthink_server.domain;
 import lombok.*;
 
 import javax.persistence.*;
-
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -29,15 +28,17 @@ public class Post extends BaseTimeEntity{
 
     private String content;
 
-    private String status;
-
-    //ToDO 좋아요 기능 추가 할것
     @Builder.Default
-    private Integer likeNumber = 0;
+    private String imageUrl = "";
+
+    @Builder.Default
+    private Boolean deleted = false;
+
+    @Builder.Default
+    private Integer heart = 0;
 
     public void update(String title, String content){
         this.title = title;
         this.content = content;
     }
-
 }
