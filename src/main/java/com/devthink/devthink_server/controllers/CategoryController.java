@@ -22,6 +22,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
+
     private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
@@ -36,8 +37,7 @@ public class CategoryController {
     @PostMapping
     @ApiOperation(value = "카테고리 저장",
             notes = "카테고리 정보를 받아 카테고리 작성하기")
-    public Category save(@RequestBody CategoryDto categoryDto)
-    {
+    public Category save(@RequestBody CategoryDto categoryDto){
         return categoryService.savePost(categoryDto);
     }
 
@@ -54,7 +54,6 @@ public class CategoryController {
     public CategoryDto findById(@PathVariable Long id){
         Category data = categoryService.getCategory(id);
         return getCategoryData(data);
-
     }
 
     /**
@@ -80,9 +79,8 @@ public class CategoryController {
             notes = "입력한 카테고리의 고유 id 값을 받아 카테고리를 삭제합니다.")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", dataType = "Long", value = "카테고리 고유 아이디")})
-    public void deletePost(@PathVariable Long id) {
+    public void deletePost(@PathVariable Long id){
         categoryService.deletePost(id);
-
     }
 
     /**
@@ -90,9 +88,7 @@ public class CategoryController {
      * @param category 카테고리 정보
      * @return 입력된 dto 데이터로 변환된 값
      */
-
-    private CategoryDto getCategoryData(Category category)
-    {
+    private CategoryDto getCategoryData(Category category){
         if(category == null)
             return null;
 
