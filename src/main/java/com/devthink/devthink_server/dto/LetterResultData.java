@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LetterResultData {
-
     @ApiModelProperty(notes = "방 번호", example = "1")
     private Long roomId;
 
@@ -34,5 +33,4 @@ public class LetterResultData {
 
     @ApiModelProperty(notes = "메시지 읽음 체크", example = "0")
     private Integer readCheck;
-
 }

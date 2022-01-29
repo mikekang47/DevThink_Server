@@ -13,7 +13,6 @@ import static javax.persistence.FetchType.LAZY;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserRoom extends BaseTimeEntity {
-
     @Id
     @GeneratedValue
     private Long id;

@@ -46,8 +46,7 @@ public class LetterController {
     @PostMapping
     @ApiOperation(value = "메시지 전송",
             notes = "사용자로부터 메시지 정보를 받아 메시지 리스트에서 쪽지를 보냅니다.")
-    public LetterResultData messageSendInlist(@RequestBody @Valid LetterAddData letterAddData)
-    {
+    public LetterResultData messageSendInlist(@RequestBody @Valid LetterAddData letterAddData) {
         Letter letter = letterService.addMessage(letterAddData);
         return getLetterData(letter);
     }
@@ -62,8 +61,7 @@ public class LetterController {
             notes = "사용자로부터 유저 고유 id를 받아 방 별 메시지 리스트를 반환합니다.")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "user_id", dataType = "Long", value = "유저 고유 아이디")})
-    public List<LetterListData> messageList(@RequestParam Long userId)
-    {
+    public List<LetterListData> messageList(@RequestParam Long userId) {
         ArrayList<LetterModificationData> letters = letterService.messageList(userId);
         return getLetterLists(letters);
     }
@@ -76,13 +74,11 @@ public class LetterController {
     @GetMapping("/rooms")
     @ApiOperation(value = "메시지 내용 가져오기",
             notes = "사용자로부터 유저 고유 id와 방 id를 받아 메시지 내용을 가져옵니다.")
-
     @ApiImplicitParams({
             @ApiImplicitParam(name = "user_id", dataType = "Long", value = "유저 고유 아이디"),
             @ApiImplicitParam(name = "room_id", dataType = "Long", value = "방 아이디")
     })
-    public List<LetterResultData> MessageRoomList(@RequestParam Long user_id, @RequestParam Long room_id)
-    {
+    public List<LetterResultData> MessageRoomList(@RequestParam Long user_id, @RequestParam Long room_id) {
         ArrayList<LetterModificationData> letters = letterService.roomContentList(user_id, room_id);
         return getLetterDtos(letters);
 
@@ -141,8 +137,7 @@ public class LetterController {
      * @param letter 쪽지 정보
      * @return 입력된 dto 데이터(LetterResultData)로 변환된 값
      */
-    private LetterResultData getLetterData(Letter letter)
-    {
+    private LetterResultData getLetterData(Letter letter) {
         if(letter == null)
             return null;
 
@@ -163,8 +158,7 @@ public class LetterController {
      * @param letter 쪽지 정보
      * @return LetterResult 데이터로 변환된 값
      */
-    private LetterResultData getLetterResultData(LetterModificationData letter)
-    {
+    private LetterResultData getLetterResultData(LetterModificationData letter) {
         if(letter == null)
             return null;
 
@@ -179,5 +173,4 @@ public class LetterController {
                 .build();
 
     }
-
 }

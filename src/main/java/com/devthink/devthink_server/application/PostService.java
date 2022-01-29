@@ -125,8 +125,6 @@ public class PostService {
      * 베스트 게시글 DB에서 가져오기
      */
     public List<Post> getBestPost(Long categoryId){
-
-
         LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
         LocalDateTime end = LocalDateTime.now();
 

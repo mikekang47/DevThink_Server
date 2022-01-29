@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 public class LetterAddData {
-
     @Mapping("roomId")
     private Long roomId;
 

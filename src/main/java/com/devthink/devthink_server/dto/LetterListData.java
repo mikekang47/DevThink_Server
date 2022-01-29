@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LetterListData {
-
     @ApiModelProperty(notes = "방 번호", example = "1")
     private Long roomId;    // 방 번호
 
@@ -31,5 +30,4 @@ public class LetterListData {
 
     @ApiModelProperty(notes = "상대방 프로필 이미지", example = "example")
     private String image; // 상대방 이미지;
-
 }

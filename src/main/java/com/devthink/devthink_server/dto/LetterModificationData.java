@@ -42,5 +42,4 @@ public class LetterModificationData {
     {
         this.otherId = otherId;
     }
-
 }
