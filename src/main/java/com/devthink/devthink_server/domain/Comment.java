@@ -35,6 +35,9 @@ public class Comment {
 
     String status;
 
+    @Builder.Default
+    Integer heart = 0;
+
     public CommentResponseDto toCommentResponseDto() {
         return CommentResponseDto.builder()
                 .user_nickname(user.getNickname())
@@ -45,6 +48,10 @@ public class Comment {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void updateHeart(int heart) {
+        this.heart = heart;
     }
 
 }
