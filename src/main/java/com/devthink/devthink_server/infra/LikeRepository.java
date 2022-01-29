@@ -9,5 +9,7 @@ import java.util.Optional;
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
 
-    Optional<Like> findById(Long id);
+    Like save(Like like);
+
+    void deleteById(Long id);
 }
