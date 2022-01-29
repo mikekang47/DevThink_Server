@@ -4,8 +4,8 @@ import com.devthink.devthink_server.domain.Category;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.PostRequestData;
-import com.devthink.devthink_server.errors.CategoryNotFoundException;
 import com.devthink.devthink_server.errors.PostNotFoundException;
+import com.devthink.devthink_server.infra.CategoryRepository;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.PublicKey;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,9 +22,11 @@ import java.util.List;
 /**
  * 사용자의 요청을 받아, 실제 내부에서 작동하는 클래스 입니다.
  */
+
 @Service
 @Transactional
 public class PostService {
+
     private final PostRepository postRepository;
     private final Mapper mapper;
 
@@ -46,9 +47,10 @@ public class PostService {
                         .content(postRequestData.getContent())
                         .category(category)
                         .user(user)
+                        .imageUrl(postRequestData.getImageUrl())
+                        .heart(postRequestData.getHeart())
                         .build()
         );
-
         return post;
     }
 
@@ -79,7 +81,6 @@ public class PostService {
     public Post getPost(Long id){
         return postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(id));
-
     }
 
     /**
@@ -115,8 +116,7 @@ public class PostService {
      * @param keyword 찾고자 하는 제목
      * @return 찾았을 경우 게시글 반환, 찾지 못하면 error를 반환
      */
-    public List<Post> search(String keyword)
-    {
+    public List<Post> search(String keyword){
         List<Post> postList = postRepository.findByTitleContaining(keyword);
         return postList;
     }
@@ -124,13 +124,16 @@ public class PostService {
     /**
      * 베스트 게시글 DB에서 가져오기
      */
-    public Post getBestPost(Long categoryId)
-    {
-        LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
-        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+    public List<Post> getBestPost(Long categoryId){
 
-        List<Post> bestPosts = postRepository.getBestPosts(start, end, PageRequest.of(0, 1));
-        return bestPosts.get(0);
-    }
 
+        LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
+        LocalDateTime end = LocalDateTime.now();
+
+        System.out.println("start = " + start);
+        System.out.println("end = " + end);
+
+        List<Post> bestPost = postRepository.getBestPost(categoryId, start, end, PageRequest.of(0,1));
+        return bestPost;
+   }
 }
