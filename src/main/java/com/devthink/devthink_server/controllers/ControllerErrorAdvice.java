@@ -54,5 +54,11 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Post not found");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ErrorResponse handleCategoryNotFound() {
+        return new ErrorResponse("Category not found");
+    }
+
 }
 
