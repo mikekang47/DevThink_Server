@@ -1,10 +1,8 @@
 package com.devthink.devthink_server.domain;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,7 +11,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Letter extends BaseTimeEntity{
-
     @Id
     @GeneratedValue
     private Long id;
@@ -29,5 +26,4 @@ public class Letter extends BaseTimeEntity{
     private LocalDateTime viewAt; // 열람일자
 
     private Integer readCheck;  // 수신 확인
-
 }
