@@ -47,17 +47,17 @@ public class ControllerErrorAdvice {
     public ErrorResponse handleReviewNotFound() {
         return new ErrorResponse("Review not found");
     }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(LikeNotFoundException.class)
-    public ErrorResponse handleLikeNotFound() {
-        return new ErrorResponse("Like not found");
-    }
-
+    
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(PostIdNotFoundException.class)
     public ErrorResponse handlePostNotFound() {
         return new ErrorResponse("Post not found");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ErrorResponse handleCommentNotFound() {
+        return new ErrorResponse("Comment not found");
     }
 }
 
