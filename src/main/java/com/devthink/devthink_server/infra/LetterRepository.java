@@ -18,7 +18,7 @@ public interface LetterRepository extends JpaRepository<Letter, Long> {
             "and (u.senderId = :userId or u.targetId = :userId) order by u.id desc")
     ArrayList<Letter> getMessageList(Long userId);
 
-    // 안 읽은 메시지 갯수 가져오기
+    // 안읽은 메시지 개수 가져오기
     @Query("select count(u.id) from Letter u where u.targetId = :userId and u.readCheck = 0 and u.roomId = :roomId")
     Long countUnread(Long userId, Long roomId);
 
@@ -33,18 +33,17 @@ public interface LetterRepository extends JpaRepository<Letter, Long> {
             "u.readCheck = 0 and u.targetId = :userId")
     int MessageReadCheck(Long userId, Long roomId, LocalDateTime date);
 
-    // 메시지 이력이 있는지 검색하고, 게시글 개수 반환하기
+    // 메시지 이력 검색, 게시글 개수 반환하기
     @Query("select count(u.id) from Letter u " +
             "where (u.targetId = :targetId and u.senderId = :senderId) or (u.senderId = :targetId and u.targetId = :senderId)")
     int existChat(Long targetId, Long senderId);
 
-    // 유저의 메시지 테이블의 방 번호 최댓값 가져오기
+    // 메시지 테이블의 방번호 최댓값 가져오기
     @Query("select max(u.roomId) from Letter u")
     Long maxRoom();
 
-    // 기존 메시지 내역의 방 번호를 가져옵니다.
+    // 메시지 내역의 방 번호를 가져오기
     @Query("select u from Letter u where (u.targetId = :targetId " +
             "and u.senderId = :senderId) or (u.senderId = :targetId and u.targetId = :senderId)")
     List<Letter> selectRoom(Long targetId, Long senderId, Pageable pageable);
-
 }
