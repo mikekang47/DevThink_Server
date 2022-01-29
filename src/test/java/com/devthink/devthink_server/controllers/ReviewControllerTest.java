@@ -6,6 +6,7 @@ import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.ReviewRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,7 @@ class ReviewControllerTest {
 
         given(reviewService.getReviewById(5L)).willReturn(review);
     }
+
 
     @Test
     public void review_create_success() throws Exception {

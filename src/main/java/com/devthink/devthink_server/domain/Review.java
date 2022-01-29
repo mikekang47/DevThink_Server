@@ -38,7 +38,6 @@ public class Review extends BaseTimeEntity {
     private Boolean deleted = Boolean.FALSE;
 
     @OneToMany(mappedBy = "review")
-    @Builder.Default()
     private List<Comment> comments = new ArrayList<>();
 
     public void setBook(Book book){
