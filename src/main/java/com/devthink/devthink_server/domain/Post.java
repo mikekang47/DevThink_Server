@@ -26,7 +26,7 @@ public class Post extends BaseTimeEntity{
     private String status;
 
     @Builder.Default
-    private Integer heart = 0;
+    private Integer heartCnt = 0;
 
     public void update(String title, String content){
         this.title = title;
@@ -34,7 +34,7 @@ public class Post extends BaseTimeEntity{
     }
 
     public void updateHeart(int heart) {
-        this.heart = heart;
+        this.heartCnt = heart;
     }
 
 }

@@ -28,7 +28,7 @@ public class HeartService {
         Long postId = post.getId();
         Long userId = user.getId();
 
-        post.updateHeart(post.getHeart() + 1);
+        post.updateHeart(post.getHeartCnt() + 1);
         postRepository.save(post);
 
         Heart heart = Heart.builder()
