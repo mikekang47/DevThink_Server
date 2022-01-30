@@ -79,10 +79,10 @@ public class CommentService {
      */
     public String createComment(CommentRequestDto commentRequestDto) {
         // request상에 userId 값이 들어있는지 확인합니다.
-        Long userId = Optional.ofNullable(commentRequestDto.getUser_id())
+        Long userId = Optional.ofNullable(commentRequestDto.getUserId())
                                 .orElseThrow(()->new IllegalArgumentException("The userId cannot be null"));
         // request상에 reviewId 값이 들어있는지 확인합니다.
-        Long reviewId = Optional.ofNullable(commentRequestDto.getReview_id())
+        Long reviewId = Optional.ofNullable(commentRequestDto.getReviewId())
                 .orElseThrow(()->new IllegalArgumentException("The reviewId cannot be null"));
 
         // userId 값을 통하여 userRepository에서 User를 가져옵니다.
