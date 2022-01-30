@@ -1,22 +1,15 @@
-package com.devthink.devthink_server.domain;
+package com.devthink.devthink_server.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-@Entity
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Getter
-public class Like extends BaseTimeEntity{
-    @Id
-    @GeneratedValue
+@NoArgsConstructor
+public class HeartData {
     private Long id;
 
     private Long userId;
@@ -24,4 +17,5 @@ public class Like extends BaseTimeEntity{
     private Long postId;
 
     private Long commentId;
+
 }

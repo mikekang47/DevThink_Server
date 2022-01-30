@@ -1,15 +1,13 @@
 package com.devthink.devthink_server.infra;
 
-import com.devthink.devthink_server.domain.Like;
+import com.devthink.devthink_server.domain.Heart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface LikeRepository extends JpaRepository<Like, Long> {
+public interface LikeRepository extends JpaRepository<Heart, Long> {
 
-    Like save(Like like);
+    Heart save(Heart heart);
 
     void deleteById(Long id);
 }
