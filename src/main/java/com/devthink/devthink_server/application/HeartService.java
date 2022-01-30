@@ -3,7 +3,6 @@ package com.devthink.devthink_server.application;
 import com.devthink.devthink_server.domain.*;
 import com.devthink.devthink_server.infra.LikeRepository;
 import com.devthink.devthink_server.infra.PostRepository;
-import com.devthink.devthink_server.infra.UserRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +43,7 @@ public class HeartService {
 
     public Heart createCommentHeart(Comment comment, User user) {
 
-        comment.updateHeart(comment.getHeart() + 1);
+        comment.updateHeart(comment.getHeartCnt() + 1);
         commentRepository.save(comment);
 
         Heart heart = Heart.builder()
