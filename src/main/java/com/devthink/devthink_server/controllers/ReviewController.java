@@ -7,6 +7,7 @@ import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
 import io.swagger.annotations.ApiOperation;
@@ -47,15 +48,14 @@ public class ReviewController {
      * 주어진 id 의 리뷰를 상세 조회합니다.
      * [GET] /reviews/:id
      * @param id (조회할 리뷰 아이디)
-     * @return ReviewResponseDto (조회한 리뷰 정보 )
+     * @return ReviewDetailResponseData ( 사용자 프로필, 리뷰, 댓글 )
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "리뷰 상세 조회", notes = "식별자 값의 리뷰를 상세 조회합니다.")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ReviewResponseData detail(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
-        Review review = reviewService.getReviewById(id);
-        return review.toReviewResponseDto();
+    public ReviewDetailResponseData detail(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
+        return reviewService.getReviewDetailById(id);
     }
 
 

@@ -2,11 +2,14 @@ package com.devthink.devthink_server.application;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
+import com.devthink.devthink_server.dto.UserProfileData;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.infra.BookRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
+import com.devthink.devthink_server.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
     /**
      * 전달된 값으로 리뷰를 생성합니다.
@@ -51,6 +55,27 @@ public class ReviewService {
     public Review getReviewById(Long id) {
         return reviewRepository.findByIdAndDeletedIsFalse(id)
                 .orElseThrow(() -> new ReviewNotFoundException(id));
+    }
+
+    /**
+     * 입력된 리뷰 식별자 (id) 값으 리뷰를 가져옵니다.
+     * @param id (리뷰 식별자)
+     * @return 조회된 리뷰
+     */
+    public ReviewDetailResponseData getReviewDetailById(Long id) {
+        Review review = getReviewById(id);
+        User user = review.getUser();
+        UserProfileData userProfileData = UserProfileData.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .imageUrl(user.getImageUrl())
+                .deleted(user.isDeleted())
+                .build();
+        //TODO: Comment 불러오기
+        return ReviewDetailResponseData.builder()
+                .review(review.toReviewResponseDto())
+                .userProfile(userProfileData)
+                .build();
     }
 
     /**
@@ -85,7 +110,7 @@ public class ReviewService {
 
     /**
      * 전달된 리뷰를 삭제합니다.
-     * @param review(삭제할 리뷰)
+     * @param review (삭제할 리뷰)
      */
     @Transactional
     public void deleteReview(Review review){
