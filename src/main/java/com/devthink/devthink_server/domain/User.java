@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 
+import com.devthink.devthink_server.dto.UserProfileData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -65,5 +66,13 @@ public class User extends BaseTimeEntity{
         return !deleted && password.equals(this.password);
     }
 
+    public UserProfileData toUserProfileData(){
+        return UserProfileData.builder()
+                .id(id)
+                .nickname(nickname)
+                .imageUrl(imageUrl)
+                .deleted(deleted)
+                .build();
+    }
 }
 

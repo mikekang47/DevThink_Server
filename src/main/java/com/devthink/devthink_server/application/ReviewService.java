@@ -25,7 +25,6 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final BookRepository bookRepository;
-    private final UserRepository userRepository;
 
     /**
      * 전달된 값으로 리뷰를 생성합니다.
@@ -64,17 +63,10 @@ public class ReviewService {
      */
     public ReviewDetailResponseData getReviewDetailById(Long id) {
         Review review = getReviewById(id);
-        User user = review.getUser();
-        UserProfileData userProfileData = UserProfileData.builder()
-                .id(user.getId())
-                .nickname(user.getNickname())
-                .imageUrl(user.getImageUrl())
-                .deleted(user.isDeleted())
-                .build();
         //TODO: Comment 불러오기
         return ReviewDetailResponseData.builder()
                 .review(review.toReviewResponseDto())
-                .userProfile(userProfileData)
+                .userProfile(review.getUser().toUserProfileData())
                 .build();
     }
 
@@ -109,7 +101,7 @@ public class ReviewService {
     }
 
     /**
-     * 전달된 리뷰를 삭제합니다.
+     * 전달된 리뷰의 deleted 컬럼을 true로 변경하고, 해당 책의 리뷰수를 감소시키며, 평점을 다시 계산합니다.
      * @param review (삭제할 리뷰)
      */
     @Transactional
