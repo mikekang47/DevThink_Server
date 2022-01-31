@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -16,7 +17,7 @@ import javax.validation.constraints.Size;
 public class CommentRequestDto {
 
     @ApiParam(value = "회원 식별자", required = true, example = "1")
-    @NotBlank
+    @NotNull
     private final Long userId;
 
     @ApiParam(value = "게시글 식별자", example = "1")
