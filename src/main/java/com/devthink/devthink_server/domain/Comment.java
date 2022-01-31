@@ -18,28 +18,30 @@ import static javax.persistence.FetchType.LAZY;
 public class Comment extends BaseTimeEntity{
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
     @ManyToOne(targetEntity = User.class, fetch = LAZY)
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
     @ManyToOne(targetEntity = Post.class,fetch = LAZY)
     @JoinColumn(name = "post_id")
-    Post post;
+    private Post post;
 
     @ManyToOne(targetEntity = Review.class, fetch = LAZY)
     @JoinColumn(name = "review_id")
-    Review review;
+    private Review review;
 
-    String content;
+    private String content;
 
-    String status;
+    private String status;
 
     public CommentResponseDto toCommentResponseDto() {
         return CommentResponseDto.builder()
-                .user_nickname(user.getNickname())
-                .user_role(user.getRole())
+                .commentId(id)
+                .userNickname(user.getNickname())
+                .userRole(user.getRole())
+                .userImageUrl(user.getImageUrl())
                 .content(content)
                 .build();
     }
