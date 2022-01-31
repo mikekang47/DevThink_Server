@@ -53,7 +53,7 @@ public class CommentService {
      * @return 특정 사용자가 작성한 Comment 리스트
      */
     public List<Comment> getUserComments(Long userIdx) {
-        return commentRepository.findByUser_Id(userIdx);
+        return commentRepository.findAllByUserId(userIdx);
     }
 
     /**
@@ -61,7 +61,7 @@ public class CommentService {
      * @return 특정 게시물에 작성된 Comment 리스트
      */
     public List<Comment> getPostComments(Long postIdx) {
-        return commentRepository.findByPost_Id(postIdx);
+        return commentRepository.findByPostId(postIdx);
     }
 
     /**
@@ -69,7 +69,7 @@ public class CommentService {
      * @return 특정 리뷰에 작성된 Comment 리스트
      */
     public List<Comment> getReviewComments(Long reviewIdx) {
-        return commentRepository.findByReview_Id(reviewIdx);
+        return commentRepository.findByReviewId(reviewIdx);
     }
 
     /**
