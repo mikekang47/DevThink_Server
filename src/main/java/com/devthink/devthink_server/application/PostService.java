@@ -68,9 +68,8 @@ public class PostService {
      * @param page 얻고자 하는 page
      * @return  page에 해당하는 게시글
      */
-    public List<Post> list(int page){
-        Page<Post> pageList = postRepository.findAll(PageRequest.of(page - 1, 6, Sort.by(Sort.Direction.DESC, "id")));
-        return pageList.getContent();
+    public Page<Post> list(int page){
+        return postRepository.findAll(PageRequest.of(page - 1, 6, Sort.by(Sort.Direction.DESC, "id")));
     }
 
     /**
