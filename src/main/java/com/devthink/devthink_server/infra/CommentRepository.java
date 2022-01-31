@@ -16,7 +16,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Comment save(Comment comment);
 
-    List<Comment> findAllByUserId(@Param(value = "userId") Long userId);
+    List<Comment> findAllByUserIdAndPostIdIsNotNull(@Param(value = "userId") Long userId);
+
+    List<Comment> findAllByUserIdAndReviewIdIsNotNull(@Param(value = "userId") Long userId);
 
     List<Comment> findByPostId(@Param(value = "postIdx") Long postId);
 
