@@ -66,5 +66,11 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Comment not found");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CommentBadRequestException.class)
+    public ErrorResponse handleCommentBadRequest() {
+        return new ErrorResponse("Can't create comment on Review and Post at the same time, or both null");
+    }
+
 }
 
