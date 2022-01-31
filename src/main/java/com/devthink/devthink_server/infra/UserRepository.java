@@ -23,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u.imageUrl from User u where u.id = :targetId")
     String findImageUrlById(Long targetId);
+
+    @Query("select u.nickname from User u where u.id = :id")
+    String findNicknameById(Long id);
 }
