@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -13,11 +14,16 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class CommentResponseDto {
 
-    @NotBlank
-    private final String user_nickname;
+    @NotNull
+    private final Long commentId;
 
     @NotBlank
-    private final String user_role;
+    private final String userNickname;
+
+    @NotBlank
+    private final String userRole;
+
+    private final String userImageUrl;
 
     @NotBlank
     private final String content;
