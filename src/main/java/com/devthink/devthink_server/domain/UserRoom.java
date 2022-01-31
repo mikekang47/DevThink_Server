@@ -1,6 +1,5 @@
 package com.devthink.devthink_server.domain;
 
-import com.devthink.devthink_server.domain.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,9 +16,14 @@ public class UserRoom extends BaseTimeEntity {
     @GeneratedValue
     private Long id;
 
-    private Long userId;
+    @ManyToOne(fetch = LAZY)
+    private User user1;
+
+    @ManyToOne(fetch = LAZY)
+    private User user2;
 
     private Long roomId;
 
-    private String status;
+    @Builder.Default
+    private Boolean deleted = false;
 }
