@@ -94,9 +94,7 @@ public class CommentController {
         String content = commentRequestDto.getContent();
         if (content.isBlank())      // 입력받은 request에서 content가 공란인지 확인합니다.
             throw new CommentContentEmptyException();
-
-        Comment comment = commentService.getComment(commentId);
-        commentService.updateComment(comment, content);
+        Comment comment = commentService.updateComment(commentId, content);
         return comment.toCommentResponseDto();
     }
 
