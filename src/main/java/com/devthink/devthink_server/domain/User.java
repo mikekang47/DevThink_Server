@@ -1,37 +1,68 @@
 package com.devthink.devthink_server.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
-@Entity(name = "user")
+
 @Getter
 @AllArgsConstructor
+@Entity
+@Builder
 @NoArgsConstructor
-public class User {
+public class User extends BaseTimeEntity{
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    String email;
+    private String email;
 
-    String password;
+    private String password;
 
-    String nickName;
+    private String name;
 
-    String phoneNum;
+    private String nickname;
 
-    String stack;
+    private String phoneNum;
 
-    String blog_addr;
+    private String role;
 
-    String git_nickname;
+    @ElementCollection(targetClass = String.class)
+    private List<String> stack;
 
+    private String blogAddr;
+
+    private String gitNickname;
+
+    private Integer point;
+
+    @Builder.Default
+    private String imageUrl = "";
+
+    @Builder.Default
+    private boolean deleted = false;
+
+    @Builder.Default
+    private Integer reported = 0;
+
+    public void changeWith(User source) {
+        nickname = source.getNickname();
+        role = source.getRole();
+        stack = source.getStack();
+        gitNickname = source.getGitNickname();
+        blogAddr = source.getBlogAddr();
+        password = source.getPassword();
+        point = source.getPoint();
+    }
+
+    public void destroy() {
+        deleted = true;
+    }
+
+    public boolean authenticate(String password) {
+        return !deleted && password.equals(this.password);
+    }
 
 }
