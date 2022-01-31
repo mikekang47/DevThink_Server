@@ -2,7 +2,11 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.BookService;
 import com.devthink.devthink_server.application.ReviewService;
+import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.UserModificationData;
+import com.devthink.devthink_server.dto.UserRegistrationData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,6 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,22 +35,95 @@ class ReviewControllerTest {
     @MockBean
     private BookService bookService;
 
+    @MockBean
+    private UserService userService;
+
+    @BeforeEach
+    void setUp() {
+        given(userService.registerUser(any(UserRegistrationData.class)))
+                .will(invocation -> {
+                    UserRegistrationData registrationData = invocation.getArgument(0);
+                    return User.builder()
+                            .id(13L)
+                            .email(registrationData.getEmail())
+                            .name(registrationData.getName())
+                            .password(registrationData.getPassword())
+                            .phoneNum(registrationData.getPhoneNum())
+                            .blogAddr(registrationData.getBlogAddr())
+                            .nickname(registrationData.getNickname())
+                            .role(registrationData.getRole())
+                            .build();
+                });
+    }
+    
     @Test
-    public void review_create_success() throws Exception {
-        this.mvc.perform(post("/reviews")
+    public void 올바른_정보_리뷰생성_성공() throws Exception {
+        mvc.perform(post("/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"userId\": 1, \n\"bookIsbn\": 1, " +
-                                "\n\"content\": \"유용한 책입니다.\", \n\"score\": 4.04}"))
-                .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print());
+                        .content("{\n" +
+                                "    \"userId\": \"13\",\n" +
+                                "    \"book\" : {\n" +
+                                "        \"isbn\" : 10,\n" +
+                                "        \"name\" : \"자바 기초\",\n" +
+                                "        \"writer\" : \"이비\",\n" +
+                                "        \"imgUrl\" : \"www.img.com\"\n" +
+                                "    },\n" +
+                                "    \"content\" : \"내용~~~~~~~\",\n" +
+                                "    \"score\" : \"5.0\"\n" +
+                                "}"))
+                .andExpect(status().isCreated());
     }
 
     @Test
-    public void review_get_success() throws Exception {
-        this.mvc.perform(get("/reviews/5")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+    void 내용없이_리뷰생성_실패() throws Exception {
+        mvc.perform(post("/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"userId\": \"13\",\n" +
+                                "    \"book\" : {\n" +
+                                "        \"isbn\" : 10,\n" +
+                                "        \"name\" : \"자바 기초\",\n" +
+                                "        \"writer\" : \"이비\",\n" +
+                                "        \"imgUrl\" : \"www.img.com\"\n" +
+                                "    },\n" +
+                                "    \"content\" : \"\"\n" +
+                                "    \"score\" : \"5.0\"\n" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 책정보_누락시_리뷰생성_실패() throws Exception {
+        mvc.perform(post("/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"userId\": \"13\",\n" +
+                                "    \"book\" : {\n" +
+                                "        \"isbn\" : 10,\n" +
+                                "        \"writer\" : \"이비\",\n" +
+                                "        \"imgUrl\" : \"www.img.com\"\n" +
+                                "    },\n" +
+                                "    \"content\" : \"내용~~~~~~~\",\n" +
+                                "    \"score\" : \"5.0\"\n" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void 평점없이_리뷰생성_실패() throws Exception {
+        mvc.perform(post("/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"userId\": \"13\",\n" +
+                                "    \"book\" : {\n" +
+                                "        \"isbn\" : 10,\n" +
+                                "        \"name\" : \"자바 기초\",\n" +
+                                "        \"writer\" : \"이비\",\n" +
+                                "        \"imgUrl\" : \"www.img.com\"\n" +
+                                "    },\n" +
+                                "    \"content\" : \"내용~~~~~~~\",\n"+
+                                "}"))
+                .andExpect(status().isBadRequest());
     }
 
 }
