@@ -35,7 +35,6 @@ public class CommentController {
         return getCommentResponseDtos(comments);
     }
 
-
     /**
      * 특정 사용자의 Comment를 조회합니다.
      * @param userIdx 댓글을 조회할 사용자의 식별자
@@ -76,17 +75,30 @@ public class CommentController {
     }
 
     /**
-     * 입력된 comment 정보로 새로운 Comment를 생성합니다.
-     * @return 생성된 Comment의 id 값
+     * 입력된 comment 정보로 Review에 등록할 새로운 Comment를 생성합니다.
+     * @param commentRequestDto 생성하려는 Comment의 요청 정보
+     * @return 생성된 Comment
      */
-    @ApiOperation(value = "댓글 등록", notes = "입력된 댓글 정보로 새로운 댓글을 등록합니다.", response = String.class)
-    @PostMapping
+    @ApiOperation(value = "리뷰 댓글 등록", notes = "입력된 댓글 정보로 리뷰에 새로운 댓글을 등록합니다.", response = String.class)
+    @PostMapping("/review")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentResponseDto createComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
-        Comment comment = commentService.createComment(commentRequestDto);
+    public CommentResponseDto createReviewComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
+        Comment comment = commentService.createReviewComment(commentRequestDto);
         return comment.toCommentResponseDto();
     }
 
+    /**
+     * 입력된 comment 정보로 Post에 등록할 새로운 Comment를 생성합니다.
+     * @param commentRequestDto 생성하려는 Comment의 요청 정보
+     * @return 생성된 Comment
+     */
+    @ApiOperation(value = "게시글 댓글 등록", notes = "입력된 댓글 정보로 게시글에 새로운 댓글을 등록합니다.", response = String.class)
+    @PostMapping("/post")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentResponseDto createPostComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
+        Comment comment = commentService.createPostComment(commentRequestDto);
+        return comment.toCommentResponseDto();
+    }
 
     /**
      * commentId를 통하여 기존의 Comment를 수정합니다.
@@ -128,9 +140,8 @@ public class CommentController {
     private List<CommentResponseDto> getCommentResponseDtos(List<Comment> comments) {
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
 
-        for (Comment comment : comments) {
+        for (Comment comment : comments)
             commentResponseDtos.add(comment.toCommentResponseDto());
-        }
         return commentResponseDtos;
     }
 }
