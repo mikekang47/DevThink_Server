@@ -109,6 +109,18 @@ public class CommentService {
     public Comment updateComment(Long commentId, String content) {
         Comment comment = getComment(commentId);
         comment.setContent(content);
+        return comment;
+    }
+
+    /**
+     * commentId를 통하여 기존의 Comment를 삭제합니다.
+     * @param commentId 삭제할 Comment의 식별자
+     */
+    public void deleteComment(Long commentId) {
+        if (commentRepository.existsById(commentId))
+            commentRepository.deleteById(commentId);
+        else
+            throw new CommentNotFoundException(commentId);
     }
 
 

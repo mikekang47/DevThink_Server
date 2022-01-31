@@ -99,6 +99,18 @@ public class CommentController {
     }
 
     /**
+     * commentId를 통하여 기존의 Comment를 삭제합니다.
+     * @param commentId 삭제할 Comment의 식별자
+     */
+    @ApiOperation(value = "댓글 삭제", notes = "입력된 댓글의 식별자로 댓글을 찾아 삭제합니다.")
+    @DeleteMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteComment(@PathVariable("commentId") Long commentId,
+                              @Valid @RequestBody CommentRequestDto commentRequestDto) {
+        commentService.deleteComment(commentId);
+    }
+
+    /**
      * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
      * @param comments entity List
      * @return 입력된 dto 데이터로 변환된 list
