@@ -79,41 +79,61 @@ public class CommentService {
     }
 
     /**
-     * 입력된 comment 정보로 새로운 Comment를 생성합니다.
+     * 입력된 comment 정보로 Review에 등록할 새로운 Comment를 생성합니다.
      * @param commentRequestDto Comment를 생성하려고 하는 request
-     * @return 생성된 Comment의 id 값
+     * @return 생성된 Comment
      */
-    public Comment createComment(CommentRequestDto commentRequestDto) {
+    public Comment createReviewComment(CommentRequestDto commentRequestDto) {
         Long userId = commentRequestDto.getUserId();
         Long reviewId = commentRequestDto.getReviewId();
-        Long postId = commentRequestDto.getPostId();
-
-        Comment newComment;
 
         // userId 값을 통하여 userRepository에서 User를 가져옵니다.
         User user = findUser(userId);
 
-        if (reviewId == null && postId != null) {           // request상에 postId 값이 들어있는지 확인합니다.
-            // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
-            Post post = findPost(postId);
-            newComment = Comment.builder()
-                    .user(user)
-                    .post(post)
-                    .content(commentRequestDto.getContent())
-                    .build();
-        } else if (reviewId != null && postId == null) {    // request상에 reviewId 값이 들어있는지 확인합니다.
+        // request상에 reviewId 값이 들어있는지 확인합니다.
+        if (reviewId != null) {
             // reviewId 값을 통하여 reviewRepository에서 Review를 가져옵니다.
             Review review = findReview(reviewId);
-            newComment = Comment.builder()
+            // commentRepository에 새로운 댓글을 생성합니다.
+            return commentRepository.save(
+                    Comment.builder()
                     .user(user)
                     .review(review)
                     .content(commentRequestDto.getContent())
-                    .build();
+                    .build()
+            );
         } else {
-            throw new CommentBadRequestException();
+            throw new ReviewCommentBadRequestException();
         }
-        // commentRepository에 새로운 댓글을 생성합니다.
-        return commentRepository.save(newComment);
+    }
+
+    /**
+     * 입력된 comment 정보로 Post에 등록할 새로운 Comment를 생성합니다.
+     * @param commentRequestDto Comment를 생성하려고 하는 request
+     * @return 생성된 Comment
+     */
+    public Comment createPostComment(CommentRequestDto commentRequestDto) {
+        Long userId = commentRequestDto.getUserId();
+        Long postId = commentRequestDto.getPostId();
+
+        // userId 값을 통하여 userRepository에서 User를 가져옵니다.
+        User user = findUser(userId);
+
+        // request상에 postId 값이 들어있는지 확인합니다.
+        if (postId != null) {
+            // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
+            Post post = findPost(postId);
+            // commentRepository에 새로운 댓글을 생성합니다.
+            return commentRepository.save(
+                    Comment.builder()
+                    .user(user)
+                    .post(post)
+                    .content(commentRequestDto.getContent())
+                    .build()
+            );
+        } else {
+            throw new PostCommentBadRequestException();
+        }
     }
 
     /**
