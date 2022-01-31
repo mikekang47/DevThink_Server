@@ -82,8 +82,9 @@ public class CommentController {
     @ApiOperation(value = "댓글 등록", notes = "입력된 댓글 정보로 새로운 댓글을 등록합니다.", response = String.class)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String createComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
-        return commentService.createComment(commentRequestDto);
+    public CommentResponseDto createComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
+        Comment comment = commentService.createComment(commentRequestDto);
+        return comment.toCommentResponseDto();
     }
 
 
