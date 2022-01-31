@@ -60,5 +60,10 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Category not found");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserRoomNotFoundException.class)
+    public ErrorResponse handleUserRoomNotFound() {
+        return new ErrorResponse("UserRoom not found");
+    }
 }
 
