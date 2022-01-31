@@ -67,9 +67,15 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(CommentBadRequestException.class)
-    public ErrorResponse handleCommentBadRequest() {
-        return new ErrorResponse("Can't create comment on Review and Post at the same time, or both null");
+    @ExceptionHandler(ReviewCommentBadRequestException.class)
+    public ErrorResponse handleReviewCommentBadRequest() {
+        return new ErrorResponse("Can't create comment with null reviewId");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PostCommentBadRequestException.class)
+    public ErrorResponse handlePostCommentBadRequest() {
+        return new ErrorResponse("Can't create comment with null postId");
     }
 
 }
