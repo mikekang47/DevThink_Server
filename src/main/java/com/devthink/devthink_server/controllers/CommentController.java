@@ -36,15 +36,32 @@ public class CommentController {
     }
 
     /**
-     * 특정 사용자의 Comment를 조회합니다.
+     * 특정 사용자가 Review에 등록한 Comment를 모두 조회합니다.
      * @param userIdx 댓글을 조회할 사용자의 식별자
      * @return 특정 사용자가 작성한 Comment 리스트
      */
-    @ApiOperation(value = "사용자 댓글 조회", notes = "특정 사용자의 댓글을 조회합니다.", response = List.class)
+    @ApiOperation(value = "사용자의 리뷰 댓글 조회",
+            notes = "특정 사용자가 리뷰에 등록한 댓글을 모두 조회합니다.",
+            response = List.class)
     @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
-    @GetMapping("/user/{userIdx}")
-    public List<CommentResponseDto> getUserComments(@PathVariable("userIdx") Long userIdx) {
-        List<Comment> comments = commentService.getUserComments(userIdx);
+    @GetMapping("/user/{userIdx}/review")
+    public List<CommentResponseDto> getUserReviewComments(@PathVariable("userIdx") Long userIdx) {
+        List<Comment> comments = commentService.getUserReviewComments(userIdx);
+        return getCommentResponseDtos(comments);
+    }
+
+    /**
+     * 특정 사용자가 Post에 등록한 Comment를 모두 조회합니다.
+     * @param userIdx 댓글을 조회할 사용자의 식별자
+     * @return 특정 사용자가 작성한 Comment 리스트
+     */
+    @ApiOperation(value = "사용자의 게시글 댓글 조회",
+            notes = "특정 사용자가 게시글에 등록한 댓글을 모두 조회합니다.",
+            response = List.class)
+    @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
+    @GetMapping("/user/{userIdx}/post")
+    public List<CommentResponseDto> getUserPostComments(@PathVariable("userIdx") Long userIdx) {
+        List<Comment> comments = commentService.getUserPostComments(userIdx);
         return getCommentResponseDtos(comments);
     }
 
