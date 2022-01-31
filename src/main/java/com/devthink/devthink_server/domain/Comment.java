@@ -1,6 +1,6 @@
 package com.devthink.devthink_server.domain;
 
-import com.devthink.devthink_server.dto.CommentResponseDto;
+import com.devthink.devthink_server.dto.CommentResponseData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,11 +36,11 @@ public class Comment extends BaseTimeEntity{
 
     private String status;
 
-    public CommentResponseDto toCommentResponseDto() {
-        return CommentResponseDto.builder()
+    public CommentResponseData toCommentResponseDto() {
+        return CommentResponseData.builder()
                 .commentId(id)
+                .userId(user.getId())
                 .userNickname(user.getNickname())
-                .userRole(user.getRole())
                 .userImageUrl(user.getImageUrl())
                 .content(content)
                 .build();

@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @Setter
 @AllArgsConstructor
 @ApiModel("댓글 등록 정보")
-public class CommentRequestDto {
+public class CommentRequestData {
 
     @ApiModelProperty(value = "회원 식별자", required = true, example = "1")
     @NotNull

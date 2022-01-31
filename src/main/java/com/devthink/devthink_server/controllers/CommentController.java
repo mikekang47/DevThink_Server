@@ -2,8 +2,8 @@ package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.CommentService;
 import com.devthink.devthink_server.domain.Comment;
-import com.devthink.devthink_server.dto.CommentRequestDto;
-import com.devthink.devthink_server.dto.CommentResponseDto;
+import com.devthink.devthink_server.dto.CommentRequestData;
+import com.devthink.devthink_server.dto.CommentResponseData;
 import com.devthink.devthink_server.errors.CommentContentEmptyException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -30,7 +30,7 @@ public class CommentController {
      */
     @ApiOperation(value = "전체 댓글 조회", notes = "모든 댓글을 조회합니다.", response = List.class)
     @GetMapping
-    public List<CommentResponseDto> getComments() {
+    public List<CommentResponseData> getComments() {
         List<Comment> comments = commentService.getComments();
         return getCommentResponseDtos(comments);
     }
@@ -45,7 +45,7 @@ public class CommentController {
             response = List.class)
     @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
     @GetMapping("/user/{userIdx}/review")
-    public List<CommentResponseDto> getUserReviewComments(@PathVariable("userIdx") Long userIdx) {
+    public List<CommentResponseData> getUserReviewComments(@PathVariable("userIdx") Long userIdx) {
         List<Comment> comments = commentService.getUserReviewComments(userIdx);
         return getCommentResponseDtos(comments);
     }
@@ -60,7 +60,7 @@ public class CommentController {
             response = List.class)
     @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
     @GetMapping("/user/{userIdx}/post")
-    public List<CommentResponseDto> getUserPostComments(@PathVariable("userIdx") Long userIdx) {
+    public List<CommentResponseData> getUserPostComments(@PathVariable("userIdx") Long userIdx) {
         List<Comment> comments = commentService.getUserPostComments(userIdx);
         return getCommentResponseDtos(comments);
     }
@@ -73,7 +73,7 @@ public class CommentController {
     @ApiOperation(value = "게시글 댓글 조회", notes = "특정 게시글의 댓글을 조회합니다.", response = List.class)
     @ApiImplicitParam(name = "postIdx", value = "조회할 대상 게시글의 식별자")
     @GetMapping("/post/{postIdx}")
-    public List<CommentResponseDto> getPostComments(@PathVariable("postIdx") Long postIdx) {
+    public List<CommentResponseData> getPostComments(@PathVariable("postIdx") Long postIdx) {
         List<Comment> comments = commentService.getPostComments(postIdx);
         return getCommentResponseDtos(comments);
     }
@@ -86,34 +86,34 @@ public class CommentController {
     @ApiOperation(value = "리뷰 댓글 조회", notes = "특정 리뷰의 댓글을 조회합니다.", response = List.class)
     @ApiImplicitParam(name = "reviewIdx", value = "조회할 대상 리뷰의 식별자")
     @GetMapping("/review/{reviewIdx}")
-    public List<CommentResponseDto> getReviewComments(@PathVariable("reviewIdx") Long reviewIdx) {
+    public List<CommentResponseData> getReviewComments(@PathVariable("reviewIdx") Long reviewIdx) {
         List<Comment> comments = commentService.getReviewComments(reviewIdx);
         return getCommentResponseDtos(comments);
     }
 
     /**
      * 입력된 comment 정보로 Review에 등록할 새로운 Comment를 생성합니다.
-     * @param commentRequestDto 생성하려는 Comment의 요청 정보
+     * @param commentRequestData 생성하려는 Comment의 요청 정보
      * @return 생성된 Comment
      */
     @ApiOperation(value = "리뷰 댓글 등록", notes = "입력된 댓글 정보로 리뷰에 새로운 댓글을 등록합니다.", response = String.class)
     @PostMapping("/review")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentResponseDto createReviewComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
-        Comment comment = commentService.createReviewComment(commentRequestDto);
+    public CommentResponseData createReviewComment(@Valid @RequestBody CommentRequestData commentRequestData){
+        Comment comment = commentService.createReviewComment(commentRequestData);
         return comment.toCommentResponseDto();
     }
 
     /**
      * 입력된 comment 정보로 Post에 등록할 새로운 Comment를 생성합니다.
-     * @param commentRequestDto 생성하려는 Comment의 요청 정보
+     * @param commentRequestData 생성하려는 Comment의 요청 정보
      * @return 생성된 Comment
      */
     @ApiOperation(value = "게시글 댓글 등록", notes = "입력된 댓글 정보로 게시글에 새로운 댓글을 등록합니다.", response = String.class)
     @PostMapping("/post")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentResponseDto createPostComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
-        Comment comment = commentService.createPostComment(commentRequestDto);
+    public CommentResponseData createPostComment(@Valid @RequestBody CommentRequestData commentRequestData){
+        Comment comment = commentService.createPostComment(commentRequestData);
         return comment.toCommentResponseDto();
     }
 
@@ -123,13 +123,13 @@ public class CommentController {
      */
     @ApiOperation(value = "댓글 수정",
             notes = "입력된 댓글의 식별자로 수정할 댓글을 찾아, 주어진 데이터로 댓글의 정보를 갱신합니다.",
-            response = CommentResponseDto.class)
+            response = CommentResponseData.class)
     @ApiImplicitParam(name = "commentId", value = "수정할 댓글의 식별자")
     @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public CommentResponseDto updateComment(@PathVariable("commentId") Long commentId,
-                                            @Valid @RequestBody CommentRequestDto commentRequestDto){
-        String content = commentRequestDto.getContent();
+    public CommentResponseData updateComment(@PathVariable("commentId") Long commentId,
+                                             @Valid @RequestBody CommentRequestData commentRequestData){
+        String content = commentRequestData.getContent();
         if (content.isBlank())      // 입력받은 request에서 content가 공란인지 확인합니다.
             throw new CommentContentEmptyException();
         Comment comment = commentService.updateComment(commentId, content);
@@ -145,7 +145,7 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteComment(@PathVariable("commentId") Long commentId,
-                              @Valid @RequestBody CommentRequestDto commentRequestDto) {
+                              @Valid @RequestBody CommentRequestData commentRequestData) {
         commentService.deleteComment(commentId);
     }
 
@@ -154,11 +154,11 @@ public class CommentController {
      * @param comments entity List
      * @return 입력된 dto 데이터로 변환된 list
      */
-    private List<CommentResponseDto> getCommentResponseDtos(List<Comment> comments) {
-        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+    private List<CommentResponseData> getCommentResponseDtos(List<Comment> comments) {
+        List<CommentResponseData> commentResponseData = new ArrayList<>();
 
         for (Comment comment : comments)
-            commentResponseDtos.add(comment.toCommentResponseDto());
-        return commentResponseDtos;
+            commentResponseData.add(comment.toCommentResponseDto());
+        return commentResponseData;
     }
 }

@@ -6,7 +6,7 @@ import com.devthink.devthink_server.errors.*;
 import com.devthink.devthink_server.infra.CommentRepository;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
-import com.devthink.devthink_server.dto.CommentRequestDto;
+import com.devthink.devthink_server.dto.CommentRequestData;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
 import com.devthink.devthink_server.infra.UserRepository;
@@ -89,12 +89,12 @@ public class CommentService {
 
     /**
      * 입력된 comment 정보로 Review에 등록할 새로운 Comment를 생성합니다.
-     * @param commentRequestDto Comment를 생성하려고 하는 request
+     * @param commentRequestData Comment를 생성하려고 하는 request
      * @return 생성된 Comment
      */
-    public Comment createReviewComment(CommentRequestDto commentRequestDto) {
-        Long userId = commentRequestDto.getUserId();
-        Long reviewId = commentRequestDto.getReviewId();
+    public Comment createReviewComment(CommentRequestData commentRequestData) {
+        Long userId = commentRequestData.getUserId();
+        Long reviewId = commentRequestData.getReviewId();
 
         // userId 값을 통하여 userRepository에서 User를 가져옵니다.
         User user = findUser(userId);
@@ -108,7 +108,7 @@ public class CommentService {
                     Comment.builder()
                     .user(user)
                     .review(review)
-                    .content(commentRequestDto.getContent())
+                    .content(commentRequestData.getContent())
                     .build()
             );
         } else {
@@ -118,12 +118,12 @@ public class CommentService {
 
     /**
      * 입력된 comment 정보로 Post에 등록할 새로운 Comment를 생성합니다.
-     * @param commentRequestDto Comment를 생성하려고 하는 request
+     * @param commentRequestData Comment를 생성하려고 하는 request
      * @return 생성된 Comment
      */
-    public Comment createPostComment(CommentRequestDto commentRequestDto) {
-        Long userId = commentRequestDto.getUserId();
-        Long postId = commentRequestDto.getPostId();
+    public Comment createPostComment(CommentRequestData commentRequestData) {
+        Long userId = commentRequestData.getUserId();
+        Long postId = commentRequestData.getPostId();
 
         // userId 값을 통하여 userRepository에서 User를 가져옵니다.
         User user = findUser(userId);
@@ -137,7 +137,7 @@ public class CommentService {
                     Comment.builder()
                     .user(user)
                     .post(post)
-                    .content(commentRequestDto.getContent())
+                    .content(commentRequestData.getContent())
                     .build()
             );
         } else {
