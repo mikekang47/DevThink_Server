@@ -47,4 +47,5 @@ public class PostResponseData {
 
     @ApiModelProperty(notes = "업데이트 시각", example = "2022-01-26T22:07:17.0831141")
     private LocalDateTime updateAt;
+
 }
