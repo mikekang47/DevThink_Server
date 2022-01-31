@@ -16,8 +16,14 @@ public class LetterResultData {
     @ApiModelProperty(notes = "방 번호", example = "1")
     private Long roomId;
 
-    @ApiModelProperty(notes = "메시지 발신자", example = "1")
+    @ApiModelProperty(notes = "메시지 발신자", example = "asd")
     private Long senderId;
+
+    @ApiModelProperty(notes = "발신자 닉네임", example = "asd")
+    private String sendNick;
+
+    @ApiModelProperty(notes = "수신자 닉네임", example = "1")
+    private String targetNick;
 
     @ApiModelProperty(notes = "메시지 수신자", example = "2")
     private Long targetId;
@@ -32,5 +38,8 @@ public class LetterResultData {
     private LocalDateTime viewAt;
 
     @ApiModelProperty(notes = "메시지 읽음 체크", example = "0")
-    private Integer readCheck;
+    private Boolean readCheck;
+
+    @ApiModelProperty(notes = "하트 송신 여부", example = "true")
+    private Boolean heart;
 }
