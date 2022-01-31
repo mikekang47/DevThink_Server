@@ -33,7 +33,7 @@ public class CommentService {
 
     /**
      * 모든 Comment를 조회합니다.
-     * @return
+     * @return 조회된 모든 Comment
      */
     public List<Comment> getComments() {
         return commentRepository.findAll();
@@ -77,7 +77,7 @@ public class CommentService {
      * @param commentRequestDto Comment를 생성하려고 하는 request
      * @return 생성된 Comment의 id 값
      */
-    public String createComment(CommentRequestDto commentRequestDto) {
+    public Comment createComment(CommentRequestDto commentRequestDto) {
         // request상에 userId 값이 들어있는지 확인합니다.
         Long userId = Optional.ofNullable(commentRequestDto.getUserId())
                                 .orElseThrow(()->new IllegalArgumentException("The userId cannot be null"));
@@ -91,14 +91,13 @@ public class CommentService {
         Review review = findReview(reviewId);
 
         // commentRepository에 새로운 댓글을 생성합니다.
-        Comment comment = commentRepository.save(
+        return commentRepository.save(
                 Comment.builder()
                         .user(user)
                         .review(review)
                         .content(commentRequestDto.getContent())
                         .build()
         );
-        return comment.getId().toString();
     }
 
     /**
