@@ -72,6 +72,7 @@ public class LetterService {
                             .roomId(letter.getRoom().getRoomId())
                             .senderId(letter.getSender().getId())
                             .targetId(letter.getTarget().getId())
+                            .viewAt(letter.getViewAt())
                             .content(letter.getContent())
                             .readCheck(letter.isReadCheck())
                             .heart(letter.isHeart())
