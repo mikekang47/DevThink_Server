@@ -159,7 +159,7 @@ public class CommentService {
      * @param id 찾고자 하는 게시글의 식별자
      * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
      */
-    public Post findPost(Long id){
+    private Post findPost(Long id){
         return postRepository.findById(id)
                 .orElseThrow(() -> new PostIdNotFoundException(id));
     }
