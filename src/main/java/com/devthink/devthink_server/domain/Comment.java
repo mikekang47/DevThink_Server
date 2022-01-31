@@ -20,13 +20,16 @@ public class Comment extends BaseTimeEntity{
     @GeneratedValue
     Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(targetEntity = User.class, fetch = LAZY)
+    @JoinColumn(name = "user_id")
     User user;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(targetEntity = Post.class,fetch = LAZY)
+    @JoinColumn(name = "post_id")
     Post post;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(targetEntity = Review.class, fetch = LAZY)
+    @JoinColumn(name = "review_id")
     Review review;
 
     String content;
