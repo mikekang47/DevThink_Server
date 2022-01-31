@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,8 +29,9 @@ public class CommentController {
      */
     @ApiOperation(value = "전체 댓글 조회", notes = "모든 댓글을 조회합니다.", response = List.class)
     @GetMapping
-    public List<Comment> getComments() {
-        return commentService.getComments();
+    public List<CommentResponseDto> getComments() {
+        List<Comment> comments = commentService.getComments();
+        return getCommentResponseDtos(comments);
     }
 
 
@@ -39,8 +41,9 @@ public class CommentController {
      */
     @ApiOperation(value = "사용자 댓글 조회", notes = "특정 사용자의 댓글을 조회합니다.", response = List.class)
     @GetMapping("/user/{userIdx}")
-    public List<Comment> getUserComments(@PathVariable("userIdx") Long userIdx) {
-        return commentService.getUserComments(userIdx);
+    public List<CommentResponseDto> getUserComments(@PathVariable("userIdx") Long userIdx) {
+        List<Comment> comments = commentService.getUserComments(userIdx);
+        return getCommentResponseDtos(comments);
     }
 
     /**
@@ -49,8 +52,9 @@ public class CommentController {
      */
     @ApiOperation(value = "게시글 댓글 조회", notes = "특정 게시글의 댓글을 조회합니다.", response = List.class)
     @GetMapping("/post/{postIdx}")
-    public List<Comment> getPostComments(@PathVariable("postIdx") Long postIdx) {
-        return commentService.getPostComments(postIdx);
+    public List<CommentResponseDto> getPostComments(@PathVariable("postIdx") Long postIdx) {
+        List<Comment> comments = commentService.getPostComments(postIdx);
+        return getCommentResponseDtos(comments);
     }
 
     /**
@@ -59,8 +63,9 @@ public class CommentController {
      */
     @ApiOperation(value = "리뷰 댓글 조회", notes = "특정 리뷰의 댓글을 조회합니다.", response = List.class)
     @GetMapping("/review/{reviewIdx}")
-    public List<Comment> getReviewComments(@PathVariable("reviewIdx") Long reviewIdx) {
-        return commentService.getReviewComments(reviewIdx);
+    public List<CommentResponseDto> getReviewComments(@PathVariable("reviewIdx") Long reviewIdx) {
+        List<Comment> comments = commentService.getReviewComments(reviewIdx);
+        return getCommentResponseDtos(comments);
     }
 
     /**
@@ -68,7 +73,7 @@ public class CommentController {
      * @return 생성된 Comment의 id 값
      */
     @ApiOperation(value = "댓글 등록", notes = "입력된 댓글 정보로 새로운 댓글을 등록합니다.", response = String.class)
-    @PostMapping("/")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String createComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
         return commentService.createComment(commentRequestDto);
@@ -93,5 +98,19 @@ public class CommentController {
         Comment comment = commentService.getComment(commentId);
         commentService.updateComment(comment, content);
         return comment.toCommentResponseDto();
+    }
+
+    /**
+     * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
+     * @param comments entity List
+     * @return 입력된 dto 데이터로 변환된 list
+     */
+    private List<CommentResponseDto> getCommentResponseDtos(List<Comment> comments) {
+        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            commentResponseDtos.add(comment.toCommentResponseDto());
+        }
+        return commentResponseDtos;
     }
 }
