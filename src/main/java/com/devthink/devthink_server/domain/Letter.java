@@ -5,25 +5,43 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Letter extends BaseTimeEntity{
+public class Letter extends BaseTimeEntity {
     @Id
     @GeneratedValue
     private Long id;
 
-    private Long roomId;    // 방 번호
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "room_id")
+    private UserRoom room;    // 방 번호
 
-    private Long senderId;  // 발신자
+    @ManyToOne(fetch = LAZY)
+    private User sender;  // 발신자
 
-    private Long targetId;  // 수신자
+    @ManyToOne(fetch = LAZY)
+    private User target;  // 수신자
 
     private String content; // 쪽지 내용
 
     private LocalDateTime viewAt; // 열람일자
 
-    private Integer readCheck;  // 수신 확인
+    @Builder.Default
+    private boolean readCheck = false;
+
+    @Builder.Default
+    private boolean heart = false;  // 하트 기능
+
+    public void setViewAt(LocalDateTime viewAt) {
+        this.viewAt = viewAt;
+    }
+
+    public void setReadCheck(boolean readCheck) {
+        this.readCheck = readCheck;
+    }
 }
