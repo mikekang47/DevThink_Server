@@ -35,7 +35,9 @@ public class PostRequestData {
     @Mapping("content")
     private String content;
 
+    @ApiParam(value = "이미지 url", example = "example1.com")
     private String imageUrl;
 
+    @ApiParam(value = "하트 포함 여부", example = "true")
     private Integer heart;
 }
