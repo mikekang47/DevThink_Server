@@ -52,12 +52,21 @@ public class CommentService {
     }
 
     /**
-     * 특정 사용자의 Comment를 조회합니다.
+     * 특정 사용자가 Review에 등록한 Comment를 모두 조회합니다.
      * @param userIdx 댓글을 조회할 사용자의 식별자
-     * @return 특정 사용자가 작성한 Comment 리스트
+     * @return 특정 사용자가 Review에 작성한 Comment 리스트
      */
-    public List<Comment> getUserComments(Long userIdx) {
-        return commentRepository.findAllByUserId(userIdx);
+    public List<Comment> getUserReviewComments(Long userIdx) {
+        return commentRepository.findAllByUserIdAndReviewIdIsNotNull(userIdx);
+    }
+
+    /**
+     * 특정 사용자가 Post에 등록한 Comment를 모두 조회합니다.
+     * @param userIdx 댓글을 조회할 사용자의 식별자
+     * @return 특정 사용자가 Post에 작성한 Comment 리스트
+     */
+    public List<Comment> getUserPostComments(Long userIdx) {
+        return commentRepository.findAllByUserIdAndPostIdIsNotNull(userIdx);
     }
 
     /**
