@@ -11,10 +11,12 @@ import java.util.List;
 @Builder
 @ApiModel("리뷰 상세 정보")
 public class ReviewDetailResponseData {
+
     private UserProfileData userProfile;
 
     private ReviewResponseData review;
 
     @Builder.Default
     private List<CommentResponseDto> comments = new ArrayList<>();
+
 }

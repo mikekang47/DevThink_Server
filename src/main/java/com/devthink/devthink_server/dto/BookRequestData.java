@@ -4,19 +4,24 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ApiModel(value="책 등록 요청 정보")
 public class BookRequestData {
 
+    @NotNull
     @ApiModelProperty(value = "책 isbn 번호", example = "8960773417")
     private Integer isbn;
 
+    @NotBlank
     @ApiModelProperty(value = "책 이름", example = "토비의 스프링 3.1 Vol. 1: 스프링의 이해와 원리(에이콘 오픈소스 프로그래밍 시리즈 18)")
     private String name;
 
+    @NotBlank
     @ApiModelProperty(value = "책 저자", example = "이일민")
     private String writer;
 

@@ -4,21 +4,24 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ApiModel(value="리뷰 등록 요청 정보")
 public class ReviewRequestData {
 
+    @NotNull
     @ApiModelProperty(value = "사용자 식별자", example = "1")
     private Long userId;
 
+    @Valid
     private BookRequestData book;
 
     @ApiModelProperty(value = "작성된 리뷰 내용", example = "★ 스프링의 3대 핵심 기술인 IoC/DI, PSA, AOP를 빠르고 효과적으로 배울 수 있는 실전 예제 중심의 설명\n" +
@@ -33,6 +36,7 @@ public class ReviewRequestData {
 
     @ApiModelProperty(value = "별점", example = "4.5")
     @DecimalMin("0") @DecimalMax("5")
+    @NotNull(message = "별점을 입력해주세요.")
     private BigDecimal score;
 
     public ReviewRequestData(String content){
@@ -42,4 +46,5 @@ public class ReviewRequestData {
     public ReviewRequestData(BigDecimal score){
         this.score = score;
     }
+
 }
