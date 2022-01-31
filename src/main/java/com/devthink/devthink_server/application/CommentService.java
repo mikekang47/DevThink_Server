@@ -41,6 +41,7 @@ public class CommentService {
 
     /**
      * 특정 Comment를 조회합니다.
+     * @param commentId 조회할 댓글의 식별자
      * @return 조회된 Comment 또는 {@literal Optional#empty()}
      */
     public Comment getComment(Long commentId) {
@@ -50,6 +51,7 @@ public class CommentService {
 
     /**
      * 특정 사용자의 Comment를 조회합니다.
+     * @param userIdx 댓글을 조회할 사용자의 식별자
      * @return 특정 사용자가 작성한 Comment 리스트
      */
     public List<Comment> getUserComments(Long userIdx) {
@@ -58,6 +60,7 @@ public class CommentService {
 
     /**
      * 특정 Post의 Comment를 조회합니다.
+     * @param postIdx 조회할 대상 게시글의 식별자
      * @return 특정 게시물에 작성된 Comment 리스트
      */
     public List<Comment> getPostComments(Long postIdx) {
@@ -66,6 +69,7 @@ public class CommentService {
 
     /**
      * 특정 Review의 Comment를 조회합니다.
+     * @param reviewIdx 조회할 대상 리뷰의 식별자
      * @return 특정 리뷰에 작성된 Comment 리스트
      */
     public List<Comment> getReviewComments(Long reviewIdx) {
