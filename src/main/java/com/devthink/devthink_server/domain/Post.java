@@ -3,6 +3,7 @@ package com.devthink.devthink_server.domain;
 import lombok.*;
 
 import javax.persistence.*;
+
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -10,7 +11,7 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post extends BaseTimeEntity{
+public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,7 +37,7 @@ public class Post extends BaseTimeEntity{
     @Builder.Default
     private Integer heart = 0;
 
-    public void update(String title, String content){
+    public void update(String title, String content) {
         this.title = title;
         this.content = content;
     }
