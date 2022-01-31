@@ -1,20 +1,19 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Comment;
-import com.devthink.devthink_server.errors.CommentNotFoundException;
-import com.devthink.devthink_server.errors.ReviewNotFoundException;
-import com.devthink.devthink_server.errors.UserNotFoundException;
+import com.devthink.devthink_server.domain.Post;
+import com.devthink.devthink_server.errors.*;
 import com.devthink.devthink_server.infra.CommentRepository;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.CommentRequestDto;
+import com.devthink.devthink_server.infra.PostRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
 import com.devthink.devthink_server.infra.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -22,13 +21,16 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final PostRepository postRepository;
 
     public CommentService(CommentRepository commentRepository,
                           UserRepository userRepository,
-                          ReviewRepository reviewRepository) {
+                          ReviewRepository reviewRepository,
+                          PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
+        this.postRepository = postRepository;
     }
 
     /**
@@ -82,26 +84,36 @@ public class CommentService {
      * @return 생성된 Comment의 id 값
      */
     public Comment createComment(CommentRequestDto commentRequestDto) {
-        // request상에 userId 값이 들어있는지 확인합니다.
-        Long userId = Optional.ofNullable(commentRequestDto.getUserId())
-                                .orElseThrow(()->new IllegalArgumentException("The userId cannot be null"));
-        // request상에 reviewId 값이 들어있는지 확인합니다.
-        Long reviewId = Optional.ofNullable(commentRequestDto.getReviewId())
-                .orElseThrow(()->new IllegalArgumentException("The reviewId cannot be null"));
+        Long userId = commentRequestDto.getUserId();
+        Long reviewId = commentRequestDto.getReviewId();
+        Long postId = commentRequestDto.getPostId();
+
+        Comment newComment;
 
         // userId 값을 통하여 userRepository에서 User를 가져옵니다.
         User user = findUser(userId);
-        // reviewId 값을 통하여 reviewRepository에서 Review를 가져옵니다.
-        Review review = findReview(reviewId);
 
+        if (reviewId == null && postId != null) {           // request상에 postId 값이 들어있는지 확인합니다.
+            // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
+            Post post = findPost(postId);
+            newComment = Comment.builder()
+                    .user(user)
+                    .post(post)
+                    .content(commentRequestDto.getContent())
+                    .build();
+        } else if (reviewId != null && postId == null) {    // request상에 reviewId 값이 들어있는지 확인합니다.
+            // reviewId 값을 통하여 reviewRepository에서 Review를 가져옵니다.
+            Review review = findReview(reviewId);
+            newComment = Comment.builder()
+                    .user(user)
+                    .review(review)
+                    .content(commentRequestDto.getContent())
+                    .build();
+        } else {
+            throw new CommentBadRequestException();
+        }
         // commentRepository에 새로운 댓글을 생성합니다.
-        return commentRepository.save(
-                Comment.builder()
-                        .user(user)
-                        .review(review)
-                        .content(commentRequestDto.getContent())
-                        .build()
-        );
+        return commentRepository.save(newComment);
     }
 
     /**
@@ -126,7 +138,6 @@ public class CommentService {
             throw new CommentNotFoundException(commentId);
     }
 
-
     /**
      * 전달받은 사용자의 식별자를 이용하여 사용자를 DB에서 찾고, 없으면 Error를 보냅니다.
      * @param id 찾고자 하는 사용자의 식별자
@@ -141,5 +152,15 @@ public class CommentService {
     private Review findReview(Long id) {
         return reviewRepository.findByIdAndDeletedIsFalse(id)
                 .orElseThrow(() -> new ReviewNotFoundException(id));
+    }
+
+    /**
+     * 전달받은 게시글의 식별자를 이용하여 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
+     * @param id 찾고자 하는 게시글의 식별자
+     * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
+     */
+    public Post findPost(Long id){
+        return postRepository.findById(id)
+                .orElseThrow(() -> new PostIdNotFoundException(id));
     }
 }
