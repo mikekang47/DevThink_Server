@@ -9,54 +9,44 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostRequestData;
 import com.devthink.devthink_server.dto.PostResponseData;
+import com.github.dozermapper.core.Mapper;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.swagger2.mappers.ModelMapper;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor
-
-/**
- * 사용자의 HTTP 요청을 처리하는 클래스입니다.
- */
-
-// 1. 글 작성 -> POST /posts/write
-// 2. 글 id로 검색 -> GET /posts/{id}
-// 3. 글 업데이트 -> PUT /posts/{id}
-// 4. 글 삭제 -> DELETE /posts/{id}
-// 5. 페이지 가져오기 -> GET /posts?page=숫자
-// 6. 키워드로 제목 검색 -> GET /posts/search?keyword=문자열
-
 public class PostController {
 
     private final PostService postService;
     private final UserService userService;
     private final CategoryService categoryService;
+    private Mapper mapper;
 
     /**
      * 페이지를 요청하면 페이지의 게시글을 가져옵니다.
-     * @param page 요청 페이지(기본 값: 1개)
-     * @return 페이지의 글(기본 값: 6개)
+     * [GET] /posts/list?page= &size= &sort= ,정렬방식
+     * @return Pageable 기준에 따라 정렬된 페이지 리스트
      */
-    @GetMapping
+    @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "게시글 리스트", notes = "사용자가 페이지를 요청하면 해당하는 페이지를 가져옵니다.")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "int", example = "1", value = "게시글의 페이지")})
-    public List<PostListData> list(@RequestParam(value = "page", defaultValue = "1") int page) {
-        Page<Post> list = postService.list(page);
-        int totalPage = list.getTotalPages();
-
-        return getPostLists(list.getContent(), totalPage);
+    @ApiOperation(value = "게시글 리스트 조회", notes = "게시글 전체 리스트를 전달된 pageable 파라미터에 따라 정렬하여 조회합니다.")
+        public List<PostListData> list(Pageable pageable) {
+        return postService.getPosts(pageable);
     }
 
     /**
@@ -90,11 +80,6 @@ public class PostController {
         Post post = postService.savePost(user, category, postRequestData);
         PostResponseData postData = getPostData(post);
 
-        if (post.getImageUrl().isEmpty()) {
-            postData.setImage(false);
-        } else {
-            postData.setImage(true);
-        }
         return postData;
     }
 
@@ -162,14 +147,6 @@ public class PostController {
         return getPostList(bestPost);
     }
 
-    private List<PostListData> getPostLists(List<Post> posts, int totalPage) {
-        List<PostListData> postRequestData = new ArrayList<>();
-
-        for (Post post : posts) {
-            postRequestData.add(getPostListData(post, totalPage));
-        }
-        return postRequestData;
-    }
 
     private List<PostResponseData> getPostList(List<Post> posts) {
         List<PostResponseData> postRequestData = new ArrayList<>();
@@ -199,23 +176,4 @@ public class PostController {
                 .build();
     }
 
-    private PostListData getPostListData(Post post, int totalPage) {
-        if (post == null)
-            return null;
-
-        return PostListData.builder()
-                .categoryId(post.getCategory().getId())
-                .userId(post.getUser().getId())
-                .nickname(post.getUser().getNickname())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .imageUrl(post.getImageUrl())
-                .deleted(post.getDeleted())
-                .updateAt(post.getUpdateAt())
-                .createAt(post.getCreateAt())
-                .heart(post.getHeart())
-                .id(post.getId())
-                .totalPage(totalPage)
-                .build();
-    }
 }
