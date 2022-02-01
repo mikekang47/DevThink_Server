@@ -3,6 +3,7 @@ package com.devthink.devthink_server.application;
 import com.devthink.devthink_server.domain.Category;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostRequestData;
 import com.devthink.devthink_server.errors.PostNotFoundException;
 import com.devthink.devthink_server.infra.CategoryRepository;
@@ -10,6 +11,7 @@ import com.devthink.devthink_server.infra.PostRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 사용자의 요청을 받아, 실제 내부에서 작동하는 클래스 입니다.
@@ -41,6 +44,12 @@ public class PostService {
      * @return  사용자의 정보를 DB에 저장.
      */
     public Post savePost(User user, Category category, PostRequestData postRequestData){
+        boolean imageCheck;
+        if(postRequestData.getImageUrl().isEmpty())
+            imageCheck = false;
+        else
+            imageCheck = true;
+
         Post post = postRepository.save(
                 Post.builder()
                         .title(postRequestData.getTitle())
@@ -49,6 +58,7 @@ public class PostService {
                         .user(user)
                         .imageUrl(postRequestData.getImageUrl())
                         .heart(postRequestData.getHeart())
+                        .image(imageCheck)
                         .build()
         );
         return post;
@@ -68,8 +78,14 @@ public class PostService {
      * @param page 얻고자 하는 page
      * @return  page에 해당하는 게시글
      */
-    public Page<Post> list(int page){
-        return postRepository.findAll(PageRequest.of(page - 1, 6, Sort.by(Sort.Direction.DESC, "id")));
+    public List<PostListData> getPosts(Pageable pageable){
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "id"));
+
+        List<Post> postPage = postRepository.findAll(pageable).getContent();
+        return postPage.stream()
+                .map(Post::toPostListData)
+                .collect(Collectors.toList());
     }
 
     /**
