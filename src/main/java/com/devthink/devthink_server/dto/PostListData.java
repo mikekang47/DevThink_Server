@@ -47,7 +47,4 @@ public class PostListData {
 
     @ApiModelProperty(notes = "업데이트 시각", example = "2022-01-26T22:07:17.0831141")
     private LocalDateTime updateAt;
-
-    @ApiModelProperty(notes = "총 페이지", example = "1")
-    private int totalPage;
 }
