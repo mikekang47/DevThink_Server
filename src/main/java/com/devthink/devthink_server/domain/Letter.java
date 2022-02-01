@@ -18,7 +18,6 @@ public class Letter extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "room_id")
     private UserRoom room;    // 방 번호
 
     @ManyToOne(fetch = LAZY)
