@@ -4,7 +4,6 @@ import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
-import com.devthink.devthink_server.dto.ReviewResponseData;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.infra.BookRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -55,17 +52,13 @@ public class ReviewService {
     }
 
     /**
-     * 입력된 리뷰 식별자 (id) 값으로 리뷰를 가져옵니다.
+     * 입력된 리뷰 식별자 (id) 값으로 리뷰 상세 정보를 가져옵니다.
      * @param id (리뷰 식별자)
      * @return 조회된 리뷰
      */
     public ReviewDetailResponseData getReviewDetailById(Long id) {
         Review review = getReviewById(id);
-        //TODO: Comment 불러오기
-        return ReviewDetailResponseData.builder()
-                .review(review.toReviewResponseDto())
-                .userProfile(review.getUser().toUserProfileData())
-                .build();
+        return review.toReviewDetailResponseData();
     }
 
     /**

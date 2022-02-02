@@ -70,7 +70,7 @@ public class ReviewController {
     public ReviewResponseData updateContent(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData){
         Review review = reviewService.getReviewById(id);
         reviewService.updateContent(review, reviewRequestData.getContent());
-        return review.toReviewResponseDto();
+        return review.toReviewResponseData();
     }
 
 
@@ -86,7 +86,7 @@ public class ReviewController {
     public ReviewResponseData updateScore(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData){
         Review review = reviewService.getReviewById(id);
         reviewService.updateScore(review, reviewRequestData.getScore());
-        return review.toReviewResponseDto();
+        return review.toReviewResponseData();
     }
 
 
@@ -102,7 +102,7 @@ public class ReviewController {
     public ReviewResponseData destroy(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
         Review review = reviewService.getReviewById(id);
         reviewService.deleteReview(review);
-        return review.toReviewResponseDto();
+        return review.toReviewResponseData();
     }
 
 }

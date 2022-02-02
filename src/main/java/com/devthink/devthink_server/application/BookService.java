@@ -41,19 +41,11 @@ public class BookService {
     public BookDetailResponseData getBookDetailById(long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
-        List<ReviewResponseData> reviewResponseDatas = book.getReviews()
-                .stream()
-                .map(Review::toReviewResponseDto)
-                .collect(Collectors.toList());
-        return BookDetailResponseData.builder()
-                .book(book.toBookResponseDto())
-                .reviews(reviewResponseDatas)
-                .build();
+        return book.toBookDetailResponseData();
     }
 
     /**
      * 입력된 isbn 정보로 Book을 조회하며, 없으면 새로운 Book을 생성합니다.
-     *
      * @param bookRequestData (책에 대한 정보)
      * @return 조회 혹은 생성된 Book 객체
      */
@@ -68,7 +60,6 @@ public class BookService {
 
     /**
      * 입력된 isbn 정보로 새로운 Book 을 등록합니다.
-     *
      * @param bookRequestData (책에 대한 정보)
      * @return 생성된 Book 객체
      */
@@ -85,14 +76,14 @@ public class BookService {
 
     /**
      * Pagination 을 적용한 책 리스트를 가져옵니다.
-     *
+     * @param pageable
      * @return Page 단위의 책 리스트
      */
     public Page<BookResponseData> getBooks(Pageable pageable) {
         Page<Book> bookPage = bookRepository.findAllByReviewCntNot(0, pageable);
         List<BookResponseData> bookResponseData = bookPage
                 .stream()
-                .map(Book::toBookResponseDto)
+                .map(Book::toBookResponseData)
                 .collect(Collectors.toList());
         return new PageImpl<>(bookResponseData, pageable, bookPage.getTotalElements());
     }
@@ -100,27 +91,26 @@ public class BookService {
 
     /**
      * 리뷰 수가 가장 많은 책을 가져옵니다.
-     *
      * @return BookResponseDTO, 데이터가 없는 경우 null
      */
     public BookResponseData getMostReviewCntBook() {
         if (bookRepository.findTopByOrderByReviewCntDesc().isEmpty()) {
             return null;
         } else {
-            return bookRepository.findTopByOrderByReviewCntDesc().get().toBookResponseDto();
+            return bookRepository.findTopByOrderByReviewCntDesc().get().toBookResponseData();
         }
     }
 
     /**
      * 책 이름에 검색어가 포함 된 책을 조회합니다.
-     *
+     * @param search (검색어), pageable
      * @return 조회된 책 리스트
      */
     public Page<BookResponseData> getSearchBooks(String search, Pageable pageable) {
         Page<Book> bookPage = bookRepository.findAllByNameContaining(search, pageable);
         List<BookResponseData> bookResponseData = bookPage
                 .stream()
-                .map(Book::toBookResponseDto)
+                .map(Book::toBookResponseData)
                 .collect(Collectors.toList());
         return new PageImpl<>(bookResponseData, pageable, bookPage.getTotalElements());
     }

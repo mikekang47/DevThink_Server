@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.domain;
 
+import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
 import lombok.*;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -53,8 +55,7 @@ public class Review extends BaseTimeEntity {
 
     public void setDeleted(boolean deleted) { this.deleted = deleted; }
 
-    //TODO: comments 추가
-    public ReviewResponseData toReviewResponseDto(){
+    public ReviewResponseData toReviewResponseData(){
         return ReviewResponseData.builder()
                 .id(id)
                 .userId(user.getId())
@@ -63,6 +64,14 @@ public class Review extends BaseTimeEntity {
                 .score(score)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
+                .build();
+    }
+
+    public ReviewDetailResponseData toReviewDetailResponseData(){
+        return ReviewDetailResponseData.builder()
+                .userProfile(user.toUserProfileData())
+                .review(toReviewResponseData())
+                .comments(comments.stream().map(Comment::toCommentResponseDto).collect(Collectors.toList()))
                 .build();
     }
 
