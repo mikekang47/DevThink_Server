@@ -6,8 +6,9 @@ plugins {
 }
 
 group = 'com.devthink'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = '11'
+archivesBaseName = 'devthink'
 
 configurations {
     asciidoctorExtensions
@@ -70,19 +71,6 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
             'io.jsonwebtoken:jjwt-jackson:0.11.2'
-
-//    // Spring Security
-//    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.2'
-
-    //H2
-    runtimeOnly 'com.h2database:h2'
-
-    //Swagger UI
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
-
-    // https://mvnrepository.com/artifact/org.javassist/javassist
-    implementation group: 'org.javassist', name: 'javassist', version: '3.27.0-GA'
-
 
 }
 
