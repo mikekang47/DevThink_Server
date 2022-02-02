@@ -1,5 +1,7 @@
 package com.devthink.devthink_server.domain;
 
+import com.devthink.devthink_server.dto.LetterListData;
+import com.devthink.devthink_server.dto.LetterResultData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,19 +30,39 @@ public class Letter extends BaseTimeEntity {
 
     private String content; // 쪽지 내용
 
-    private LocalDateTime viewAt; // 열람일자
-
     @Builder.Default
     private boolean readCheck = false;
 
     @Builder.Default
     private boolean heart = false;  // 하트 기능
 
-    public void setViewAt(LocalDateTime viewAt) {
-        this.viewAt = viewAt;
-    }
-
     public void setReadCheck(boolean readCheck) {
         this.readCheck = readCheck;
+    }
+
+    public LetterResultData toLetterResultData() {
+        return LetterResultData.builder()
+                .readCheck(readCheck)
+                .createAt(getCreateAt())
+                .content(content)
+                .senderId(sender.getId())
+                .targetId(target.getId())
+                .heart(isHeart())
+                .targetNick(target.getNickname())
+                .sendNick(sender.getNickname())
+                .roomId(room.getRoomId())
+                .build();
+    }
+
+    public LetterListData toLetterListData() {
+        return LetterListData.builder()
+                .heart(isHeart())
+                .createAt(getCreateAt())
+                .roomId(room.getRoomId())
+                .content(content)
+                .senderId(sender.getId())
+                .targetId(target.getId())
+                .readCheck(readCheck)
+                .build();
     }
 }
