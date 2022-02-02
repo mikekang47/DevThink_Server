@@ -6,31 +6,20 @@ import com.devthink.devthink_server.dto.CategoryRequestData;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-/**
- * 사용자의 HTTP 요청을 처리하는 클래스입니다.
- */
-
-// 1. 카테고리 작성 -> POST /categories
-// 2. 카테고리 검색 -> GET /categories/{id}
-// 3. 글 업데이트 -> PUT /categories/{id}
-// 4. 글 삭제 -> DELETE /categories/{id}
-
 @RestController
 @RequestMapping("/categories")
+@RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
-
     /**
-     * 카테고리 작성
+     * 카테고리 작성 API
      * @param categoryDto
      * @return
      */
