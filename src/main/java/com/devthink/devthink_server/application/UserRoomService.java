@@ -22,9 +22,9 @@ public class UserRoomService {
         return userRoomRepository.getUserRoom(senderId, targetId, roomId)
                 .orElseThrow(()-> new UserRoomNotFoundException(roomId));
     }
-
-    public List<UserRoom> getUserRoom(Long userId) {
-        return userRoomRepository.findRoomId(userId);
+    public UserRoom getUserRoom(Long roomId) {
+        return userRoomRepository.findByRoomIdAndDeletedIsFalse(roomId)
+                .orElseThrow(()-> new UserRoomNotFoundException(roomId));
     }
 
     public UserRoom save(User user1, User user2, Long roomId) {
@@ -38,10 +38,12 @@ public class UserRoomService {
         return userRoom;
     }
 
+    // 유저 방 id 가져오기
     public int existChat(Long senderId, Long targetId){
         return userRoomRepository.existChat(senderId, targetId);
     }
 
+    // 유저 최대 방 id 가져오기
     public Long getMaxRoom(){
         return userRoomRepository.maxRoom();
     }
