@@ -31,11 +31,8 @@ public class LetterResultData {
     @ApiModelProperty(notes = "메시지 내용", example = "example")
     private String content;
 
-    @ApiModelProperty(notes = "메시지 생성 시각", example = "2022-01-26T22:07:17.0831141")
+    @ApiModelProperty(notes = "메시지 보낸 시각", example = "2022-01-26T22:07:17.0831141")
     private LocalDateTime createAt;
-
-    @ApiModelProperty(notes = "메시지 본 시각", example = "2022-01-26T22:07:17.0831141")
-    private LocalDateTime viewAt;
 
     @ApiModelProperty(notes = "메시지 읽음 체크", example = "0")
     private Boolean readCheck;
