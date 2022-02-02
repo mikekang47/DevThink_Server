@@ -24,8 +24,6 @@ import javax.validation.Valid;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final BookService bookService;
-    private final UserService userService;
 
     /**
      * 입력한 valid한 리뷰 정보를 받아 리뷰를 생성합니다.
@@ -37,9 +35,7 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 등록", notes = "전달된 정보에 따라 리뷰를 등록합니다.")
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@Valid @RequestBody ReviewRequestData reviewRequestData){
-        User user = userService.getUser(reviewRequestData.getUserId());
-        Book book = bookService.getBookByIsbn(reviewRequestData.getBook());
-        String id = reviewService.createReview(user, book, reviewRequestData);
+        String id = reviewService.createReview(reviewRequestData);
         return id;
     }
 

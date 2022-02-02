@@ -45,36 +45,6 @@ public class BookService {
     }
 
     /**
-     * 입력된 isbn 정보로 Book을 조회하며, 없으면 새로운 Book을 생성합니다.
-     * @param bookRequestData (책에 대한 정보)
-     * @return 조회 혹은 생성된 Book 객체
-     */
-    public Book getBookByIsbn(BookRequestData bookRequestData) {
-        Optional<Book> book = bookRepository.getBookByIsbn(bookRequestData.getIsbn());
-        if (book.isEmpty()) {
-            return createBook(bookRequestData);
-        } else {
-            return book.get();
-        }
-    }
-
-    /**
-     * 입력된 isbn 정보로 새로운 Book 을 등록합니다.
-     * @param bookRequestData (책에 대한 정보)
-     * @return 생성된 Book 객체
-     */
-    @Transactional
-    public Book createBook(BookRequestData bookRequestData) {
-        Book book = Book.builder()
-                .isbn(bookRequestData.getIsbn())
-                .name(bookRequestData.getName())
-                .writer(bookRequestData.getWriter())
-                .imgUrl(bookRequestData.getImgUrl())
-                .build();
-        return bookRepository.save(book);
-    }
-
-    /**
      * Pagination 을 적용한 책 리스트를 가져옵니다.
      * @param pageable
      * @return Page 단위의 책 리스트
@@ -87,7 +57,6 @@ public class BookService {
                 .collect(Collectors.toList());
         return new PageImpl<>(bookResponseData, pageable, bookPage.getTotalElements());
     }
-
 
     /**
      * 리뷰 수가 가장 많은 책을 가져옵니다.
