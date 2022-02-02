@@ -23,6 +23,7 @@ public class BookController {
     /**
      * 책 리스트를 전달된 pageable 기준에 따라 가져옵니다.
      * [GET] /books?page= &size= &sort= ,정렬방식
+     *
      * @return Pageable 기준에 따라 정렬된 책 리스트
      */
     @GetMapping
@@ -36,6 +37,7 @@ public class BookController {
     /**
      * 리뷰가 가장 많이 달린 책을 가져옵니다.
      * [GET] /books/most
+     *
      * @return BookResponseDto 리뷰가 가장 많이 달린 책
      */
     @GetMapping("/most")
@@ -49,26 +51,28 @@ public class BookController {
     /**
      * 입력한 식별자 값(id)에 해당하는 책의 상세 정보를 가져옵니다.
      * [GET] /books/{id}
+     *
      * @return Book
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "책 상세 조회", notes = "식별자 값의 책을 상세 조회합니다.")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public BookDetailResponseData detail(@PathVariable("id") @ApiParam(value="책 식별자 값") Long id) {
+    public BookDetailResponseData detail(@PathVariable("id") @ApiParam(value = "책 식별자 값") Long id) {
         return bookService.getBookDetailById(id);
     }
 
     /**
      * 책 이름에 검색어가 포함 된 책 리스트를 전달된 pageable 기준에 따라 가져옵니다.
      * [GET] /books/search?name= &page= &size= &sort= ,정렬방식
+     *
      * @return Book
      */
     @GetMapping("/search")
     @ApiOperation(value = "책 검색", notes = "책 이름에 검색어가 포함 된 책 리스트를 가져옵니다.")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Page<BookResponseData> search(@RequestParam(name = "name") @ApiParam(value="책 이름 검색어") String search, Pageable pageable) {
+    public Page<BookResponseData> search(@RequestParam(name = "name") @ApiParam(value = "책 이름 검색어") String search, Pageable pageable) {
         return bookService.getSearchBooks(search, pageable);
     }
 

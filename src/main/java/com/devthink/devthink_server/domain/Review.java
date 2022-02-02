@@ -40,22 +40,24 @@ public class Review extends BaseTimeEntity {
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    public void setBook(Book book){
+    public void setBook(Book book) {
         this.book = book;
         book.getReviews().add(this);
     }
 
-    public void setContent(String content){
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public void setScore(BigDecimal score){
+    public void setScore(BigDecimal score) {
         this.score = score;
     }
 
-    public void setDeleted(boolean deleted) { this.deleted = deleted; }
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
-    public ReviewResponseData toReviewResponseData(){
+    public ReviewResponseData toReviewResponseData() {
         return ReviewResponseData.builder()
                 .id(id)
                 .userId(user.getId())
@@ -67,7 +69,7 @@ public class Review extends BaseTimeEntity {
                 .build();
     }
 
-    public ReviewDetailResponseData toReviewDetailResponseData(){
+    public ReviewDetailResponseData toReviewDetailResponseData() {
         return ReviewDetailResponseData.builder()
                 .userProfile(user.toUserProfileData())
                 .review(toReviewResponseData())
