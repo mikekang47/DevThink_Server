@@ -94,6 +94,15 @@ public class UserController {
         return getUserResultData(user);
     }
 
+    @PatchMapping("/updateimg/{id}")
+    public UserResultData updateImg(
+            @PathVariable Long id,
+            @RequestBody @Valid String imgUrl
+    ) {
+        User user = userService.updateUserImg(id, imgUrl);
+        return getUserResultData(user);
+    }
+
     /**
      * 입력한 사용자의 식별자 값을 전달받아, 해당하는 사용자를 삭제합니다.
      * @param id 삭제하고자 하는 사용자의 식별자
@@ -122,6 +131,7 @@ public class UserController {
                 .point(user.getPoint())
                 .blogAddr(user.getBlogAddr())
                 .gitNickname(user.getGitNickname())
+                .imgUrl(user.getImageUrl())
                 .create_at(user.getCreateAt())
                 .update_at(user.getUpdateAt())
                 .build();
