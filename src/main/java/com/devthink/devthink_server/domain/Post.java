@@ -1,8 +1,7 @@
 package com.devthink.devthink_server.domain;
 
-import com.devthink.devthink_server.dto.CommentResponseDto;
 import com.devthink.devthink_server.dto.PostListData;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.devthink.devthink_server.dto.PostResponseData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -45,6 +44,10 @@ public class Post extends BaseTimeEntity {
         this.content = content;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public PostListData toPostListData() {
         return PostListData.builder()
                 .userId(user.getId())
@@ -59,6 +62,23 @@ public class Post extends BaseTimeEntity {
                 .imageUrl(imageUrl)
                 .Image(isImage())
                 .nickname(user.getNickname())
+                .build();
+    }
+
+    public PostResponseData toPostResponseData() {
+        return PostResponseData.builder()
+                .userId(user.getId())
+                .imageUrl(imageUrl)
+                .id(id)
+                .nickname(user.getNickname())
+                .categoryId(category.getId())
+                .deleted(deleted)
+                .createAt(getCreateAt())
+                .heart(heart)
+                .updateAt(getUpdateAt())
+                .content(content)
+                .Image(isImage())
+                .title(title)
                 .build();
     }
 }
