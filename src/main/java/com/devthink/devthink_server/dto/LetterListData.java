@@ -24,9 +24,6 @@ public class LetterListData {
     @ApiModelProperty(notes = "메시지 내용", example = "test")
     private String content;
 
-    @ApiModelProperty(notes = "본 시각", example = "2022-01-26T22:07:17.083114")
-    private LocalDateTime viewAt;
-
     @ApiModelProperty(notes = "생성 시각", example = "2022-01-26T22:07:17.083114")
     private LocalDateTime createAt;
 
@@ -48,10 +45,4 @@ public class LetterListData {
     @ApiModelProperty(notes = "하트 포함 여부", example = "true")
     private Boolean heart;
 
-    @ApiModelProperty(notes = "총 페이지 수", example = "1")
-    private int totalPage;
-
-    public void changeUnRead(Long unRead){
-        this.unRead = unRead;
-    }
 }
