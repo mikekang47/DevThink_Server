@@ -68,9 +68,7 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 내용 수정", notes = "식별자 값의 리뷰 내용을 전달된 내용으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
     public ReviewResponseData updateContent(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData){
-        Review review = reviewService.getReviewById(id);
-        reviewService.updateContent(review, reviewRequestData.getContent());
-        return review.toReviewResponseData();
+        return reviewService.updateContent(id, reviewRequestData.getContent());
     }
 
 
@@ -84,9 +82,7 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 별점 수정", notes = "식별자 값의 리뷰 별점을 전달된 별점으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
     public ReviewResponseData updateScore(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData){
-        Review review = reviewService.getReviewById(id);
-        reviewService.updateScore(review, reviewRequestData.getScore());
-        return review.toReviewResponseData();
+        return reviewService.updateScore(id, reviewRequestData.getScore());
     }
 
 
@@ -99,10 +95,8 @@ public class ReviewController {
     @DeleteMapping("/{id}")
     @ApiOperation(value = "리뷰 삭제", notes = "식별자 값의 리뷰를 삭제합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseData destroy(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
-        Review review = reviewService.getReviewById(id);
-        reviewService.deleteReview(review);
-        return review.toReviewResponseData();
+    public void destroy(@PathVariable("id") @ApiParam(value="리뷰 식별자 값") Long id){
+        reviewService.deleteReview(id);
     }
 
 }
