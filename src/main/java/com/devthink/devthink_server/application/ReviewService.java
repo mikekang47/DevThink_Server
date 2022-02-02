@@ -5,11 +5,9 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
-import com.devthink.devthink_server.dto.UserProfileData;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.infra.BookRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
-import com.devthink.devthink_server.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +55,7 @@ public class ReviewService {
     }
 
     /**
-     * 입력된 리뷰 식별자 (id) 값으 리뷰를 가져옵니다.
+     * 입력된 리뷰 식별자 (id) 값으로 리뷰를 가져옵니다.
      * @param id (리뷰 식별자)
      * @return 조회된 리뷰
      */
@@ -68,18 +66,6 @@ public class ReviewService {
                 .review(review.toReviewResponseDto())
                 .userProfile(review.getUser().toUserProfileData())
                 .build();
-    }
-
-    /**
-     * 입력된 book의 식별자 (id) 값으로 리뷰 리스트를 가져옵니다.
-     * @param bookId
-     * @return 조회된 리뷰 리스트
-     */
-    public List<ReviewResponseData> getReviewsByBookId(long bookId){
-        return reviewRepository.findAllByBookId(bookId)
-                .stream()
-                .map(Review::toReviewResponseDto)
-                .collect(Collectors.toList());
     }
 
     /**

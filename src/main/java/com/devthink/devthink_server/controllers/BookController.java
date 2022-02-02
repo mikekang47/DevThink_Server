@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     private final BookService bookService;
-    private final ReviewService reviewService;
 
     /**
      * 책 리스트를 전달된 pageable 기준에 따라 가져옵니다.
@@ -57,10 +56,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public BookDetailResponseData detail(@PathVariable("id") @ApiParam(value="책 식별자 값") Long id) {
-        return BookDetailResponseData.builder()
-                .book(bookService.getBookById(id).toBookResponseDto())
-                .reviews(reviewService.getReviewsByBookId(id))
-                .build();
+        return bookService.getBookDetailById(id);
     }
 
     /**
