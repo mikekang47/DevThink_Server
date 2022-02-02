@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.dto;
 
+import com.devthink.devthink_server.domain.UserStack;
 import com.github.dozermapper.core.Mapping;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
@@ -37,7 +38,7 @@ public class UserModificationData {
 
     @Mapping("stack")
     @ApiParam(value = "사용자가 사용하는 기술", example = "C++, Java, Spring")
-    private List<String> stack;
+    private List<UserStack> stack;
 
     @Mapping("blogAddr")
     @ApiParam(value = "사용자의 기술 블로그 주소", example = "mirrorofcode.tistory.com")
@@ -46,6 +47,10 @@ public class UserModificationData {
     @Mapping("gitNickname")
     @ApiParam(value = "사용자의 github 닉네임", example = "mikekang47")
     private String gitNickname;
+
+    @Mapping("imgUrl")
+    @ApiParam(value = "사용자의 profile 이미지", example = "url.img")
+    private String imgUrl;
 
     private Integer point;
 

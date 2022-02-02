@@ -29,8 +29,9 @@ public class User extends BaseTimeEntity{
 
     private String role;
 
-    @ElementCollection(targetClass = String.class)
-    private List<String> stack;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="stack_id")
+    private List<UserStack> stack;
 
     private String blogAddr;
 
@@ -51,6 +52,7 @@ public class User extends BaseTimeEntity{
         nickname = source.getNickname();
         role = source.getRole();
         stack = source.getStack();
+        imageUrl = source.getImageUrl();
         gitNickname = source.getGitNickname();
         blogAddr = source.getBlogAddr();
         password = source.getPassword();

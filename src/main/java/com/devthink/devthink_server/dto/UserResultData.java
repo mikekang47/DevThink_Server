@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.dto;
 
+import com.devthink.devthink_server.domain.UserStack;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -31,7 +32,7 @@ public class UserResultData {
     private String role;
 
     @ApiModelProperty(value = "사용자가 사용하는 기술", example = "C++, Java, Spring")
-    private List<String> stack;
+    private List<UserStack> stack;
 
     @ApiModelProperty(value = "사용자의 기술 블로그 주소", example = "mirrorofcode.tistory.com")
     private String blogAddr;
@@ -41,6 +42,9 @@ public class UserResultData {
 
     @ApiModelProperty(value = "사용자의 점수", example = "128")
     private Integer point;
+
+    @ApiModelProperty(value = "사용자의 profile 이미지")
+    private String imgUrl;
 
     @ApiModelProperty(value = "사용자 삭제 여부", example = "true")
     private boolean deleted;
