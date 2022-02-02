@@ -48,6 +48,12 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Review not found");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AlreadyReviewedException.class)
+    public ErrorResponse handleAlreadyReviewed() {
+        return new ErrorResponse("User Already Reviewed");
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(PostIdNotFoundException.class)
     public ErrorResponse handlePostNotFound() {

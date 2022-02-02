@@ -1,4 +1,5 @@
 package com.devthink.devthink_server.application;
+
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
@@ -6,6 +7,7 @@ import com.devthink.devthink_server.dto.BookRequestData;
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
+import com.devthink.devthink_server.errors.AlreadyReviewedException;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
 import com.devthink.devthink_server.infra.BookRepository;
@@ -29,21 +31,27 @@ public class ReviewService {
 
     /**
      * 전달된 값으로 리뷰를 생성합니다.
+     *
      * @param reviewRequestData
      * @return 생성 된 리뷰 id
      */
     @Transactional
-    public String createReview(ReviewRequestData reviewRequestData){
+    public String createReview(ReviewRequestData reviewRequestData) {
         User user = userRepository.findByIdAndDeletedIsFalse(reviewRequestData.getUserId())
-                .orElseThrow(()-> new UserNotFoundException(reviewRequestData.getUserId()));
+                .orElseThrow(() -> new UserNotFoundException(reviewRequestData.getUserId()));
         Book book = getBookByIsbn(reviewRequestData.getBook());
+
+        if (!reviewRepository.findByBookAndUser(book, user).isEmpty()) { // 이미 작성한 리뷰인지 확인합니다.
+            throw new AlreadyReviewedException(book.getId());
+        }
+
         Review review = reviewRepository.save(
-            Review.builder()
-                    .user(user)
-                    .book(book)
-                    .content(reviewRequestData.getContent())
-                    .score(reviewRequestData.getScore())
-                    .build()
+                Review.builder()
+                        .user(user)
+                        .book(book)
+                        .content(reviewRequestData.getContent())
+                        .score(reviewRequestData.getScore())
+                        .build()
         );
         review.getBook().addReview(review);
         review.getBook().setScoreAvg(bookRepository.calcScoreAvg(book.getId()));
@@ -52,6 +60,7 @@ public class ReviewService {
 
     /**
      * 입력된 isbn 정보로 Book을 조회하며, 해당 책이 없는 경우 새로 생성하는 함수를 호출합니다.
+     *
      * @param bookRequestData (책에 대한 정보)
      * @return 조회 혹은 생성된 Book 객체
      */
@@ -66,6 +75,7 @@ public class ReviewService {
 
     /**
      * 입력된 책 정보의 새로운 Book 객체를 생성합니다.
+     *
      * @param bookRequestData (책에 대한 정보)
      * @return 생성된 Book 객체
      */
@@ -80,8 +90,10 @@ public class ReviewService {
         return bookRepository.save(book);
     }
 
+
     /**
      * 입력된 리뷰 식별자 (id) 값으로 리뷰 상세 정보를 가져옵니다.
+     *
      * @param id (리뷰 식별자)
      * @return 조회된 리뷰
      */
@@ -92,12 +104,13 @@ public class ReviewService {
 
     /**
      * 전달된 리뷰의 내용을 수정합니다.
-     * @param id (수정할 리뷰 식별자)
+     *
+     * @param id      (수정할 리뷰 식별자)
      * @param content (수정할 내용)
      * @return 수정된 리뷰
      */
     @Transactional
-    public ReviewResponseData updateContent(Long id, String content){
+    public ReviewResponseData updateContent(Long id, String content) {
         Review review = getReviewById(id);
         review.setContent(content);
         return review.toReviewResponseData();
@@ -105,12 +118,13 @@ public class ReviewService {
 
     /**
      * 전달된 리뷰의 별점을 수정합니다.
-     * @param id (수정할 리뷰 식별자)
+     *
+     * @param id    (수정할 리뷰 식별자)
      * @param score (수정할 점수)
      * @return 수정된 리뷰
      */
     @Transactional
-    public ReviewResponseData updateScore(Long id, BigDecimal score){
+    public ReviewResponseData updateScore(Long id, BigDecimal score) {
         Review review = getReviewById(id);
         review.setScore(score);
         return review.toReviewResponseData();
@@ -118,11 +132,12 @@ public class ReviewService {
 
     /**
      * 전달된 리뷰의 deleted 컬럼을 true로 변경하고, 해당 책의 리뷰수를 감소시키며, 평점을 다시 계산합니다.
+     *
      * @param id (삭제할 리뷰 식별자)
      * @return 수정된 리뷰
      */
     @Transactional
-    public void deleteReview(long id){
+    public void deleteReview(long id) {
         Review review = getReviewById(id);
         review.setDeleted(true);
         review.getBook().downReviewCnt();
@@ -131,6 +146,7 @@ public class ReviewService {
 
     /**
      * 입력된 리뷰 식별자 (id) 값으로 리뷰를 가져옵니다.
+     *
      * @param id (리뷰 식별자)
      * @return 조회된 리뷰
      */
