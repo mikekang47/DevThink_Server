@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.infra;
 
 import com.devthink.devthink_server.domain.Letter;
+import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.domain.UserRoom;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,8 @@ import java.util.Optional;
 
 
 public interface UserRoomRepository extends JpaRepository<UserRoom, Long> {
+
+    Optional<UserRoom> findByRoomIdAndDeletedIsFalse(Long roomId);
 
     @Query("select u from UserRoom u where ((u.user1.id = :targetId and u.user2.id = :senderId)" +
             "or (u.user2.id = :targetId and u.user1.id = :senderId)) and u.roomId = :roomId")
