@@ -18,7 +18,7 @@ public interface LetterRepository extends JpaRepository<Letter, Long> {
     // 방 별 메시지 리스트 가져오기
     @Query("select u from Letter u where u.id " +
             "in (select max(p.id) from Letter p group by p.room.roomId) " +
-            "and (u.sender.id = :userId or u.target.id = :userId) order by u.id desc")
+            "and (u.sender.id = :userId or u.target.id = :userId)")
     Page<Letter> getMessageList(Long userId, Pageable pageable);
 
     // 안읽은 메시지 개수 가져오기
@@ -30,8 +30,8 @@ public interface LetterRepository extends JpaRepository<Letter, Long> {
             "(u.sender.id = :userId or u.target.id = :userId)")
     List<Letter> getRoomLists(Long userId, Long roomId);
 
+
     @Query("select u from Letter u where u.room.roomId = :roomId and " +
             "u.target.id = :userId and u.readCheck = false")
-    ArrayList<Letter> getUnreadLists(Long userId, Long roomId);
-
+    List<Letter> getUnReadLists(Long userId, Long roomId);
 }
