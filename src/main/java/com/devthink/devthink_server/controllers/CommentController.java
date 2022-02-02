@@ -1,17 +1,23 @@
 package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.CommentService;
-import com.devthink.devthink_server.domain.Comment;
+import com.devthink.devthink_server.application.ReviewService;
+import com.devthink.devthink_server.application.UserService;
+import com.devthink.devthink_server.domain.Post;
+import com.devthink.devthink_server.domain.Review;
+import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.CommentRequestData;
 import com.devthink.devthink_server.dto.CommentResponseData;
-import com.devthink.devthink_server.errors.CommentContentEmptyException;
+import com.devthink.devthink_server.errors.PostCommentBadRequestException;
+import com.devthink.devthink_server.errors.ReviewCommentBadRequestException;
+import com.devthink.devthink_server.service.PostService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,9 +25,19 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final UserService userService;
+    private final PostService postService;
+    private final ReviewService reviewService;
 
-    public CommentController(CommentService commentService) {
+
+    public CommentController(CommentService commentService,
+                             UserService userService,
+                             PostService postService,
+                             ReviewService reviewService) {
         this.commentService = commentService;
+        this.userService = userService;
+        this.postService = postService;
+        this.reviewService = reviewService;
     }
 
     /**
@@ -31,8 +47,7 @@ public class CommentController {
     @ApiOperation(value = "전체 댓글 조회", notes = "모든 댓글을 조회합니다.", response = List.class)
     @GetMapping
     public List<CommentResponseData> getComments() {
-        List<Comment> comments = commentService.getComments();
-        return getCommentResponseDtos(comments);
+        return commentService.getComments();
     }
 
     /**
@@ -46,8 +61,7 @@ public class CommentController {
     @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
     @GetMapping("/user/{userIdx}/review")
     public List<CommentResponseData> getUserReviewComments(@PathVariable("userIdx") Long userIdx) {
-        List<Comment> comments = commentService.getUserReviewComments(userIdx);
-        return getCommentResponseDtos(comments);
+        return commentService.getUserReviewComments(userIdx);
     }
 
     /**
@@ -61,8 +75,7 @@ public class CommentController {
     @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
     @GetMapping("/user/{userIdx}/post")
     public List<CommentResponseData> getUserPostComments(@PathVariable("userIdx") Long userIdx) {
-        List<Comment> comments = commentService.getUserPostComments(userIdx);
-        return getCommentResponseDtos(comments);
+        return commentService.getUserPostComments(userIdx);
     }
 
     /**
@@ -73,9 +86,9 @@ public class CommentController {
     @ApiOperation(value = "게시글 댓글 조회", notes = "특정 게시글의 댓글을 조회합니다.", response = List.class)
     @ApiImplicitParam(name = "postIdx", value = "조회할 대상 게시글의 식별자")
     @GetMapping("/post/{postIdx}")
+    @ApiIgnore
     public List<CommentResponseData> getPostComments(@PathVariable("postIdx") Long postIdx) {
-        List<Comment> comments = commentService.getPostComments(postIdx);
-        return getCommentResponseDtos(comments);
+        return commentService.getPostComments(postIdx);
     }
 
     /**
@@ -86,9 +99,9 @@ public class CommentController {
     @ApiOperation(value = "리뷰 댓글 조회", notes = "특정 리뷰의 댓글을 조회합니다.", response = List.class)
     @ApiImplicitParam(name = "reviewIdx", value = "조회할 대상 리뷰의 식별자")
     @GetMapping("/review/{reviewIdx}")
+    @ApiIgnore
     public List<CommentResponseData> getReviewComments(@PathVariable("reviewIdx") Long reviewIdx) {
-        List<Comment> comments = commentService.getReviewComments(reviewIdx);
-        return getCommentResponseDtos(comments);
+        return commentService.getReviewComments(reviewIdx);
     }
 
     /**
@@ -100,8 +113,17 @@ public class CommentController {
     @PostMapping("/review")
     @ResponseStatus(HttpStatus.CREATED)
     public CommentResponseData createReviewComment(@Valid @RequestBody CommentRequestData commentRequestData){
-        Comment comment = commentService.createReviewComment(commentRequestData);
-        return comment.toCommentResponseDto();
+        Long reviewId = commentRequestData.getReviewId();
+        // request상에 reviewId 값이 들어있는지 확인합니다.
+        if (reviewId != null) {
+            // userId 값을 통하여 userRepository에서 User를 가져옵니다.
+            User user = userService.findUser(commentRequestData.getUserId());
+            // reviewId 값을 통하여 reviewRepository에서 Review를 가져옵니다.
+            Review review = reviewService.getReviewById(reviewId);
+            return commentService.createReviewComment(user, review, commentRequestData.getContent());
+        } else {
+            throw new ReviewCommentBadRequestException();
+        }
     }
 
     /**
@@ -113,8 +135,17 @@ public class CommentController {
     @PostMapping("/post")
     @ResponseStatus(HttpStatus.CREATED)
     public CommentResponseData createPostComment(@Valid @RequestBody CommentRequestData commentRequestData){
-        Comment comment = commentService.createPostComment(commentRequestData);
-        return comment.toCommentResponseDto();
+        Long postId = commentRequestData.getPostId();
+        // request상에 postId 값이 들어있는지 확인합니다.
+        if (postId != null) {
+            // userId 값을 통하여 userRepository에서 User를 가져옵니다.
+            User user = userService.findUser(commentRequestData.getUserId());
+            // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
+            Post post = postService.getPost(postId);
+            return commentService.createPostComment(user, post, commentRequestData.getContent());
+        } else {
+            throw new PostCommentBadRequestException();
+        }
     }
 
     /**
@@ -129,11 +160,7 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     public CommentResponseData updateComment(@PathVariable("commentId") Long commentId,
                                              @Valid @RequestBody CommentRequestData commentRequestData){
-        String content = commentRequestData.getContent();
-        if (content.isBlank())      // 입력받은 request에서 content가 공란인지 확인합니다.
-            throw new CommentContentEmptyException();
-        Comment comment = commentService.updateComment(commentId, content);
-        return comment.toCommentResponseDto();
+        return commentService.updateComment(commentId, commentRequestData.getContent());
     }
 
     /**
@@ -144,21 +171,8 @@ public class CommentController {
     @ApiImplicitParam(name = "commentId", value = "삭제할 Comment의 식별자")
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteComment(@PathVariable("commentId") Long commentId,
-                              @Valid @RequestBody CommentRequestData commentRequestData) {
+    public void deleteComment(@PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);
     }
 
-    /**
-     * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
-     * @param comments entity List
-     * @return 입력된 dto 데이터로 변환된 list
-     */
-    private List<CommentResponseData> getCommentResponseDtos(List<Comment> comments) {
-        List<CommentResponseData> commentResponseData = new ArrayList<>();
-
-        for (Comment comment : comments)
-            commentResponseData.add(comment.toCommentResponseDto());
-        return commentResponseData;
-    }
 }
