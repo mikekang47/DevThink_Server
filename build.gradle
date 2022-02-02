@@ -6,8 +6,9 @@ plugins {
 }
 
 group = 'com.devthink'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = '11'
+archivesBaseName = 'devthink'
 
 configurations {
     asciidoctorExtensions

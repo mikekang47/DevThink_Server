@@ -4,8 +4,8 @@ import com.devthink.devthink_server.application.BookService;
 import com.devthink.devthink_server.application.ReviewService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.User;
-import com.devthink.devthink_server.dto.UserModificationData;
-import com.devthink.devthink_server.dto.UserRegistrationData;
+import com.devthink.devthink_server.domain.Book;
+import com.devthink.devthink_server.domain.Review;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,28 +28,20 @@ class ReviewControllerTest {
     @MockBean
     private ReviewService reviewService;
 
-    @MockBean
-    private BookService bookService;
-
-    @MockBean
-    private UserService userService;
-
     @BeforeEach
     void setUp() {
-        given(userService.registerUser(any(UserRegistrationData.class)))
-                .will(invocation -> {
-                    UserRegistrationData registrationData = invocation.getArgument(0);
-                    return User.builder()
-                            .id(13L)
-                            .email(registrationData.getEmail())
-                            .name(registrationData.getName())
-                            .password(registrationData.getPassword())
-                            .phoneNum(registrationData.getPhoneNum())
-                            .blogAddr(registrationData.getBlogAddr())
-                            .nickname(registrationData.getNickname())
-                            .role(registrationData.getRole())
-                            .build();
-                });
+        User user = User.builder().id(1L).build();
+        Book book = Book.builder().isbn(1).build();
+
+        Review review = Review.builder()
+                .id(5L)
+                .user(user)
+                .book(book)
+                .content("유용한 책입니다.")
+                .build();
+        review.toReviewResponseData();
+
+        given(reviewService.getReviewById(5L)).willReturn(review);
     }
     
     @Test
@@ -91,6 +79,7 @@ class ReviewControllerTest {
                                 "}"))
                 .andExpect(status().isBadRequest());
     }
+
 
     @Test
     void 책정보_누락시_리뷰생성_실패() throws Exception {
