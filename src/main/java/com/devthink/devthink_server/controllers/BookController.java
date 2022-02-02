@@ -23,10 +23,10 @@ public class BookController {
 
     /**
      * 책 리스트를 전달된 pageable 기준에 따라 가져옵니다.
-     * [GET] /books/list?page= &size= &sort= ,정렬방식
+     * [GET] /books?page= &size= &sort= ,정렬방식
      * @return Pageable 기준에 따라 정렬된 책 리스트
      */
-    @GetMapping("/list")
+    @GetMapping
     @ApiOperation(value = "책 리스트 조회", notes = "책 전체 리스트를 전달된 pageable 파라미터에 따라 정렬하여 조회합니다.")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -75,6 +75,5 @@ public class BookController {
     public Page<BookResponseData> search(@RequestParam(name = "name") @ApiParam(value="책 이름 검색어") String search, Pageable pageable) {
         return bookService.getSearchBooks(search, pageable);
     }
-
 
 }
