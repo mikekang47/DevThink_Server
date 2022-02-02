@@ -81,13 +81,38 @@ public class UserService {
     }
 
     /**
-     * 수정할 사용자 식별자와, 수정할 사용자의 정보를 받아 사용자 정보를 수정하여 수정된 사용자를 반환합니다.
+     * 정보를 수정할 사용자 식별자와, 수정할 사용자의 정보를 받아 사용자 정보를 수정하여 수정된 사용자를 반환합니다.
      * @param id 수정할 사용자 식별자
      * @param modificationData 수정할 사용자의 정보
      * @return 수정된 사용자.
      */
     public User updateUser(Long id, UserModificationData modificationData) {
         User user = findUser(id);
+
+        User source = mapper.map(modificationData, User.class);
+        user.changeWith(source);
+
+        return user;
+    }
+
+    /**
+     * 프로필 이미지를 수정할 사용자의 식별자와, 수정할 사용자의 이미지 정보를 받아 수정하여 수정된 사용자를 반환합니다.
+     * @param id 프로필 이미지를 수정할 사용자의 식별자
+     * @param imgUrl 수정할 새로운 프로필 이미지
+     * @return 프로필 이미지가 수정된 사용자
+     */
+    public User updateUserImg(Long id, String imgUrl) {
+        User user = findUser(id);
+
+        UserModificationData modificationData = UserModificationData.builder()
+                .imgUrl(imgUrl)
+                .blogAddr(user.getBlogAddr())
+                .gitNickname(user.getGitNickname())
+                .nickname(user.getNickname())
+                .role(user.getRole())
+                .stack(user.getStack())
+                .password(user.getPassword())
+                .build();
 
         User source = mapper.map(modificationData, User.class);
         user.changeWith(source);
@@ -115,6 +140,7 @@ public class UserService {
         user.destroy();
         return user;
     }
+
 
 
 }
