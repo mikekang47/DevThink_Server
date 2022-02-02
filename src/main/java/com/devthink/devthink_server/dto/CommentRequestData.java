@@ -20,6 +20,8 @@ public class CommentRequestData {
     @NotNull
     private final Long userId;
 
+    //private final String userToken;
+
     @ApiModelProperty(value = "게시글 식별자", example = "1")
     private final Long postId;
 
@@ -27,7 +29,7 @@ public class CommentRequestData {
     private final Long reviewId;
 
     @ApiModelProperty(value = "댓글 내용", required = true, example = "안녕하세요")
-    @NotBlank
+    @NotBlank(message = "Comment content cannot be empty")
     @Size(min=1)
     private final String content;
 
