@@ -35,7 +35,7 @@ public class User extends BaseTimeEntity{
     private String blogAddr;
 
     private String gitNickname;
-    
+
     private Integer point;
 
     @Builder.Default
@@ -56,7 +56,7 @@ public class User extends BaseTimeEntity{
         password = source.getPassword();
         point = source.getPoint();
     }
-    
+
     public void destroy() {
         deleted = true;
     }
@@ -66,4 +66,3 @@ public class User extends BaseTimeEntity{
     }
 
 }
-

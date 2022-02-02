@@ -1,142 +1,125 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.CategoryService;
+import com.devthink.devthink_server.application.PostService;
+import com.devthink.devthink_server.application.UserService;
+import com.devthink.devthink_server.domain.Category;
 import com.devthink.devthink_server.domain.Post;
-import com.devthink.devthink_server.dto.PostDto;
-import com.devthink.devthink_server.service.PostService;
+import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.PostListData;
+import com.devthink.devthink_server.dto.PostRequestData;
+import com.devthink.devthink_server.dto.PostResponseData;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/posts")
-/**
- * 사용자의 HTTP 요청을 처리하는 클래스입니다.
- */
-
-// 1. 글 작성 -> POST /posts/write
-// 2. 글 id로 검색 -> GET /posts/{id}
-// 3. 글 업데이트 -> PUT /posts/{id}
-// 4. 글 삭제 -> DELETE /posts/{id}
-// 5. 페이지 가져오기 -> GET /posts?page=숫자
-// ----> 기본 1페이지, 6개의 게시글 가져오기, 최신 날짜순이 기본
-// 6. 키워드로 제목 검색 -> GET /posts/search?keyword=문자열
-// ----> 문자열이 제목인 게시글 가져오기
-
+@RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
-
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
+    private final UserService userService;
+    private final CategoryService categoryService;
 
     /**
-     * 게시글에서 페이지를 요청하면 몇 페이지의 게시글을 가져옵니다.
-     * @param page 사용자가 요청한 페이지 수
-     * @return 몇 페이지의 게시글 (기본값 6개의 게시글)
+     * 페이지를 요청하면 페이지의 게시글을 가져옵니다.
+     * [GET] /posts/list?page= &size= &sort= ,정렬방식
+     * @return Pageable 기준에 따라 정렬된 페이지 리스트
      */
-    @GetMapping
-    public List<PostDto> list(@RequestParam(value="page", defaultValue = "1") int page){
-        List<Post> list = postService.list(page);
-        return getPostDtos(list);
+    @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "게시글 리스트 조회", notes = "게시글 전체 리스트를 전달된 pageable 파라미터에 따라 정렬하여 조회합니다.")
+    public List<PostListData> list(Pageable pageable) {
+        return postService.getPosts(pageable);
     }
 
     /**
-     * 게시글의 id를 검색하여 게시글을 가져옵니다.
-     * @param id 게시글의 고유 id값
-     * @return id의 게시글
+     * 게시글 상세 조회 API
+     * [GET] /posts/:id
+     * @param id 게시글의 조회 아이디
+     * @return Id인 게시글
      */
     @GetMapping("/{id}")
-    public PostDto findById(@PathVariable Long id){
-        Post post = postService.getPost(id);
-        return getPostData(post);
-
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "게시글 검색", notes = "게시글의 id를 검색하여 게시글을 가져옵니다.")
+    public PostResponseData getPost(@PathVariable("id") Long id) {
+        Post post = postService.getPostById(id);
+        return post.toPostResponseData();
     }
 
     /**
-     * 입력한 게시글의 정보(유저 id, 카테고리 id, 제목, 내용, status)를 입력받아 게시글을 생성합니다.
-     * @param postDto 입력한 vaild한 게시글의 정보
-     * @return  게시글 생성
+     * 게시글 등록 API
+     * [POST] /posts/write
+     * @param postRequestData 게시글의 정보(userId, categoryId, title, content)
+     * @return PostResponseData (새로 생성된 게시글)
      */
     @PostMapping("/write")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDto write(@RequestBody @Valid PostDto postDto){
-        Post post = postService.savePost(postDto);
-        return getPostData(post);
+    public PostResponseData write(@RequestBody @Valid PostRequestData postRequestData) {
+        User user = userService.getUser(postRequestData.getUserId());
+        Category category = categoryService.getCategory(postRequestData.getCategoryId());
+        Post post = postService.savePost(user, category, postRequestData);
+        return post.toPostResponseData();
     }
 
     /**
-     * 입력한 게시글의 식별자 값과 valid한 게시글의 정보를 받아, 기존의 게시글을 입력한 정보로 변경합니다.
-     * @param id 게시글의 식별자
-     * @param postDto 제목, 내용, status
-     * @return 기존 게시글의 정보 수정
+     * 게시글 제목,내용 수정 API
+     * [PUT] /posts/:id
+     * @param id (수정할 게시글 아이디)
+     * @param postRequestData (수정할 게시글 내용)
      */
-
     @PutMapping("/{id}")
-    public PostDto update(@PathVariable Long id, @RequestBody @Valid PostDto postDto){
-        Post update = postService.update(id, postDto);
-        return getPostData(update);
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "게시글 수정", notes = "식별자 값과 게시글의 정보를 받아, 게시글을 입력한 정보로 변경합니다.")
+    public PostResponseData update(@PathVariable("id") Long id, @RequestBody @Valid PostRequestData postRequestData) {
+        Post post = postService.getPostById(id);
+        postService.update(post, postRequestData);
+        return post.toPostResponseData();
     }
 
     /**
-     * 입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.
-     * @param id 게시글의 식별자
+     * 게시글 삭제 API
+     * [DELETE] /posts/:id
+     * @param id (삭제할 게시글 아이디)
      */
     @DeleteMapping("/{id}")
-    public void deletePost(@PathVariable Long id)
-    {
-        postService.deletePost(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation(value = "게시글 삭제", notes = "입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.")
+    public PostResponseData deletePost(@PathVariable("id") Long id) {
+        Post post = postService.getPostById(id);
+        postService.deletePost(post);
+        return post.toPostResponseData();
     }
 
     /**
-     * keyword를 검색하여, keyword가 담긴 제목의 게시글을 탐색합니다.
-     * @param keyword 검색하는 제목
-     * @return keyword가 담긴 제목의 게시글
+     * 제목 검색 API
+     * [GET] /posts/search?keyword=제목
+     * @param keyword 검색 제목
+     * @return 제목이 담긴 게시글
      */
-
     @GetMapping("/search")
-    public List<PostDto> search(@RequestParam String keyword)
-    {
-        List<Post> search = postService.search(keyword);
-        List<PostDto> postDto = getPostDtos(search);
-        return postDto;
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "게시글 검색", notes = "사용자로부터 제목을 받아, 제목이 담긴 게시글을 반환합니다.")
+    public List<PostResponseData> search(@RequestParam String keyword, Pageable pageable) {
+        return postService.search(keyword, pageable);
     }
 
     /**
-     * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
-     * @param posts entity List
-     * @return 입력된 dto 데이터로 변환된 list
+     * 베스트 게시글 가져오기 API
+     * @param categoryId 카테고리 아이디
+     * @return PostResponseData 게시글
      */
-    private List<PostDto> getPostDtos(List<Post> posts) {
-        List<PostDto> postDtos = new ArrayList<>();
-
-        for (Post post : posts) {
-            postDtos.add(getPostData(post));
-        }
-        return postDtos;
-    }
-
-    /**
-     * 게시글의 정보를 받아 게시글을 dto 데이터로 변환하여 반환합니다.
-     * @param post 게시글 정보
-     * @return 입력된 dto 데이터로 변환된 값
-     */
-    private PostDto getPostData(Post post)
-    {
-        if(post == null)
-            return null;
-
-        return PostDto.builder()
-                .user_id(post.getUser_id())
-                .category_id(post.getCategory_id())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .status(post.getStatus())
-                .build();
+    @GetMapping("/best/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "베스트 게시글 가져오기", notes = "사용자로부터 카테고리 id를 받아, 베스트 게시글을 가져옵니다.")
+    public List<PostResponseData> searchBest(@PathVariable("categoryId") Long categoryId) {
+        Category category = categoryService.getCategory(categoryId);
+        return postService.getBestPost(category);
     }
 }

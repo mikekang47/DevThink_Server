@@ -1,13 +1,12 @@
-package com.devthink.devthink_server.service;
+package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Category;
-import com.devthink.devthink_server.dto.CategoryDto;
+import com.devthink.devthink_server.dto.CategoryRequestData;
 import com.devthink.devthink_server.errors.CategoryNotFoundException;
 import com.devthink.devthink_server.infra.CategoryRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 /**
  * 사용자의 요청을 받아, 실제 내부에서 작동하는 클래스 입니다.
@@ -16,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class CategoryService {
+
     private final CategoryRepository categoryRepository;
     private final Mapper mapper;
 
@@ -29,7 +29,7 @@ public class CategoryService {
      * @param categoryDto 게시글 데이터
      * @return  카테고리의 정보를 DB에 저장.
      */
-    public Category savePost(CategoryDto categoryDto){
+    public Category savePost(CategoryRequestData categoryDto) {
         Category category = mapper.map(categoryDto, Category.class);
         return categoryRepository.save(category);
     }
@@ -39,11 +39,9 @@ public class CategoryService {
      * @param id 찾고자 하는 게시글의 식별자
      * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
      */
-    public Category getCategory(Long id)
-    {
+    public Category getCategory(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
-
     }
 
     /**
@@ -53,8 +51,7 @@ public class CategoryService {
      * @param categoryDto 수정하고자 하는 카테고리의 내용
      * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
      */
-    public Category update(Long id, CategoryDto categoryDto)
-    {
+    public Category update(Long id, CategoryRequestData categoryDto) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
 
@@ -67,13 +64,11 @@ public class CategoryService {
      * @param id 삭제하고자 하는 게시글의 식별자
      * @return 찾았을 경우 삭제한 게시글 반환, 찾지 못하면 error를 반환
      */
-    public Category deletePost(Long id)
-    {
+    public Category deletePost(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
 
         categoryRepository.deleteById(id);
         return category;
     }
-
 }
