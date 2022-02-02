@@ -5,11 +5,10 @@ import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostRequestData;
+import com.devthink.devthink_server.dto.PostResponseData;
 import com.devthink.devthink_server.errors.PostNotFoundException;
-import com.devthink.devthink_server.infra.CategoryRepository;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.github.dozermapper.core.Mapper;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,10 +20,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-/**
- * 사용자의 요청을 받아, 실제 내부에서 작동하는 클래스 입니다.
- */
 
 @Service
 @Transactional
@@ -39,9 +34,8 @@ public class PostService {
     }
 
     /**
-     * 전달받은 게시글 데이터로 새로운 게시글을 DB에 저장합니다.
+     * 새로운 게시글을 DB에 저장합니다.
      * @param postRequestData 게시글 데이터
-     * @return  사용자의 정보를 DB에 저장.
      */
     public Post savePost(User user, Category category, PostRequestData postRequestData){
         boolean imageCheck;
@@ -73,80 +67,69 @@ public class PostService {
     }
 
     /**
-     * 전달받은 page를 받아 page에 해당하는 게시글을 반환합니다.
-     * -----> 기본 : 페이지당 6개의 게시글
-     * @param page 얻고자 하는 page
-     * @return  page에 해당하는 게시글
+     * page에 해당하는 게시글을 반환합니다.
+     * @param pageable 얻고자 하는 page
      */
     public List<PostListData> getPosts(Pageable pageable){
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
         pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "id"));
 
-        List<Post> postPage = postRepository.findAll(pageable).getContent();
+        List<Post> postPage = postRepository.findAllByDeletedIsFalse(pageable).getContent();
         return postPage.stream()
                 .map(Post::toPostListData)
                 .collect(Collectors.toList());
     }
 
     /**
-     * 전달받은 게시글의 식별자를 이용하여 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
+     * 게시글을 DB에 찾고 없으면 에러를 반환합니다.
      * @param id 찾고자 하는 게시글의 식별자
-     * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
+     * @return 찾았을 경우 게시글을 반환, 찾지 못하면 에러 반환
      */
-    public Post getPost(Long id){
-        return postRepository.findById(id)
+    public Post getPostById(Long id){
+        return postRepository.findByIdAndDeletedIsFalse(id)
                 .orElseThrow(() -> new PostNotFoundException(id));
     }
 
     /**
-     * 전달받은 게시글의 식별자와 수정하고자 하는 게시글의 내용을 이용하여 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
-     * 있으면 게시글을 수정하여 DB에 저장합니다.
-     * @param id 찾고자 하는 게시글의 식별자
-     * @param postRequestData 수정하고자 하는 게시글의 내용
-     * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
+     * 게시글의 내용과 제목을 업데이트합니다.
+     * @param post 게시글
+     * @param postRequestData 게시글 내용
      */
-    public Post update(Long id, PostRequestData postRequestData){
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id));
-
+    public void update(Post post, PostRequestData postRequestData){
         post.update(postRequestData.getTitle(), postRequestData.getContent());
-        return postRepository.save(post);
     }
 
     /**
-     * 전달받은 게시글의 식별자를 이용하여 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
-     * @param id 삭제하고자 하는 게시글의 식별자
-     * @return 찾았을 경우 삭제한 게시글 반환, 찾지 못하면 error를 반환
+     * 게시글을 삭제합니다.
+     * @param post 삭제할 게시글
      */
-    public Post deletePost(Long id){
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id));
-
-        postRepository.deleteById(id);
-        return post;
+    public void deletePost(Post post){
+        post.setDeleted(true);
     }
 
     /**
-     * 전달받은 키워드를 이용하여 제목에 키워드가 담긴 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
-     * @param keyword 찾고자 하는 제목
-     * @return 찾았을 경우 게시글 반환, 찾지 못하면 error를 반환
+     * 제목이 담긴 게시글을 반환합니다.
+     * @param keyword 찾는 제목
      */
-    public List<Post> search(String keyword){
-        List<Post> postList = postRepository.findByTitleContaining(keyword);
-        return postList;
+    public List<PostResponseData> search(String keyword, Pageable pageable){
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "id"));
+        List<Post> posts = postRepository.findByTitleContainingAndDeletedIsFalse(keyword, pageable).getContent();
+        return posts.stream()
+                .map(Post::toPostResponseData)
+                .collect(Collectors.toList());
     }
 
     /**
-     * 베스트 게시글 DB에서 가져오기
+     * 카테고리의 베스트 게시글을 가져옵니다.
+     * @param category 카테고리
      */
-    public List<Post> getBestPost(Long categoryId){
+    public List<PostResponseData> getBestPost(Category category){
         LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
         LocalDateTime end = LocalDateTime.now();
-
-        System.out.println("start = " + start);
-        System.out.println("end = " + end);
-
-        List<Post> bestPost = postRepository.getBestPost(categoryId, start, end, PageRequest.of(0,1));
-        return bestPost;
+        List<Post> bestPost = postRepository.getBestPost(category.getId(), start, end, PageRequest.of(0,1, Sort.by(Sort.Direction.DESC, "heart")));
+        return bestPost.stream()
+                .map(Post::toPostResponseData)
+                .collect(Collectors.toList());
    }
 }
