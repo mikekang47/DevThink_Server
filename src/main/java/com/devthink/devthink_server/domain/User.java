@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 
+import io.swagger.models.auth.In;
 import lombok.*;
 
 import javax.persistence.*;
@@ -65,4 +66,7 @@ public class User extends BaseTimeEntity{
         return !deleted && password.equals(this.password);
     }
 
+    public void setReported() {
+        reported = reported + 1;
+    }
 }
