@@ -117,7 +117,7 @@ public class CommentController {
         // request상에 reviewId 값이 들어있는지 확인합니다.
         if (reviewId != null) {
             // userId 값을 통하여 userRepository에서 User를 가져옵니다.
-            User user = userService.findUser(commentRequestData.getUserId());
+            User user = userService.getUser(commentRequestData.getUserId());
             // reviewId 값을 통하여 reviewRepository에서 Review를 가져옵니다.
             Review review = reviewService.getReviewById(reviewId);
             return commentService.createReviewComment(user, review, commentRequestData.getContent());
@@ -139,7 +139,7 @@ public class CommentController {
         // request상에 postId 값이 들어있는지 확인합니다.
         if (postId != null) {
             // userId 값을 통하여 userRepository에서 User를 가져옵니다.
-            User user = userService.findUser(commentRequestData.getUserId());
+            User user = userService.getUser(commentRequestData.getUserId());
             // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
             Post post = postService.getPost(postId);
             return commentService.createPostComment(user, post, commentRequestData.getContent());
