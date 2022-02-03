@@ -1,7 +1,11 @@
 package com.devthink.devthink_server.controllers;
 
 
+import com.devthink.devthink_server.application.BookService;
 import com.devthink.devthink_server.application.ReviewService;
+import com.devthink.devthink_server.application.UserService;
+import com.devthink.devthink_server.domain.Book;
+import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
@@ -19,6 +23,8 @@ import javax.validation.Valid;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final UserService userService;
+    private final BookService bookService;
 
     /**
      * 입력한 valid한 리뷰 정보를 받아 리뷰를 생성합니다.
@@ -31,7 +37,9 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 등록", notes = "전달된 정보에 따라 리뷰를 등록합니다.")
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@Valid @RequestBody ReviewRequestData reviewRequestData) {
-        String id = reviewService.createReview(reviewRequestData);
+        User user = userService.getUser(reviewRequestData.getUserId());
+        Book book = bookService.getOrCreateBook(reviewRequestData.getBook());
+        String id = reviewService.createReview(user, book, reviewRequestData);
         return id;
     }
 

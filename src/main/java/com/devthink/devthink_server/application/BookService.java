@@ -2,6 +2,7 @@ package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.dto.BookDetailResponseData;
+import com.devthink.devthink_server.dto.BookRequestData;
 import com.devthink.devthink_server.dto.BookResponseData;
 import com.devthink.devthink_server.errors.BookNotFoundException;
 import com.devthink.devthink_server.infra.BookRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +23,38 @@ import java.util.stream.Collectors;
 public class BookService {
 
     private final BookRepository bookRepository;
+
+    /**
+     * 입력된 isbn 정보로 Book을 조회하며, 해당 책이 없는 경우 새로 생성하는 함수를 호출합니다.
+     *
+     * @param bookRequestData (책에 대한 정보)
+     * @return 조회 혹은 생성된 Book 객체
+     */
+    public Book getOrCreateBook(BookRequestData bookRequestData) {
+        Optional<Book> book = bookRepository.getBookByIsbn(bookRequestData.getIsbn());
+        if (book.isEmpty()) {
+            return createBook(bookRequestData);
+        } else {
+            return book.get();
+        }
+    }
+
+    /**
+     * 입력된 책 정보의 새로운 Book 객체를 생성합니다.
+     *
+     * @param bookRequestData (책에 대한 정보)
+     * @return 생성된 Book 객체
+     */
+    @Transactional
+    public Book createBook(BookRequestData bookRequestData) {
+        Book book = Book.builder()
+                .isbn(bookRequestData.getIsbn())
+                .name(bookRequestData.getName())
+                .writer(bookRequestData.getWriter())
+                .imgUrl(bookRequestData.getImgUrl())
+                .build();
+        return bookRepository.save(book);
+    }
 
     /**
      * 입력된 id 값으로 책의 상세 정보를 조회합니다.
