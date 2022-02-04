@@ -80,7 +80,7 @@ public class CommentService {
      */
     public List<CommentResponseData> getPostComments(Long postIdx) {
         if (!postRepository.existsById(postIdx))
-            throw new PostIdNotFoundException(postIdx);
+            throw new PostNotFoundException(postIdx);
         List<Comment> postComments = commentRepository.findByPostId(postIdx);
         if (postComments.isEmpty())
             throw new CommentNotFoundException();
