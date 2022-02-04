@@ -112,6 +112,7 @@ public class PostController {
 
     /**
      * 베스트 게시글 가져오기 API
+     * [GET] /posts/best/:categoryId?page=? 정렬방식
      * @param categoryId 카테고리 아이디
      * @return PostResponseData 게시글
      */
@@ -122,4 +123,20 @@ public class PostController {
         Category category = categoryService.getCategory(categoryId);
         return postService.getBestPost(category);
     }
+
+    /**
+     * 게시글 신고 API
+     * [GET] /posts/report/:id
+     * @param id 게시글 아이디
+     * @return 신고당한 유저 아이디
+     */
+    @PutMapping("/report/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "게시글 신고", notes = "게시글을 신고합니다.")
+    public String report(@PathVariable("id") Long id) {
+        Post post = postService.getPostById(id);
+        User user = userService.getUser(post.getUser().getId());
+        return postService.report(user);
+    }
+
 }
