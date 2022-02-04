@@ -10,15 +10,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 @NoArgsConstructor
-public class HeartData {
+public class HeartPostResponseData {
     private Long id;
 
     private Long userId;
 
     private Long postId;
-
-    private Long commentId;
-
-    private Long reviewId;
-
 }
