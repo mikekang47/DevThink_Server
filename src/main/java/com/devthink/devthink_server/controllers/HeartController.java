@@ -38,11 +38,17 @@ public class HeartController {
         return getCommentHeartData(heart);
     }
 
-    @PostMapping("/comment/{commentId}/{userId}")
+    @PostMapping("/review/{reviewtId}/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public HeartReviewResponseData createReviewHeart(@PathVariable Long reviewId, @PathVariable Long userId) {
         Heart heart = heartService.createReviewHeart(reviewId, userId);
         return getReviewHeartData(heart);
+    }
+
+    @DeleteMapping("/post/{heartId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void destroy(@PathVariable Long heartId) {
+        heartService.destroyPostHeart(heartId);
     }
 
     private HeartReviewResponseData getReviewHeartData(Heart heart) {
@@ -52,14 +58,6 @@ public class HeartController {
                 .reviewId(heart.getReview().getId())
                 .build();
     }
-
-    @DeleteMapping("/post/{heartId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void destroy(@PathVariable Long heartId) {
-        heartService.destroyPostHeart(heartId);
-    }
-
-
 
     private HeartPostResponseData getPostHeartData(Heart heart) {
         return HeartPostResponseData.builder()
@@ -76,6 +74,5 @@ public class HeartController {
                 .commentId(heart.getComment().getId())
                 .build();
     }
-
-
+    
 }
