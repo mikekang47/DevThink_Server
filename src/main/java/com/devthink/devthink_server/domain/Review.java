@@ -26,9 +26,11 @@ public class Review extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "book_id")
     private Book book;
 
     private String content;
