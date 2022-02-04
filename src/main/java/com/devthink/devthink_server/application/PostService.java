@@ -132,4 +132,14 @@ public class PostService {
                 .map(Post::toPostResponseData)
                 .collect(Collectors.toList());
    }
+
+    /**
+     * 게시글을 신고합니다.
+     * @param user 게시글 작성자
+     */
+    public String report(User user){
+        user.setReported();
+        return user.getId().toString();
+    }
+
 }
