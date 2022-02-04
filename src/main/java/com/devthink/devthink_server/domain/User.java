@@ -1,36 +1,89 @@
 package com.devthink.devthink_server.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.devthink.devthink_server.dto.UserProfileData;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
-@Entity
+
 @Getter
 @AllArgsConstructor
+@Entity
+@Builder
 @NoArgsConstructor
-public class User {
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    String email;
+    private String email;
 
-    String password;
+    private String password;
 
-    String nickName;
+    private String name;
 
-    String phoneNum;
+    private String nickname;
 
-    String stack;
+    private String phoneNum;
 
-    String blog_addr;
+    private String role;
 
-    String git_nickname;
+    @ElementCollection(targetClass = String.class)
+    private List<String> stack;
 
+    private String blogAddr;
 
+    private String gitNickname;
+
+    private Integer point;
+
+    @Builder.Default
+    private String imageUrl = "";
+
+    @Builder.Default
+    private boolean deleted = false;
+
+    @Builder.Default
+    private Integer reported = 0;
+
+    public void changeWith(User source) {
+        nickname = source.getNickname();
+        role = source.getRole();
+        stack = source.getStack();
+        gitNickname = source.getGitNickname();
+        blogAddr = source.getBlogAddr();
+        password = source.getPassword();
+        point = source.getPoint();
+    }
+
+    public void destroy() {
+        deleted = true;
+    }
+
+    public boolean authenticate(String password) {
+        return !deleted && password.equals(this.password);
+    }
+
+    /**
+     * User 객체를 UserProfileData 객체로 변환합니다.
+     * 탈퇴한 회원의 경우 삭제여부(deleted)컬럼 외의 나머지 정보는 null 값으로 채워 전달합니다.
+     * @return 변환된 UserProfileData 객체
+     */
+    public UserProfileData toUserProfileData() {
+        if (isDeleted()) {
+            return UserProfileData.builder()
+                    .deleted(deleted)
+                    .build();
+        } else {
+            return UserProfileData.builder()
+                    .id(id)
+                    .nickname(nickname)
+                    .imageUrl(imageUrl)
+                    .deleted(deleted)
+                    .build();
+        }
+    }
 }
+

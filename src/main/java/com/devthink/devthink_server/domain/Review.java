@@ -1,37 +1,80 @@
 package com.devthink.devthink_server.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.devthink.devthink_server.dto.ReviewDetailResponseData;
+import com.devthink.devthink_server.dto.ReviewResponseData;
+import lombok.*;
 
 import javax.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class Review {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Review extends BaseTimeEntity {
     @Id
-    @GeneratedValue
-    Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = LAZY)
-    User user;
+    private User user;
 
     @ManyToOne(fetch = LAZY)
-    Book book;
+    private Book book;
 
-    @OneToMany
-    List<Comment> comments = new ArrayList<>();
+    private String content;
 
-    String content;
+    private BigDecimal score;
 
-    Float Score;
+    @Builder.Default
+    private Boolean deleted = Boolean.FALSE;
 
-    String status;
+    @OneToMany(mappedBy = "review")
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
+
+    public void setBook(Book book) {
+        this.book = book;
+        book.getReviews().add(this);
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setScore(BigDecimal score) {
+        this.score = score;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public ReviewResponseData toReviewResponseData() {
+        return ReviewResponseData.builder()
+                .id(id)
+                .userId(user.getId())
+                .bookIsbn(book.getIsbn())
+                .content(content)
+                .score(score)
+                .createAt(getCreateAt())
+                .updateAt(getUpdateAt())
+                .build();
+    }
+
+    public ReviewDetailResponseData toReviewDetailResponseData() {
+        return ReviewDetailResponseData.builder()
+                .userProfile(user.toUserProfileData())
+                .review(toReviewResponseData())
+                .comments(comments.stream().map(Comment::toCommentResponseDto).collect(Collectors.toList()))
+                .build();
+    }
+
 }
