@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @AllArgsConstructor
 @Builder
 @Getter
@@ -17,5 +18,7 @@ public class HeartData {
     private Long postId;
 
     private Long commentId;
+
+    private Long reviewId;
 
 }
