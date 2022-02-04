@@ -51,8 +51,8 @@ public class Comment {
     }
 
 
-    public void updateHeart(int heart) {
-        this.heartCnt = heart;
+    public void updateHeart(int heartCnt) {
+        this.heartCnt = heartCnt;
     }
 
 }

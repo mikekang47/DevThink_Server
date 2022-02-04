@@ -62,8 +62,8 @@ public class Review extends BaseTimeEntity {
 
     public void setDeleted(boolean deleted) { this.deleted = deleted; }
 
-    public void updateHeart(int heart) {
-        this.heartCnt = heart;
+    public void updateHeart(int heartCnt) {
+        this.heartCnt = heartCnt;
     }
 
     //TODO: comments 추가
