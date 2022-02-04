@@ -50,8 +50,11 @@ public class Comment {
         this.content = content;
     }
 
+
     public void updateHeart(int heart) {
         this.heartCnt = heart;
     }
 
 }
+
+
