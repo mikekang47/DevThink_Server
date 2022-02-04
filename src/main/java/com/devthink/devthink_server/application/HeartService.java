@@ -6,7 +6,6 @@ import com.devthink.devthink_server.infra.HeartRepository;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
 import com.devthink.devthink_server.infra.UserRepository;
-import com.github.dozermapper.core.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,24 +15,28 @@ import javax.transaction.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class HeartService {
-
     private final HeartRepository heartRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
-    private final Mapper mapper;
 
-    // TODO
-    // GET -> 좋아요가 눌렸는지 아닌지 확인 -> 완료
-    // POST -> 좋아요 생성
-    // DELETE -> 좋아요 취소
-
+    /**
+     * 전달받은 식별자로 좋아요의 정보를 가져오고, 없을경우 예외를 발생합니다.
+     * @param id 조회하려는 좋아요의 식별자
+     * @return 생성된 좋아요 객체
+     */
     public Heart getHeart(Long id) {
-        return heartRepository.findById(id).orElseThrow(() -> new HeartNotFoundException(id));
-
+        return heartRepository.findById(id)
+                .orElseThrow(() -> new HeartNotFoundException(id));
     }
 
+    /**
+     * 전달받은 게시글 식별자와 사용자 식별자로 좋아요를 생성합니다.
+     * @param postId 게시글 식별자
+     * @param userId 사용자 식별자
+     * @return 생성된 게시글 좋아요 객체
+     */
     public Heart createPostHeart(Long postId, Long userId) {
         User user = findUser(userId);
         Post post = findPost(postId);
@@ -41,6 +44,12 @@ public class HeartService {
         return heartRepository.save(heart);
     }
 
+    /**
+     * 전달받은 댓글 식별자와 사용자 식별자로 좋아요를 생성합니다.
+     * @param commentId 댓글 식별자
+     * @param userId 사용자 식별자
+     * @return 생성된 댓글 좋아요 객체
+     */
     public Heart createCommentHeart(Long commentId, Long userId) {
         User user = findUser(userId);
         Comment comment = findComment(commentId);
@@ -48,6 +57,12 @@ public class HeartService {
         return heartRepository.save(heart);
     }
 
+    /**
+     * 전달받은 리뷰 식별자와 사용자 식별자로 좋아요를 생성합니다.
+     * @param reviewId 리뷰 식별자
+     * @param userId 사용자 식별자
+     * @return 생성된 댓글 좋아요 객체
+     */
     public Heart createReviewHeart(Long reviewId, Long userId) {
         User user = findUser(userId);
         Review review = findReview(reviewId);
@@ -55,6 +70,10 @@ public class HeartService {
         return heartRepository.save(heart);
     }
 
+    /**
+     * 전달받은 좋아요 식별자를 찾아 삭제합니다.
+     * @param id 삭제하고자하는 좋아요 식별자
+     */
     public void destroyPostHeart(Long id) {
         heartRepository.deleteById(id);
     }
@@ -64,7 +83,7 @@ public class HeartService {
     }
 
     private Post findPost(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() -> new PostIdNotFoundException(postId));
+        return postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException(postId));
     }
 
     private Comment findComment(Long commentId) {
