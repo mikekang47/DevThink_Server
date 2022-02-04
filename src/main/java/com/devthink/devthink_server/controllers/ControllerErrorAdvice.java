@@ -59,5 +59,11 @@ public class ControllerErrorAdvice {
     public ErrorResponse handleCommentNotFound() {
         return new ErrorResponse("Comment not found");
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(HeartNotFoundException.class)
+    public ErrorResponse handleHeartNotFound() {
+        return new ErrorResponse("Heart not found");
+    }
 }
 
