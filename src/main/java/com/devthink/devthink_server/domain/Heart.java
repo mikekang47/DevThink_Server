@@ -5,25 +5,33 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
+@Builder
 public class Heart extends BaseTimeEntity{
     @Id
     @GeneratedValue
     private Long id;
 
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private Long postId;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
-    private Long commentId;
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
-    private Long reviewId;
+    @ManyToOne
+    @JoinColumn(name = "review_id")
+    private Review review;
+
 }
