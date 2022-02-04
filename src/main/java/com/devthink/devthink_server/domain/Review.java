@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 import com.devthink.devthink_server.dto.ReviewResponseDto;
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +39,11 @@ public class Review extends BaseTimeEntity {
     private Boolean deleted = Boolean.FALSE;
 
     @OneToMany(mappedBy = "review")
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
+
+    @Builder.Default
+    private Integer heartCnt = 0;
 
     public void setBook(Book book){
         this.book = book;
@@ -54,6 +59,10 @@ public class Review extends BaseTimeEntity {
     }
 
     public void setDeleted(boolean deleted) { this.deleted = deleted; }
+
+    public void updateHeart(int heart) {
+        this.heartCnt = heart;
+    }
 
     //TODO: comments 추가
     public ReviewResponseDto toReviewResponseDto(){
