@@ -49,11 +49,22 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(PostIdNotFoundException.class)
+    @ExceptionHandler(PostNotFoundException.class)
     public ErrorResponse handlePostNotFound() {
         return new ErrorResponse("Post not found");
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ErrorResponse handleCategoryNotFound() {
+        return new ErrorResponse("Category not found");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserRoomNotFoundException.class)
+    public ErrorResponse handleUserRoomNotFound() {
+        return new ErrorResponse("UserRoom not found");
+    }
+  
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CommentNotFoundException.class)
     public ErrorResponse handleCommentNotFound() {
@@ -71,6 +82,5 @@ public class ControllerErrorAdvice {
     public ErrorResponse handlePostCommentBadRequest() {
         return new ErrorResponse("Can't create comment with null postId");
     }
-
 }
 
