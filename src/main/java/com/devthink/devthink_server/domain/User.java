@@ -69,4 +69,5 @@ public class User extends BaseTimeEntity{
     public void setReported() {
         reported = reported + 1;
     }
+
 }

@@ -138,4 +138,5 @@ public class PostController {
         User user = userService.getUser(post.getUser().getId());
         return postService.report(user);
     }
+
 }
