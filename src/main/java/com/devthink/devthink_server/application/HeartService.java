@@ -40,6 +40,7 @@ public class HeartService {
     public Heart createPostHeart(Long postId, Long userId) {
         User user = findUser(userId);
         Post post = findPost(postId);
+        post.updateHeart(post.getHeartCnt()+1);
         Heart heart = Heart.builder().user(user).post(post).build();
         return heartRepository.save(heart);
     }
@@ -53,6 +54,7 @@ public class HeartService {
     public Heart createCommentHeart(Long commentId, Long userId) {
         User user = findUser(userId);
         Comment comment = findComment(commentId);
+        comment.updateHeart(comment.getHeartCnt()+1);
         Heart heart = Heart.builder().user(user).comment(comment).build();
         return heartRepository.save(heart);
     }
@@ -66,6 +68,7 @@ public class HeartService {
     public Heart createReviewHeart(Long reviewId, Long userId) {
         User user = findUser(userId);
         Review review = findReview(reviewId);
+        review.updateHeart(review.getHeartCnt()+1);
         Heart heart = Heart.builder().user(user).review(review).build();
         return heartRepository.save(heart);
     }
