@@ -64,6 +64,8 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(HeartNotFoundException.class)
     public ErrorResponse handleHeartNotFound() {
         return new ErrorResponse("Heart not found");
+    }
+
     @ExceptionHandler(CategoryNotFoundException.class)
     public ErrorResponse handleCategoryNotFound() {
         return new ErrorResponse("Category not found");
