@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.LetterService;
 import com.devthink.devthink_server.application.UserRoomService;
 import com.devthink.devthink_server.application.UserService;
@@ -26,6 +27,7 @@ public class LetterController {
     private final LetterService letterService;
     private final UserService userService;
     private final UserRoomService userRoomService;
+    private final AuthenticationService authenticationService;
 
     /**
      * 쪽지 전송 API
@@ -38,6 +40,9 @@ public class LetterController {
     @ResponseStatus(HttpStatus.CREATED)
     public LetterResultData createMessage(@RequestHeader("Authorization") String authorization,
                                           @RequestBody @Valid LetterSendData letterAddData) {
+        String accessToken = authorization.substring("Bearer ".length());
+        authenticationService.parseToken(accessToken);
+
         User sender = userService.getUser(letterAddData.getSenderId());
         User target = userService.getUser(letterAddData.getTargetId());
         UserRoom userRoom = getUserRoom(letterAddData, sender, target);
@@ -54,6 +59,9 @@ public class LetterController {
     @ApiOperation(value = "쪽지 리스트", notes = "유저 Id를 받아 쪽지 리스트를 반환합니다.")
     public List<LetterListData> messageList(@RequestHeader("Authorization") String authorization,
                                             @PathVariable("userId") Long userId, Pageable pageable) {
+        String accessToken = authorization.substring("Bearer ".length());
+        authenticationService.parseToken(accessToken);
+
         User user = userService.getUser(userId);
         return letterService.getMessageList(user, pageable);
     }
@@ -68,6 +76,9 @@ public class LetterController {
     @ApiOperation(value = "메시지 내용 가져오기", notes = "유저 id와 방 id를 받아 메시지를 읽습니다.")
     public List<LetterResultData> getMessage(@RequestHeader("Authorization") String authorization,
                                              @PathVariable("userId") Long userId, @PathVariable("roomId") Long roomId) {
+        String accessToken = authorization.substring("Bearer ".length());
+        authenticationService.parseToken(accessToken);
+
         User user = userService.getUser(userId);
         UserRoom userRoom = userRoomService.getUserRoom(roomId);
         return letterService.getMessage(user, userRoom);
