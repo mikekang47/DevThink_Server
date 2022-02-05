@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.CategoryService;
 import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.application.UserService;
@@ -26,6 +27,7 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final AuthenticationService authenticationService;
 
     /**
      * 페이지를 요청하면 페이지의 게시글을 가져옵니다.
@@ -61,7 +63,8 @@ public class PostController {
      */
     @PostMapping("/write")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostResponseData write(@RequestBody @Valid PostRequestData postRequestData) {
+    public PostResponseData write(@RequestHeader("Authorization") String authorization,
+                                  @RequestBody @Valid PostRequestData postRequestData) {
         User user = userService.getUser(postRequestData.getUserId());
         Category category = categoryService.getCategory(postRequestData.getCategoryId());
         Post post = postService.savePost(user, category, postRequestData);
@@ -77,7 +80,8 @@ public class PostController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 수정", notes = "식별자 값과 게시글의 정보를 받아, 게시글을 입력한 정보로 변경합니다.")
-    public PostResponseData update(@PathVariable("id") Long id, @RequestBody @Valid PostRequestData postRequestData) {
+    public PostResponseData update(@RequestHeader("Authorization") String authorization,
+                                   @PathVariable("id") Long id, @RequestBody @Valid PostRequestData postRequestData) {
         Post post = postService.getPostById(id);
         postService.update(post, postRequestData);
         return post.toPostResponseData();
@@ -91,7 +95,8 @@ public class PostController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "게시글 삭제", notes = "입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.")
-    public PostResponseData deletePost(@PathVariable("id") Long id) {
+    public PostResponseData deletePost(@RequestHeader("Authorization") String authorization,
+                                       @PathVariable("id") Long id) {
         Post post = postService.getPostById(id);
         postService.deletePost(post);
         return post.toPostResponseData();
