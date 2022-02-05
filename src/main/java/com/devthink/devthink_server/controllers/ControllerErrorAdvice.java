@@ -100,5 +100,18 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Can't create comment with null postId");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ReplyNotFoundException.class)
+    public ErrorResponse handleReplyNotFound() {
+        return new ErrorResponse("Reply not found");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ReplyBadRequestException.class)
+    public ErrorResponse handleReplyBadRequest() {
+        return new ErrorResponse("Can't create reply with null commentId");
+    }
+
+
 }
 
