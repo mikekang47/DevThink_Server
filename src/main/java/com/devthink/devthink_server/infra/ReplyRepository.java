@@ -14,4 +14,7 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
     Optional<Reply> findById(Long id);
 
     Reply save(Reply comment);
+
+    List<Reply> findByUserId(Long userIdx);
+
 }
