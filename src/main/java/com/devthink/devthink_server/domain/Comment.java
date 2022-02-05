@@ -39,11 +39,6 @@ public class Comment extends BaseTimeEntity{
     @Builder.Default
     Integer heartCnt = 0;
 
-    public CommentResponseDto toCommentResponseDto() {
-        return CommentResponseDto.builder()
-                .user_nickname(user.getNickname())
-                .user_role(user.getRole())
-
     public CommentResponseData toCommentResponseDto() {
         return CommentResponseData.builder()
                 .commentId(id)
@@ -57,7 +52,6 @@ public class Comment extends BaseTimeEntity{
     public void setContent(String content) {
         this.content = content;
     }
-
 
     public void updateHeart(int heartCnt) {
         this.heartCnt = heartCnt;

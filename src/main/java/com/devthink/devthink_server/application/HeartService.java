@@ -2,10 +2,7 @@ package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.*;
 import com.devthink.devthink_server.errors.*;
-import com.devthink.devthink_server.infra.HeartRepository;
-import com.devthink.devthink_server.infra.PostRepository;
-import com.devthink.devthink_server.infra.ReviewRepository;
-import com.devthink.devthink_server.infra.UserRepository;
+import com.devthink.devthink_server.infra.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

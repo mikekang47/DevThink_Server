@@ -47,7 +47,13 @@ public class ControllerErrorAdvice {
     public ErrorResponse handleReviewNotFound() {
         return new ErrorResponse("Review not found");
     }
-    
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AlreadyReviewedException.class)
+    public ErrorResponse handleAlreadyReviewed() {
+        return new ErrorResponse("User Already Reviewed");
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(PostNotFoundException.class)
     public ErrorResponse handlePostNotFound() {
@@ -55,6 +61,11 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(BookNotFoundException.class)
+    public ErrorResponse handleBookNotFound() {
+        return new ErrorResponse("Book not found");
+    }
+
     @ExceptionHandler(HeartNotFoundException.class)
     public ErrorResponse handleHeartNotFound() {
         return new ErrorResponse("Heart not found");
@@ -88,5 +99,6 @@ public class ControllerErrorAdvice {
     public ErrorResponse handlePostCommentBadRequest() {
         return new ErrorResponse("Can't create comment with null postId");
     }
+
 }
 

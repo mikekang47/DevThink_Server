@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.CommentService;
+import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.application.ReviewService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.Post;
@@ -10,7 +11,6 @@ import com.devthink.devthink_server.dto.CommentRequestData;
 import com.devthink.devthink_server.dto.CommentResponseData;
 import com.devthink.devthink_server.errors.PostCommentBadRequestException;
 import com.devthink.devthink_server.errors.ReviewCommentBadRequestException;
-import com.devthink.devthink_server.service.PostService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -141,7 +141,7 @@ public class CommentController {
             // userId 값을 통하여 userRepository에서 User를 가져옵니다.
             User user = userService.getUser(commentRequestData.getUserId());
             // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
-            Post post = postService.getPost(postId);
+            Post post = postService.getPostById(postId);
             return commentService.createPostComment(user, post, commentRequestData.getContent());
         } else {
             throw new PostCommentBadRequestException();

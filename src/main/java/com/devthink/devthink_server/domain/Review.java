@@ -1,26 +1,25 @@
 package com.devthink.devthink_server.domain;
 
-import com.devthink.devthink_server.dto.ReviewResponseDto;
-import io.swagger.models.auth.In;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.devthink.devthink_server.dto.ReviewDetailResponseData;
+import com.devthink.devthink_server.dto.ReviewResponseData;
+import lombok.*;
 
 import javax.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,28 +46,29 @@ public class Review extends BaseTimeEntity {
     @Builder.Default
     private Integer heartCnt = 0;
 
-    public void setBook(Book book){
+    public void setBook(Book book) {
         this.book = book;
         book.getReviews().add(this);
     }
 
-    public void setContent(String content){
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public void setScore(BigDecimal score){
+    public void setScore(BigDecimal score) {
         this.score = score;
     }
 
-    public void setDeleted(boolean deleted) { this.deleted = deleted; }
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public void updateHeart(int heartCnt) {
         this.heartCnt = heartCnt;
     }
 
-    //TODO: comments 추가
-    public ReviewResponseDto toReviewResponseDto(){
-        return ReviewResponseDto.builder()
+    public ReviewResponseData toReviewResponseData() {
+        return ReviewResponseData.builder()
                 .id(id)
                 .userId(user.getId())
                 .bookIsbn(book.getIsbn())
@@ -76,6 +76,14 @@ public class Review extends BaseTimeEntity {
                 .score(score)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
+                .build();
+    }
+
+    public ReviewDetailResponseData toReviewDetailResponseData() {
+        return ReviewDetailResponseData.builder()
+                .userProfile(user.toUserProfileData())
+                .review(toReviewResponseData())
+                .comments(comments.stream().map(Comment::toCommentResponseDto).collect(Collectors.toList()))
                 .build();
     }
 
