@@ -1,6 +1,8 @@
 package com.devthink.devthink_server.application;
 
+import com.devthink.devthink_server.domain.Comment;
 import com.devthink.devthink_server.domain.Reply;
+import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReplyResponseData;
 import com.devthink.devthink_server.errors.CommentNotFoundException;
 import com.devthink.devthink_server.errors.ReplyNotFoundException;
@@ -66,6 +68,24 @@ public class ReplyService {
         if (commentReplies.isEmpty())
             throw new ReplyNotFoundException();
         return getReplyResponseDataList(commentReplies);
+    }
+
+    /**
+     * 입력된 reply 정보로 Comment에 등록할 새로운 Reply를 생성합니다.
+     * @param user Reply를 등록하려고 하는 User
+     * @param comment Reply와 연결되는 Comment
+     * @param content Reply의 내용
+     * @return 생성된 Reply의 결과 정보
+     */
+    public ReplyResponseData createReply(User user, Comment comment, String content) {
+        // replyRepository에 새로운 대댓글을 생성합니다.
+        return replyRepository.save(
+                Reply.builder()
+                        .user(user)
+                        .comment(comment)
+                        .content(content)
+                        .build()
+        ).toReplyResponseData();
     }
 
     /**
