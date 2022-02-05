@@ -17,15 +17,16 @@ import static javax.persistence.FetchType.LAZY;
 public class Reply {
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    User user;
+    @ManyToOne(targetEntity = User.class, fetch = LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
-    Comment comment;
+    private Comment comment;
 
-    String content;
+    private String content;
 
-    String status;
+    private String status;
 }
