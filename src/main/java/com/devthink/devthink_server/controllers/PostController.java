@@ -65,6 +65,9 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     public PostResponseData write(@RequestHeader("Authorization") String authorization,
                                   @RequestBody @Valid PostRequestData postRequestData) {
+        String accessToken = authorization.substring("Bearer ".length());
+        authenticationService.parseToken(accessToken);
+
         User user = userService.getUser(postRequestData.getUserId());
         Category category = categoryService.getCategory(postRequestData.getCategoryId());
         Post post = postService.savePost(user, category, postRequestData);
@@ -82,6 +85,9 @@ public class PostController {
     @ApiOperation(value = "게시글 수정", notes = "식별자 값과 게시글의 정보를 받아, 게시글을 입력한 정보로 변경합니다.")
     public PostResponseData update(@RequestHeader("Authorization") String authorization,
                                    @PathVariable("id") Long id, @RequestBody @Valid PostRequestData postRequestData) {
+        String accessToken = authorization.substring("Bearer ".length());
+        authenticationService.parseToken(accessToken);
+
         Post post = postService.getPostById(id);
         postService.update(post, postRequestData);
         return post.toPostResponseData();
@@ -97,6 +103,9 @@ public class PostController {
     @ApiOperation(value = "게시글 삭제", notes = "입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.")
     public PostResponseData deletePost(@RequestHeader("Authorization") String authorization,
                                        @PathVariable("id") Long id) {
+        String accessToken = authorization.substring("Bearer ".length());
+        authenticationService.parseToken(accessToken);
+
         Post post = postService.getPostById(id);
         postService.deletePost(post);
         return post.toPostResponseData();
