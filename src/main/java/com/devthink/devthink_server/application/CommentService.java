@@ -42,7 +42,7 @@ public class CommentService {
     /**
      * 특정 Comment를 조회합니다.
      * @param commentId 조회할 댓글의 식별자
-     * @return 조회된 Comment 또는 {@literal Optional#empty()}
+     * @return 조회된 Comment
      */
     public Comment getComment(Long commentId) {
         return commentRepository.findById(commentId)

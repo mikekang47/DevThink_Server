@@ -1,7 +1,9 @@
 package com.devthink.devthink_server.application;
 
+import com.devthink.devthink_server.domain.Comment;
 import com.devthink.devthink_server.domain.Reply;
 import com.devthink.devthink_server.dto.ReplyResponseData;
+import com.devthink.devthink_server.errors.ReplyNotFoundException;
 import com.devthink.devthink_server.infra.ReplyRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,16 @@ public class ReplyService {
      */
     public List<ReplyResponseData> getReplies() {
         return getReplyResponseDataList(replyRepository.findAll());
+    }
+
+    /**
+     * 특정 Reply를 조회합니다.
+     * @param replyId 조회할 대댓글의 식별자
+     * @return 조회된 Reply
+     */
+    public Reply getReply(Long replyId) {
+        return replyRepository.findById(replyId)
+                .orElseThrow(() -> new ReplyNotFoundException(replyId));
     }
 
     /**
