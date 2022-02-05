@@ -3,12 +3,18 @@ package com.devthink.devthink_server.controllers;
 import com.devthink.devthink_server.application.CommentService;
 import com.devthink.devthink_server.application.ReplyService;
 import com.devthink.devthink_server.application.UserService;
+import com.devthink.devthink_server.domain.Comment;
+import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.ReplyRequestData;
 import com.devthink.devthink_server.dto.ReplyResponseData;
+import com.devthink.devthink_server.errors.ReplyBadRequestException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -63,6 +69,28 @@ public class ReplyController {
     @ApiIgnore
     public List<ReplyResponseData> getCommentReplies(@PathVariable("commentIdx") Long commentIdx) {
         return replyService.getCommentReplies(commentIdx);
+    }
+
+    /**
+     * 입력된 reply 정보로 Comment에 등록할 새로운 Reply를 생성합니다.
+     * @param replyRequestData 생성하려는 Reply의 요청 정보
+     * @return 생성된 Reply
+     */
+    @ApiOperation(value = "대댓글 등록", notes = "입력된 대댓글 정보로 새로운 대댓글을 등록합니다.", response = String.class)
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReplyResponseData createReply(@Valid @RequestBody ReplyRequestData replyRequestData){
+        Long commentId = replyRequestData.getCommentId();
+        // request상에 CommentId 값이 들어있는지 확인합니다.
+        if (commentId != null) {
+            // userId 값을 통하여 userRepository에서 User를 가져옵니다.
+            User user = userService.getUser(replyRequestData.getUserId());
+            // commentId 값을 통하여 commentRepository에서 Comment를 가져옵니다.
+            Comment comment = commentService.getComment(commentId);
+            return replyService.createReply(user, comment, replyRequestData.getContent());
+        } else {
+            throw new ReplyBadRequestException();
+        }
     }
 
 
