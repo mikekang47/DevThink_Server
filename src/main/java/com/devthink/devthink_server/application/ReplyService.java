@@ -2,7 +2,9 @@ package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Reply;
 import com.devthink.devthink_server.dto.ReplyResponseData;
+import com.devthink.devthink_server.errors.CommentNotFoundException;
 import com.devthink.devthink_server.errors.ReplyNotFoundException;
+import com.devthink.devthink_server.infra.CommentRepository;
 import com.devthink.devthink_server.infra.ReplyRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,12 @@ import java.util.List;
 @Transactional
 public class ReplyService {
     private final ReplyRepository replyRepository;
+    private final CommentRepository commentRepository;
 
-    public ReplyService(ReplyRepository replyRepository) {
+    public ReplyService(ReplyRepository replyRepository,
+                        CommentRepository commentRepository) {
         this.replyRepository = replyRepository;
+        this.commentRepository = commentRepository;
     }
 
     /**
@@ -47,6 +52,20 @@ public class ReplyService {
         if (userReplies.isEmpty())
             throw new ReplyNotFoundException();
         return getReplyResponseDataList(userReplies);
+    }
+
+    /**
+     * 특정 Comment의 Reply를 조회합니다.
+     * @param commentIdx 조회할 대상 댓글의 식별자
+     * @return 특정 댓글에 작성된 Reply 리스트
+     */
+    public List<ReplyResponseData> getCommentReplies(Long commentIdx) {
+        if (!commentRepository.existsById(commentIdx))
+            throw new CommentNotFoundException(commentIdx);
+        List<Reply> commentReplies = replyRepository.findByCommentId(commentIdx);
+        if (commentReplies.isEmpty())
+            throw new ReplyNotFoundException();
+        return getReplyResponseDataList(commentReplies);
     }
 
     /**
