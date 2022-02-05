@@ -108,5 +108,16 @@ public class ReplyController {
         return replyService.updateReply(replyId, replyRequestData.getContent());
     }
 
+    /**
+     * replyId를 통하여 기존의 Reply를 삭제합니다.
+     * @param replyId 삭제할 Reply의 식별자
+     */
+    @ApiOperation(value = "대댓글 삭제", notes = "입력된 대댓글의 식별자로 대댓글을 찾아 삭제합니다.")
+    @ApiImplicitParam(name = "replyId", value = "삭제할 Reply의 식별자")
+    @DeleteMapping("/{replyId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReply(@PathVariable("replyId") Long replyId) {
+        replyService.deleteReply(replyId);
+    }
 
 }
