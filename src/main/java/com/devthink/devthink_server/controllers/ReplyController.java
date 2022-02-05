@@ -93,5 +93,20 @@ public class ReplyController {
         }
     }
 
+    /**
+     * replyId를 통하여 기존의 Reply를 수정합니다.
+     * @return Reply 수정 결과 response
+     */
+    @ApiOperation(value = "대댓글 수정",
+            notes = "입력된 대댓글의 식별자로 수정할 대댓글을 찾아, 주어진 데이터로 대댓글의 정보를 갱신합니다.",
+            response = ReplyResponseData.class)
+    @ApiImplicitParam(name = "replyId", value = "수정할 대댓글의 식별자")
+    @PatchMapping("/{replyId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ReplyResponseData updateReply(@PathVariable("replyId") Long replyId,
+                                             @Valid @RequestBody ReplyRequestData replyRequestData){
+        return replyService.updateReply(replyId, replyRequestData.getContent());
+    }
+
 
 }
