@@ -46,6 +46,7 @@ public class CommentController {
      */
     @ApiOperation(value = "전체 댓글 조회", notes = "모든 댓글을 조회합니다.", response = List.class)
     @GetMapping
+    @ApiIgnore
     public List<CommentResponseData> getComments() {
         return commentService.getComments();
     }

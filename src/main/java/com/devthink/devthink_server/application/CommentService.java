@@ -36,7 +36,7 @@ public class CommentService {
      * @return 조회된 모든 Comment
      */
     public List<CommentResponseData> getComments() {
-        return getCommentResponseDtos(commentRepository.findAll());
+        return getCommentResponseDataList(commentRepository.findAll());
     }
 
     /**
@@ -58,7 +58,7 @@ public class CommentService {
         List<Comment> userComments = commentRepository.findByUserIdAndReviewIdIsNotNull(userIdx);
         if (userComments.isEmpty())
             throw new CommentNotFoundException();
-        return getCommentResponseDtos(userComments);
+        return getCommentResponseDataList(userComments);
     }
 
     /**
@@ -70,7 +70,7 @@ public class CommentService {
         List<Comment> userComments = commentRepository.findByUserIdAndPostIdIsNotNull(userIdx);
         if (userComments.isEmpty())
             throw new CommentNotFoundException();
-        return getCommentResponseDtos(userComments);
+        return getCommentResponseDataList(userComments);
     }
 
     /**
@@ -84,7 +84,7 @@ public class CommentService {
         List<Comment> postComments = commentRepository.findByPostId(postIdx);
         if (postComments.isEmpty())
             throw new CommentNotFoundException();
-        return getCommentResponseDtos(postComments);
+        return getCommentResponseDataList(postComments);
     }
 
     /**
@@ -98,7 +98,7 @@ public class CommentService {
         List<Comment> reviewComments = commentRepository.findByReviewId(reviewIdx);
         if (reviewComments.isEmpty())
             throw new CommentNotFoundException();
-        return getCommentResponseDtos(reviewComments);
+        return getCommentResponseDataList(reviewComments);
     }
 
     /**
@@ -116,7 +116,7 @@ public class CommentService {
                 .review(review)
                 .content(content)
                 .build()
-        ).toCommentResponseDto();
+        ).toCommentResponseData();
     }
 
     /**
@@ -134,7 +134,7 @@ public class CommentService {
                 .post(post)
                 .content(content)
                 .build()
-        ).toCommentResponseDto();
+        ).toCommentResponseData();
     }
 
     /**
@@ -145,7 +145,7 @@ public class CommentService {
     public CommentResponseData updateComment(Long commentId, String content) {
         Comment comment = getComment(commentId);
         comment.setContent(content);
-        return commentRepository.save(comment).toCommentResponseDto();
+        return commentRepository.save(comment).toCommentResponseData();
     }
 
     /**
@@ -165,11 +165,11 @@ public class CommentService {
      * @param comments entity List
      * @return 입력된 dto 데이터로 변환된 list
      */
-    private List<CommentResponseData> getCommentResponseDtos(List<Comment> comments) {
+    private List<CommentResponseData> getCommentResponseDataList(List<Comment> comments) {
         List<CommentResponseData> commentResponseData = new ArrayList<>();
 
         for (Comment comment : comments)
-            commentResponseData.add(comment.toCommentResponseDto());
+            commentResponseData.add(comment.toCommentResponseData());
         return commentResponseData;
     }
 }

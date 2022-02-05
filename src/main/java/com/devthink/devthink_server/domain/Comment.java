@@ -39,7 +39,7 @@ public class Comment extends BaseTimeEntity {
     @Builder.Default
     Integer heartCnt = 0;
 
-    public CommentResponseData toCommentResponseDto() {
+    public CommentResponseData toCommentResponseData() {
         return CommentResponseData.builder()
                 .commentId(id)
                 .userId(user.getId())
