@@ -6,8 +6,10 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReplyResponseData;
 import com.devthink.devthink_server.errors.CommentNotFoundException;
 import com.devthink.devthink_server.errors.ReplyNotFoundException;
+import com.devthink.devthink_server.errors.UserNotFoundException;
 import com.devthink.devthink_server.infra.CommentRepository;
 import com.devthink.devthink_server.infra.ReplyRepository;
+import com.devthink.devthink_server.infra.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,11 +21,14 @@ import java.util.List;
 public class ReplyService {
     private final ReplyRepository replyRepository;
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
 
     public ReplyService(ReplyRepository replyRepository,
-                        CommentRepository commentRepository) {
+                        CommentRepository commentRepository,
+                        UserRepository userRepository) {
         this.replyRepository = replyRepository;
         this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -50,6 +55,8 @@ public class ReplyService {
      * @return 특정 사용자가 작성한 Reply 리스트
      */
     public List<ReplyResponseData> getUserReplies(Long userIdx) {
+        if (!userRepository.existsById(userIdx))
+            throw new UserNotFoundException(userIdx);
         List<Reply> userReplies = replyRepository.findByUserId(userIdx);
         if (userReplies.isEmpty())
             throw new ReplyNotFoundException();
