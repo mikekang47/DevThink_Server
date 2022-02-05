@@ -4,6 +4,7 @@ import com.devthink.devthink_server.application.CommentService;
 import com.devthink.devthink_server.application.ReplyService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.dto.ReplyResponseData;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -35,6 +36,20 @@ public class ReplyController {
     @ApiIgnore
     public List<ReplyResponseData> getReplies() {
         return replyService.getReplies();
+    }
+
+    /**
+     * 특정 사용자가 등록한 Reply를 모두 조회합니다.
+     * @param userIdx 대댓글을 조회할 사용자의 식별자
+     * @return 특정 사용자가 작성한 Reply 리스트
+     */
+    @ApiOperation(value = "사용자의 대댓글 조회",
+            notes = "특정 사용자가 등록한 대댓글을 모두 조회합니다.",
+            response = List.class)
+    @ApiImplicitParam(name = "userIdx", value = "대댓글을 조회할 사용자의 식별자")
+    @GetMapping("/user/{userIdx}/review")
+    public List<ReplyResponseData> getUserReplies(@PathVariable("userIdx") Long userIdx) {
+        return replyService.getUserReplies(userIdx);
     }
 
 
