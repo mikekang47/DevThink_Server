@@ -55,7 +55,7 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(PostIdNotFoundException.class)
+    @ExceptionHandler(PostNotFoundException.class)
     public ErrorResponse handlePostNotFound() {
         return new ErrorResponse("Post not found");
     }
@@ -64,6 +64,40 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(BookNotFoundException.class)
     public ErrorResponse handleBookNotFound() {
         return new ErrorResponse("Book not found");
+    }
+
+    @ExceptionHandler(HeartNotFoundException.class)
+    public ErrorResponse handleHeartNotFound() {
+        return new ErrorResponse("Heart not found");
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ErrorResponse handleCategoryNotFound() {
+        return new ErrorResponse("Category not found");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserRoomNotFoundException.class)
+    public ErrorResponse handleUserRoomNotFound() {
+        return new ErrorResponse("UserRoom not found");
+    }
+  
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ErrorResponse handleCommentNotFound() {
+        return new ErrorResponse("Comment not found");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ReviewCommentBadRequestException.class)
+    public ErrorResponse handleReviewCommentBadRequest() {
+        return new ErrorResponse("Can't create comment with null reviewId");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PostCommentBadRequestException.class)
+    public ErrorResponse handlePostCommentBadRequest() {
+        return new ErrorResponse("Can't create comment with null postId");
     }
 
 }

@@ -19,14 +19,17 @@ import static javax.persistence.FetchType.LAZY;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "book_id")
     private Book book;
 
     private String content;
@@ -39,6 +42,9 @@ public class Review extends BaseTimeEntity {
     @OneToMany(mappedBy = "review")
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
+
+    @Builder.Default
+    private Integer heartCnt = 0;
 
     public void setBook(Book book) {
         this.book = book;
@@ -55,6 +61,10 @@ public class Review extends BaseTimeEntity {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public void updateHeart(int heartCnt) {
+        this.heartCnt = heartCnt;
     }
 
     public ReviewResponseData toReviewResponseData() {

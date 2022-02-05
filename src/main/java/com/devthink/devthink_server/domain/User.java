@@ -85,5 +85,9 @@ public class User extends BaseTimeEntity {
                     .build();
         }
     }
-}
 
+    public void setReported() {
+        reported = reported + 1;
+    }
+
+}

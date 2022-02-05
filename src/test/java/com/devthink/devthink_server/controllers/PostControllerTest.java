@@ -1,9 +1,9 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
 import com.devthink.devthink_server.errors.PostIdNotFoundException;
-import com.devthink.devthink_server.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
