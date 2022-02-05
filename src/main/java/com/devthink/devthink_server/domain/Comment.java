@@ -15,7 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment extends BaseTimeEntity{
+public class Comment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,6 +46,8 @@ public class Comment extends BaseTimeEntity{
                 .userNickname(user.getNickname())
                 .userImageUrl(user.getImageUrl())
                 .content(content)
+                .createAt(getCreateAt())
+                .updateAt(getUpdateAt())
                 .build();
     }
 

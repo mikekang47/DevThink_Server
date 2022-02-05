@@ -6,9 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -35,5 +38,13 @@ public class CommentResponseData {
     @ApiModelProperty(value = "댓글 내용", example = "안녕하세요")
     @NotBlank
     private final String content;
+
+    @ApiModelProperty(value = "댓글 생성 시각", example = "")
+    @CreatedDate
+    private LocalDateTime createAt;
+
+    @ApiModelProperty(value = "댓글 수정 시각", example = "")
+    @LastModifiedDate
+    private LocalDateTime updateAt;
 
 }
