@@ -89,6 +89,17 @@ public class ReplyService {
     }
 
     /**
+     * replyId를 통하여 기존의 Reply를 수정합니다.
+     * @param replyId 수정할 Reply의 식별자
+     * @param content 수정할 content 내용
+     */
+    public ReplyResponseData updateReply(Long replyId, String content) {
+        Reply reply = getReply(replyId);
+        reply.setContent(content);
+        return replyRepository.save(reply).toReplyResponseData();
+    }
+
+    /**
      * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
      * @param replies entity List
      * @return 입력된 dto 데이터로 변환된 list

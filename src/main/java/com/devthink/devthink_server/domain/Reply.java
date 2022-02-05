@@ -42,4 +42,9 @@ public class Reply extends BaseTimeEntity {
                 .updateAt(getUpdateAt())
                 .build();
     }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
 }
