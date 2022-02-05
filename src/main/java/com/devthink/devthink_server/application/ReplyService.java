@@ -1,6 +1,5 @@
 package com.devthink.devthink_server.application;
 
-import com.devthink.devthink_server.domain.Comment;
 import com.devthink.devthink_server.domain.Reply;
 import com.devthink.devthink_server.dto.ReplyResponseData;
 import com.devthink.devthink_server.errors.ReplyNotFoundException;
@@ -36,6 +35,18 @@ public class ReplyService {
     public Reply getReply(Long replyId) {
         return replyRepository.findById(replyId)
                 .orElseThrow(() -> new ReplyNotFoundException(replyId));
+    }
+
+    /**
+     * 특정 사용자가 등록한 Reply를 모두 조회합니다.
+     * @param userIdx 대댓글을 조회할 사용자의 식별자
+     * @return 특정 사용자가 작성한 Reply 리스트
+     */
+    public List<ReplyResponseData> getUserReplies(Long userIdx) {
+        List<Reply> userReplies = replyRepository.findByUserId(userIdx);
+        if (userReplies.isEmpty())
+            throw new ReplyNotFoundException();
+        return getReplyResponseDataList(userReplies);
     }
 
     /**
