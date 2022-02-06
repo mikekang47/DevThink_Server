@@ -1,7 +1,3 @@
-// 1. 가입 -> POST /users
-// 2. 사용자 정보 갱신 -> PUT/PATCH /users/{id}
-// ----> 자기 정보만 갱신 가능.
-// 3. 탈퇴 -> DELETE /users/{id}
 package com.devthink.devthink_server.controllers;
 
 
@@ -63,7 +59,7 @@ public class UserController {
         User user = userService.getUser(id);
         return getUserResultData(user);
     }
-    
+
     /**
      * 입력한 valid한 사용자의 정보를 받아 사용자를 생성합니다.
      * @param userRegistrationData 입력한 valid한 사용자의 정보
@@ -87,8 +83,8 @@ public class UserController {
     @PatchMapping("/{id}")
     @ApiOperation(value = "정보를 갱신할 사용자의 식별자와 갱신할 정보", notes = "입력된 사용자의 식별자로 수정할 사용자를 찾아, 주어진 데이터로 사용자의 정보를 갱신합니다.")
     public UserResultData update(
-                    @PathVariable Long id,
-                    @RequestBody @Valid UserModificationData modificationData
+            @PathVariable Long id,
+            @RequestBody @Valid UserModificationData modificationData
     ) {
         User user = userService.updateUser(id, modificationData);
         return getUserResultData(user);
@@ -104,7 +100,7 @@ public class UserController {
     public void destroy(@PathVariable Long id) {
         userService.deleteUser(id);
     }
-    
+
     /**
      * 사용자의 정보를 받아, 사용자를 dto 데이터로 변환하여 반환합니다.
      * @param user 사용자 정보

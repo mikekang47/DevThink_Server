@@ -55,7 +55,7 @@ public class UserRegistrationData extends BaseTimeEntity {
     @Mapping("stack")
     @ApiParam(value = "사용자가 사용하는 기술", example = "C++, Java, Spring")
     private List<String> stack;
-    
+
     @Mapping("blogAddr")
     @ApiParam(value = "사용자의 기술 블로그 주소", example = "mirrorofcode.tistory.com")
     private String blogAddr;

@@ -50,5 +50,5 @@ public class UserModificationData {
     private Integer point;
 
     private boolean deleted;
-    
+
 }
