@@ -23,7 +23,7 @@ public class UserStackService {
     private final UserRepository userRepository;
     private final StackRepository stackRepository;
 
-    public List<UserStack> getUserStack(Long userId) {
+    public List<UserStack> getUserStacks(Long userId) {
         return userStackRepository.findAllByUserId(userId);
 
     }

@@ -33,7 +33,7 @@ public class UserStackController {
     @ApiOperation(value = "사용자 스택 조회", notes="사용자의 스택을 조회합니다.")
     @ApiImplicitParam(name="userId", dataType = "Long", value = "사용자 식별자")
     public List<StackData> detail(@PathVariable Long userId) {
-        List<UserStack> sources = userStackService.getUserStack(userId);
+        List<UserStack> sources = userStackService.getUserStacks(userId);
         List<StackData> stacks = new ArrayList<>();
         for(UserStack stack : sources) {
             stacks.add(getUserStackData(stack));
