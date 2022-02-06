@@ -4,6 +4,7 @@ package com.devthink.devthink_server.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,9 +30,6 @@ public class User extends BaseTimeEntity{
 
     private String role;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Stack> stack;
-
     private String blogAddr;
 
     private String gitNickname;
@@ -50,7 +48,6 @@ public class User extends BaseTimeEntity{
     public void changeWith(User source) {
         nickname = source.getNickname();
         role = source.getRole();
-        stack = source.getStack();
         imageUrl = source.getImageUrl();
         gitNickname = source.getGitNickname();
         blogAddr = source.getBlogAddr();
