@@ -1,7 +1,7 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Category;
-import com.devthink.devthink_server.dto.CategoryRequestData;
+import com.devthink.devthink_server.dto.CategoryData;
 import com.devthink.devthink_server.errors.CategoryNotFoundException;
 import com.devthink.devthink_server.infra.CategoryRepository;
 import com.github.dozermapper.core.Mapper;
@@ -29,7 +29,7 @@ public class CategoryService {
      * @param categoryDto 게시글 데이터
      * @return  카테고리의 정보를 DB에 저장.
      */
-    public Category savePost(CategoryRequestData categoryDto) {
+    public Category save(CategoryData categoryDto) {
         Category category = mapper.map(categoryDto, Category.class);
         return categoryRepository.save(category);
     }
@@ -51,7 +51,7 @@ public class CategoryService {
      * @param categoryDto 수정하고자 하는 카테고리의 내용
      * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
      */
-    public Category update(Long id, CategoryRequestData categoryDto) {
+    public Category update(Long id, CategoryData categoryDto) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
 
