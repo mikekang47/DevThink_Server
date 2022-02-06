@@ -1,7 +1,6 @@
 package com.devthink.devthink_server.dto;
 
 import com.devthink.devthink_server.domain.BaseTimeEntity;
-import com.devthink.devthink_server.domain.Stack;
 import com.github.dozermapper.core.Mapping;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
@@ -10,8 +9,6 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Builder
@@ -53,9 +50,9 @@ public class UserRegistrationData extends BaseTimeEntity {
     @ApiParam(value = "사용자 수준", required = true, example = "주니어")
     private String role;
 
-    @Mapping("stack")
-    @ApiParam(value = "사용자가 사용하는 기술", example = "C++, Java, Spring")
-    private List<Long> stack;
+//    @Mapping("stack")
+//    @ApiParam(value = "사용자가 사용하는 기술", example = "C++, Java, Spring")
+//    private List<Long> stack;
 
     @Mapping("blogAddr")
     @ApiParam(value = "사용자의 기술 블로그 주소", example = "mirrorofcode.tistory.com")
@@ -69,12 +66,8 @@ public class UserRegistrationData extends BaseTimeEntity {
     @ApiParam(value = "사용자의 점수", example = "128")
     private Integer point;
 
-    @Mapping("deleted")
-    @ApiParam(value = "사용자 삭제 여부", example = "true")
-    private boolean deleted;
-
     public UserRegistrationData() {
-        this.stack = new ArrayList<>();
+//        this.stack = new ArrayList<>();
         this.blogAddr = "";
         this.gitNickname = "";
         this.point = 0;
