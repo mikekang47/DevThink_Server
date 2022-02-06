@@ -74,6 +74,10 @@ public class HeartController {
      * @param userId 좋아요를 생성하는 사용자의 식별자
      * @return 생성된 좋아요의 정보
      */
+    @ApiOperation(
+            value="좋아요를 생성하려는 게시글의 식별자와 좋아요를 생성하는 사용자의 식별자",
+            notes ="좋아요를 생성하려는 리뷰의 식별자와 사용자의 식별자로 새로운 좋아요를 생성하여, 그 정보를 리턴합니다."
+    )
     @PostMapping("/review/{reviewtId}/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public HeartReviewResponseData createReviewHeart(@PathVariable Long reviewId, @PathVariable Long userId) {
