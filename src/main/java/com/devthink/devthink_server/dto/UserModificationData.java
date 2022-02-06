@@ -35,10 +35,6 @@ public class UserModificationData {
     @ApiParam(value = "사용자 수준", required = true, example = "주니어")
     private String role;
 
-//    @Mapping("stack")
-//    @ApiParam(value = "사용자가 사용하는 기술", example = "C++, Java, Spring")
-//    private List<Long> stack;
-
     @Mapping("blogAddr")
     @ApiParam(value = "사용자의 기술 블로그 주소", example = "mirrorofcode.tistory.com")
     private String blogAddr;
