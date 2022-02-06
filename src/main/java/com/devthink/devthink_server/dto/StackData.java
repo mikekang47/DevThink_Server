@@ -1,6 +1,8 @@
 package com.devthink.devthink_server.dto;
 
 import com.github.dozermapper.core.Mapping;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,11 +15,13 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel("스택 정보")
 public class StackData {
 
     @Mapping("name")
     @NotNull
     @NotBlank
+    @ApiModelProperty(value = "스택 이름", example = "C/C++")
     private String name;
 
 }
