@@ -54,5 +54,17 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Post not found");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(StackNotFoundException.class)
+    public ErrorResponse handleStackNotFound() {
+        return new ErrorResponse("Stack not found");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserStackBadRequestException.class)
+    public ErrorResponse handleStackBadRequest() {
+        return new ErrorResponse("Stack id doesn't exits");
+    }
+
 }
 
