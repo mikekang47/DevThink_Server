@@ -14,6 +14,8 @@ import com.devthink.devthink_server.repository.UserStackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserStackService {
@@ -21,9 +23,8 @@ public class UserStackService {
     private final UserRepository userRepository;
     private final StackRepository stackRepository;
 
-    public UserStack getUserStack(Long userId) {
-        return userStackRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserStackNotFoundException());
+    public List<UserStack> getUserStack(Long userId) {
+        return userStackRepository.findAllByUserId(userId);
 
     }
 
