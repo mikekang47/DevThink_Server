@@ -5,6 +5,7 @@ import com.devthink.devthink_server.domain.*;
 import com.devthink.devthink_server.dto.HeartCommentResponseData;
 import com.devthink.devthink_server.dto.HeartPostResponseData;
 import com.devthink.devthink_server.dto.HeartReviewResponseData;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,8 @@ public class HeartController {
      * @param id 찾고자 하는 좋아요의 식별자
      * @return 식별자와 일치하는 좋아요의 정보
      */
-    @ApiOperation(value = "좋아요의 식별자", notes = "좋아요의 식별자를 받아서, 그에 해당하는 좋아요의 정보를 리턴합니다.")
+    @ApiOperation(value = "좋아요 조회", notes = "좋아요의 식별자를 받아서, 그에 해당하는 좋아요의 정보를 리턴합니다.")
+    @ApiImplicitParam(name ="id", dataType = "Long", value = "좋아요 식별자")
     @GetMapping("/{id}")
     public HeartPostResponseData checkHeart(@PathVariable Long id) {
         Heart heart = heartService.getHeart(id);
@@ -41,7 +43,7 @@ public class HeartController {
      * @return 생성된 좋아요의 정보
      */
     @ApiOperation(
-            value= "좋아요를 생성하려는 게시글 객체와 좋아요를 생성하려는 사용자 객체",
+            value= "개시글 좋아요 생성",
             notes = "좋아요를 생성하려는 게시글의 객체와 사용자의 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다."
     )
     @PostMapping("/post")
@@ -58,7 +60,7 @@ public class HeartController {
      * @return 생성된 좋아요의 정보
      */
     @ApiOperation(
-            value = "좋아요를 생성하려는 댓글 객체와 좋아요를 생성하는 사용자 객체",
+            value = "댓글 좋아요 생성",
             notes = "좋아요를 생성하려는 댓글의 객체와 사용자 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다."
     )
     @PostMapping("/comment")
@@ -75,7 +77,7 @@ public class HeartController {
      * @return 생성된 좋아요의 정보
      */
     @ApiOperation(
-            value="좋아요를 생성하려는 게시글 객체와 좋아요를 생성하는 사용자 객체",
+            value = "리뷰 좋아요 생성",
             notes ="좋아요를 생성하려는 리뷰 객체와 사용자 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다."
     )
     @PostMapping("/review")
@@ -90,10 +92,11 @@ public class HeartController {
      * @param heartId 삭제하고자 하는 좋아요의 식별자
      */
     @ApiOperation(
-            value= "삭제하고자 하는 좋아요의 식별자",
+            value= "좋아요 삭제(좋아요 취소)",
             notes= "삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다."
     )
-    @DeleteMapping("/post/{heartId}")
+    @ApiImplicitParam(name="heartId", dataType = "Long", value = "좋아요 식별자")
+    @DeleteMapping("/{heartId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void destroy(@PathVariable Long heartId) {
         heartService.destroyPostHeart(heartId);
