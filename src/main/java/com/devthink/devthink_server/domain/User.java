@@ -30,13 +30,12 @@ public class User extends BaseTimeEntity{
     private String role;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name="stack_id")
     private List<Stack> stack;
 
     private String blogAddr;
 
     private String gitNickname;
-    
+
     private Integer point;
 
     @Builder.Default
@@ -58,7 +57,7 @@ public class User extends BaseTimeEntity{
         password = source.getPassword();
         point = source.getPoint();
     }
-    
+
     public void destroy() {
         deleted = true;
     }
