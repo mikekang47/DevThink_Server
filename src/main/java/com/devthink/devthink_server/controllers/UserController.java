@@ -114,7 +114,6 @@ public class UserController {
                 .nickname(user.getNickname())
                 .phoneNum(user.getPhoneNum())
                 .role(user.getRole())
-                .stack(user.getStack())
                 .point(user.getPoint())
                 .blogAddr(user.getBlogAddr())
                 .gitNickname(user.getGitNickname())
