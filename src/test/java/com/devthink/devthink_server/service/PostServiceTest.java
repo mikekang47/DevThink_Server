@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.service;
 
+import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.dto.PostDto;
 import com.devthink.devthink_server.errors.PostIdNotFoundException;

@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 
+import com.devthink.devthink_server.dto.UserProfileData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Builder
 @NoArgsConstructor
-public class User extends BaseTimeEntity{
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue
     private Long id;
@@ -63,5 +64,28 @@ public class User extends BaseTimeEntity{
         return !deleted && password.equals(this.password);
     }
 
-}
+    /**
+     * User 객체를 UserProfileData 객체로 변환합니다.
+     * 탈퇴한 회원의 경우 삭제여부(deleted)컬럼 외의 나머지 정보는 null 값으로 채워 전달합니다.
+     * @return 변환된 UserProfileData 객체
+     */
+    public UserProfileData toUserProfileData() {
+        if (isDeleted()) {
+            return UserProfileData.builder()
+                    .deleted(deleted)
+                    .build();
+        } else {
+            return UserProfileData.builder()
+                    .id(id)
+                    .nickname(nickname)
+                    .imageUrl(imageUrl)
+                    .deleted(deleted)
+                    .build();
+        }
+    }
 
+    public void setReported() {
+        reported = reported + 1;
+    }
+
+}
