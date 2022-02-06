@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.dto;
 
 import com.devthink.devthink_server.domain.BaseTimeEntity;
+import com.devthink.devthink_server.domain.Stack;
 import com.github.dozermapper.core.Mapping;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
@@ -54,7 +55,7 @@ public class UserRegistrationData extends BaseTimeEntity {
 
     @Mapping("stack")
     @ApiParam(value = "사용자가 사용하는 기술", example = "C++, Java, Spring")
-    private List<String> stack;
+    private List<Long> stack;
 
     @Mapping("blogAddr")
     @ApiParam(value = "사용자의 기술 블로그 주소", example = "mirrorofcode.tistory.com")

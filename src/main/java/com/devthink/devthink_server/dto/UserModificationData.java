@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Stack;
 
 @Getter
 @AllArgsConstructor
@@ -37,7 +38,7 @@ public class UserModificationData {
 
     @Mapping("stack")
     @ApiParam(value = "사용자가 사용하는 기술", example = "C++, Java, Spring")
-    private List<String> stack;
+    private List<Long> stack;
 
     @Mapping("blogAddr")
     @ApiParam(value = "사용자의 기술 블로그 주소", example = "mirrorofcode.tistory.com")
