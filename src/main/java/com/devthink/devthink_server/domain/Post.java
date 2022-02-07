@@ -37,10 +37,6 @@ public class Post extends BaseTimeEntity {
     private Boolean deleted = false;
 
     @Builder.Default
-    private Integer heart = 0;
-
-
-    @Builder.Default
     private Integer heartCnt = 0;
 
     public void update(String title, String content) {
@@ -67,7 +63,7 @@ public class Post extends BaseTimeEntity {
                 .deleted(deleted)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
-                .heart(heart)
+                .heartCnt(heartCnt)
                 .id(id)
                 .imageUrl(imageUrl)
                 .Image(isImage())
@@ -84,7 +80,7 @@ public class Post extends BaseTimeEntity {
                 .categoryId(category.getId())
                 .deleted(deleted)
                 .createAt(getCreateAt())
-                .heart(heart)
+                .heartCnt(heartCnt)
                 .updateAt(getUpdateAt())
                 .content(content)
                 .Image(isImage())
