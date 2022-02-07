@@ -53,7 +53,7 @@ public class UserStackController {
     @ApiOperation(value = "사용자 스택 수정", notes = "사용자의 스택을 수정합니다.")
     public StackData updateUserStack(@PathVariable Long userStackId, @RequestBody @Valid UserStackData userStackData) {
         UserStack userStack = userStackService.update(userStackId, userStackData);
-        return null;
+        return getUserStackData(userStack);
     }
     
     private StackData getUserStackData(UserStack userStack) {
