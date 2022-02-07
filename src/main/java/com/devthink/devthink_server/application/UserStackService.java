@@ -10,7 +10,8 @@ import com.devthink.devthink_server.errors.UserStackBadRequestException;
 import com.devthink.devthink_server.errors.UserStackNotFoundException;
 import com.devthink.devthink_server.infra.StackRepository;
 import com.devthink.devthink_server.infra.UserRepository;
-import com.devthink.devthink_server.repository.UserStackRepository;
+import com.devthink.devthink_server.infra.UserStackRepository;
+import com.github.dozermapper.core.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,10 @@ public class UserStackService {
     private final UserStackRepository userStackRepository;
     private final UserRepository userRepository;
     private final StackRepository stackRepository;
+    private final Mapper mapper;
 
     public List<UserStack> getUserStacks(Long userId) {
         return userStackRepository.findAllByUserId(userId);
-
     }
 
     public UserStack create(UserStackData userStackData) {
@@ -51,4 +52,10 @@ public class UserStackService {
     }
 
 
+    public UserStack update(Long userStackId, UserStackData userStackData) {
+        UserStack userStack = userStackRepository.findById(userStackId)
+                .orElseThrow(() -> new UserStackNotFoundException(userStackId));
+        userStack.changeWith(mapper.map(userStackData, UserStack.class));
+        return userStack;
+    }
 }
