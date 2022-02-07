@@ -29,7 +29,7 @@ public class HeartController {
      * @return 식별자와 일치하는 좋아요의 정보
      */
     @ApiOperation(value = "좋아요 조회", notes = "좋아요의 식별자를 받아서, 그에 해당하는 좋아요의 정보를 리턴합니다.")
-    @ApiImplicitParam(name ="id", dataType = "Long", value = "좋아요 식별자")
+    @ApiImplicitParam(name ="id", dataType = "integer", value = "좋아요 식별자")
     @GetMapping("/{id}")
     public HeartPostResponseData checkHeart(@PathVariable Long id) {
         Heart heart = heartService.getHeart(id);
@@ -95,7 +95,7 @@ public class HeartController {
             value= "좋아요 삭제(좋아요 취소)",
             notes= "삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다."
     )
-    @ApiImplicitParam(name="heartId", dataType = "Long", value = "좋아요 식별자")
+    @ApiImplicitParam(name="heartId", dataType = "integer", value = "좋아요 식별자")
     @DeleteMapping("/{heartId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void destroy(@PathVariable Long heartId) {
