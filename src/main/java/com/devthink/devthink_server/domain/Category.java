@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.domain;
 
+import com.devthink.devthink_server.dto.CategoryData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -21,7 +22,21 @@ public class Category extends BaseTimeEntity{
     @ApiModelProperty(notes = "카테고리 이름", example = "example")
     private String name;
 
+    @Builder.Default
+    private boolean deleted = false;
+
     public void update(String name){
         this.name = name;
+    }
+
+    public CategoryData toCategoryData() {
+        return CategoryData.builder()
+                .id(id)
+                .name(name)
+                .build();
+    }
+
+    public void destroy() {
+        deleted = true;
     }
 }
