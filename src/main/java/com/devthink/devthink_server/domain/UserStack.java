@@ -24,4 +24,8 @@ public class UserStack {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     User user;
+
+    public void changeWith(UserStack userStack) {
+        this.stack = userStack.getStack();
+    }
 }
