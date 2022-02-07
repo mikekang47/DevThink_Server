@@ -40,7 +40,7 @@ public class PostListData {
     private Boolean deleted;
 
     @ApiModelProperty(notes = "좋아요 수", example = "1")
-    private Integer heart;
+    private Integer heartCnt;
 
     @ApiModelProperty(notes = "생성 시각", example = "2022-01-26T22:07:17.0831141")
     private LocalDateTime createAt;
