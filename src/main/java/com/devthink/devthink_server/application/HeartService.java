@@ -13,10 +13,6 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class HeartService {
     private final HeartRepository heartRepository;
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
-    private final ReviewRepository reviewRepository;
 
     /**
      * 전달받은 식별자로 좋아요의 정보를 가져오고, 없을경우 예외를 발생합니다.
@@ -30,13 +26,11 @@ public class HeartService {
 
     /**
      * 전달받은 게시글 식별자와 사용자 식별자로 좋아요를 생성합니다.
-     * @param postId 게시글 식별자
-     * @param userId 사용자 식별자
+     * @param post 좋아요 누를 게시글
+     * @param user 좋아요 누른 사용자
      * @return 생성된 게시글 좋아요 객체
      */
-    public Heart createPostHeart(Long postId, Long userId) {
-        User user = findUser(userId);
-        Post post = findPost(postId);
+    public Heart createPostHeart(Post post, User user) {
         post.updateHeart(post.getHeartCnt()+1);
         Heart heart = Heart.builder().user(user).post(post).build();
         return heartRepository.save(heart);
@@ -44,27 +38,23 @@ public class HeartService {
 
     /**
      * 전달받은 댓글 식별자와 사용자 식별자로 좋아요를 생성합니다.
-     * @param commentId 댓글 식별자
-     * @param userId 사용자 식별자
+     * @param comment 댓글 식별자
+     * @param user 사용자 식별자
      * @return 생성된 댓글 좋아요 객체
      */
-    public Heart createCommentHeart(Long commentId, Long userId) {
-        User user = findUser(userId);
-        Comment comment = findComment(commentId);
+    public Heart createCommentHeart(Comment comment, User user) {
         comment.updateHeart(comment.getHeartCnt()+1);
         Heart heart = Heart.builder().user(user).comment(comment).build();
         return heartRepository.save(heart);
     }
 
     /**
-     * 전달받은 리뷰 식별자와 사용자 식별자로 좋아요를 생성합니다.
-     * @param reviewId 리뷰 식별자
-     * @param userId 사용자 식별자
+     * 전달받은 리뷰 객체와 사용자 객체로 좋아요를 생성합니다.
+     * @param review 리뷰 객체
+     * @param user 사용자 객체
      * @return 생성된 댓글 좋아요 객체
      */
-    public Heart createReviewHeart(Long reviewId, Long userId) {
-        User user = findUser(userId);
-        Review review = findReview(reviewId);
+    public Heart createReviewHeart(Review review, User user) {
         review.updateHeart(review.getHeartCnt()+1);
         Heart heart = Heart.builder().user(user).review(review).build();
         return heartRepository.save(heart);
@@ -78,20 +68,4 @@ public class HeartService {
         heartRepository.deleteById(id);
     }
 
-    private User findUser(Long userId) {
-        return userRepository.findByIdAndDeletedIsFalse(userId).orElseThrow(() -> new UserNotFoundException(userId));
-    }
-
-    private Post findPost(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException(postId));
-    }
-
-    private Comment findComment(Long commentId) {
-        return commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException(commentId));
-    }
-
-    private Review findReview(Long reviewId) {
-        return reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
-    }
 }
