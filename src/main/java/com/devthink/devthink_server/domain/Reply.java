@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.domain;
 
+import com.devthink.devthink_server.dto.ReplyResponseData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,18 +15,36 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reply {
+public class Reply extends BaseTimeEntity {
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    User user;
+    @ManyToOne(targetEntity = User.class, fetch = LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
-    Comment comment;
+    private Comment comment;
 
-    String content;
+    private String content;
 
-    String status;
+    private String status;
+
+    public ReplyResponseData toReplyResponseData() {
+        return ReplyResponseData.builder()
+                .replyId(id)
+                .userId(user.getId())
+                .userNickname(user.getNickname())
+                .userImageUrl(user.getImageUrl())
+                .content(content)
+                .createAt(getCreateAt())
+                .updateAt(getUpdateAt())
+                .build();
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
 }

@@ -15,7 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment extends BaseTimeEntity{
+public class Comment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,13 +39,15 @@ public class Comment extends BaseTimeEntity{
     @Builder.Default
     Integer heartCnt = 0;
 
-    public CommentResponseData toCommentResponseDto() {
+    public CommentResponseData toCommentResponseData() {
         return CommentResponseData.builder()
                 .commentId(id)
                 .userId(user.getId())
                 .userNickname(user.getNickname())
                 .userImageUrl(user.getImageUrl())
                 .content(content)
+                .createAt(getCreateAt())
+                .updateAt(getUpdateAt())
                 .build();
     }
 
