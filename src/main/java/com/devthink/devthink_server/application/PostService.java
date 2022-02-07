@@ -51,7 +51,6 @@ public class PostService {
                         .category(category)
                         .user(user)
                         .imageUrl(postRequestData.getImageUrl())
-                        .heart(postRequestData.getHeart())
                         .image(imageCheck)
                         .build()
         );
@@ -127,7 +126,7 @@ public class PostService {
     public List<PostResponseData> getBestPost(Category category){
         LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
         LocalDateTime end = LocalDateTime.now();
-        List<Post> bestPost = postRepository.getBestPost(category.getId(), start, end, PageRequest.of(0,1, Sort.by(Sort.Direction.DESC, "heart")));
+        List<Post> bestPost = postRepository.getBestPost(category.getId(), start, end, PageRequest.of(0,1, Sort.by(Sort.Direction.DESC, "heartCnt")));
         return bestPost.stream()
                 .map(Post::toPostResponseData)
                 .collect(Collectors.toList());
