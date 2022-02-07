@@ -70,17 +70,21 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(UserStackBadRequestException.class)
     public ErrorResponse handleStackBadRequest() {
         return new ErrorResponse("Stack id doesn't exits");
+    }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BookNotFoundException.class)
     public ErrorResponse handleBookNotFound() {
         return new ErrorResponse("Book not found");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(HeartNotFoundException.class)
     public ErrorResponse handleHeartNotFound() {
         return new ErrorResponse("Heart not found");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CategoryNotFoundException.class)
     public ErrorResponse handleCategoryNotFound() {
         return new ErrorResponse("Category not found");
