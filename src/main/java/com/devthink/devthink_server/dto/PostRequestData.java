@@ -11,7 +11,6 @@ import javax.validation.constraints.Size;
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class PostRequestData {
     @ApiModelProperty(value = "유저 아이디", example = "1")
     @ApiParam(value = "유저 아이디", example = "1")
@@ -28,6 +27,10 @@ public class PostRequestData {
     @Mapping("title")
     private String title;
 
+    @ApiModelProperty(value = "프로젝트 부제목", example = "example")
+    @ApiParam(value = "프로젝트 부제목", example = "example")
+    private String subTitle;
+
     @NotBlank(message = "글의 내용을 입력해주세요.")
     @Size(min=1)
     @ApiModelProperty(value = "내용", example = "example1")
@@ -37,5 +40,10 @@ public class PostRequestData {
 
     @ApiParam(value = "이미지 url", example = "example1.com")
     private String imageUrl;
+
+    public PostRequestData() {
+        this.imageUrl = "";
+        this.subTitle = "";
+    }
 
 }
