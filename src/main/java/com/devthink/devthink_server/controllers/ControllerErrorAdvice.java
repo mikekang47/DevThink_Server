@@ -61,6 +61,18 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(StackNotFoundException.class)
+    public ErrorResponse handleStackNotFound() {
+        return new ErrorResponse("Stack not found");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserStackBadRequestException.class)
+    public ErrorResponse handleStackBadRequest() {
+        return new ErrorResponse("Stack id doesn't exits");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BookNotFoundException.class)
     public ErrorResponse handleBookNotFound() {
         return new ErrorResponse("Book not found");
@@ -102,7 +114,18 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Can't create comment with null postId");
     }
 
-    
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ReplyNotFoundException.class)
+    public ErrorResponse handleReplyNotFound() {
+        return new ErrorResponse("Reply not found");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ReplyBadRequestException.class)
+    public ErrorResponse handleReplyBadRequest() {
+        return new ErrorResponse("Can't create reply with null commentId");
+    }
+
 
 }
 
