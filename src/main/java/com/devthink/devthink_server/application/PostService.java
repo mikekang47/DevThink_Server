@@ -48,6 +48,7 @@ public class PostService {
                 Post.builder()
                         .title(postRequestData.getTitle())
                         .content(postRequestData.getContent())
+                        .subTitle(postRequestData.getSubTitle())
                         .category(category)
                         .user(user)
                         .imageUrl(postRequestData.getImageUrl())
@@ -69,11 +70,11 @@ public class PostService {
      * page에 해당하는 게시글을 반환합니다.
      * @param pageable 얻고자 하는 page
      */
-    public List<PostListData> getPosts(Pageable pageable){
+    public List<PostListData> getPosts(Long categoryId, Pageable pageable){
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
         pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "id"));
 
-        List<Post> postPage = postRepository.findAllByDeletedIsFalse(pageable).getContent();
+        List<Post> postPage = postRepository.findByDeletedIsFalse(categoryId, pageable);
         return postPage.stream()
                 .map(Post::toPostListData)
                 .collect(Collectors.toList());
@@ -110,10 +111,10 @@ public class PostService {
      * 제목이 담긴 게시글을 반환합니다.
      * @param keyword 찾는 제목
      */
-    public List<PostResponseData> search(String keyword, Pageable pageable){
+    public List<PostResponseData> search(Long categoryId, String keyword, Pageable pageable){
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
         pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "id"));
-        List<Post> posts = postRepository.findByTitleContainingAndDeletedIsFalse(keyword, pageable).getContent();
+        List<Post> posts = postRepository.findByCategory_IdAndTitleContainingAndDeletedIsFalse(categoryId, keyword, pageable).getContent();
         return posts.stream()
                 .map(Post::toPostResponseData)
                 .collect(Collectors.toList());
