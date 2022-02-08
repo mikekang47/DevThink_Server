@@ -95,16 +95,18 @@ public class PostService {
      * @param post 게시글
      * @param postRequestData 게시글 내용
      */
-    public void update(Post post, PostRequestData postRequestData){
-        post.update(postRequestData.getTitle(), postRequestData.getContent());
+    public Post update(Post post, PostRequestData postRequestData){
+        post.update(postRequestData.getSubTitle(), postRequestData.getTitle(), postRequestData.getContent());
+        return post;
     }
 
     /**
      * 게시글을 삭제합니다.
      * @param post 삭제할 게시글
      */
-    public void deletePost(Post post){
+    public Post deletePost(Post post){
         post.setDeleted(true);
+        return post;
     }
 
     /**
