@@ -66,11 +66,13 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Book not found");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(HeartNotFoundException.class)
     public ErrorResponse handleHeartNotFound() {
         return new ErrorResponse("Heart not found");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CategoryNotFoundException.class)
     public ErrorResponse handleCategoryNotFound() {
         return new ErrorResponse("Category not found");
@@ -99,6 +101,8 @@ public class ControllerErrorAdvice {
     public ErrorResponse handlePostCommentBadRequest() {
         return new ErrorResponse("Can't create comment with null postId");
     }
+
+    
 
 }
 
