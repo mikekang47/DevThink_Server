@@ -27,7 +27,6 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
     private final CategoryService categoryService;
-    private final AuthenticationService authenticationService;
 
     /**
      * 페이지를 요청하면 카테고리별 페이지의 게시글을 가져옵니다.
