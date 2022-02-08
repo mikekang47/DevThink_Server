@@ -66,7 +66,6 @@ public class ReplyController {
     @ApiOperation(value = "댓글 대댓글 조회", notes = "특정 댓글의 대댓글을 조회합니다.", response = List.class)
     @ApiImplicitParam(name = "commentIdx", value = "조회할 대상 댓글의 식별자")
     @GetMapping("/comment/{commentIdx}")
-    @ApiIgnore
     public List<ReplyResponseData> getCommentReplies(@PathVariable("commentIdx") Long commentIdx) {
         return replyService.getCommentReplies(commentIdx);
     }
