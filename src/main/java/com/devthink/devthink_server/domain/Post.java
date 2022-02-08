@@ -28,6 +28,9 @@ public class Post extends BaseTimeEntity {
 
     private String title;
 
+    @Builder.Default
+    private String subTitle = ""; // 프로젝트 구인글 용
+
     private String content;
 
     @Builder.Default
@@ -44,11 +47,9 @@ public class Post extends BaseTimeEntity {
         this.content = content;
     }
 
-
     public void updateHeart(int heartCnt) {
         this.heartCnt = heartCnt;
     }
-
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
@@ -58,6 +59,7 @@ public class Post extends BaseTimeEntity {
         return PostListData.builder()
                 .userId(user.getId())
                 .categoryId(category.getId())
+                .subTitle(subTitle)
                 .content(content)
                 .title(title)
                 .deleted(deleted)
@@ -76,6 +78,7 @@ public class Post extends BaseTimeEntity {
                 .userId(user.getId())
                 .imageUrl(imageUrl)
                 .id(id)
+                .subTitle(subTitle)
                 .nickname(user.getNickname())
                 .categoryId(category.getId())
                 .deleted(deleted)
