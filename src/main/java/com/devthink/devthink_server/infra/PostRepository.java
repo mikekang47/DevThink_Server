@@ -13,9 +13,10 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    Page<Post> findByTitleContainingAndDeletedIsFalse(String keyword, Pageable pageable);
+    Page<Post> findByCategory_IdAndTitleContainingAndDeletedIsFalse(Long categoryId, String keyword, Pageable pageable);
 
-    Page<Post> findAllByDeletedIsFalse(Pageable pageable);
+    @Query("select p from Post p where p.category.id = :category")
+    List<Post> findByDeletedIsFalse(Long category, Pageable pageable);
 
     Post save(Post post);
 
