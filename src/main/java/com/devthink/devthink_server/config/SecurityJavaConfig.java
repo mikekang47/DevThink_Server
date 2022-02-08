@@ -1,14 +1,21 @@
 package com.devthink.devthink_server.config;
 
 
+import com.devthink.devthink_server.filters.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+import javax.servlet.Filter;
 
 @Configuration
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-    }
+        Filter authenticationFilter = new JwtAuthenticationFilter(
+                authenticationManager());
+        http
+                .csrf().disable()
+                .addFilter(authenticationFilter);
+    } 
 }
