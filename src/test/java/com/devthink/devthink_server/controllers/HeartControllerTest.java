@@ -2,8 +2,8 @@ package com.devthink.devthink_server.controllers;
 
 
 import com.devthink.devthink_server.application.HeartService;
+import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.application.UserService;
-import com.devthink.devthink_server.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
