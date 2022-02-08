@@ -38,11 +38,7 @@ public class LetterController {
     @PostMapping
     @ApiOperation(value = "메시지 전송", notes = "메시지 정보를 받아 메시지 리스트에서 쪽지를 보냅니다.")
     @ResponseStatus(HttpStatus.CREATED)
-    public LetterResultData createMessage(@RequestHeader("Authorization") String authorization,
-                                          @RequestBody @Valid LetterSendData letterAddData) {
-        String accessToken = authorization.substring("Bearer ".length());
-        authenticationService.parseToken(accessToken);
-
+    public LetterResultData createMessage(@RequestBody @Valid LetterSendData letterAddData) {
         User sender = userService.getUser(letterAddData.getSenderId());
         User target = userService.getUser(letterAddData.getTargetId());
         UserRoom userRoom = getUserRoom(letterAddData, sender, target);
@@ -57,11 +53,7 @@ public class LetterController {
      */
     @GetMapping("/lists/{userId}")
     @ApiOperation(value = "쪽지 리스트", notes = "유저 Id를 받아 쪽지 리스트를 반환합니다.")
-    public List<LetterListData> messageList(@RequestHeader("Authorization") String authorization,
-                                            @PathVariable("userId") Long userId, Pageable pageable) {
-        String accessToken = authorization.substring("Bearer ".length());
-        authenticationService.parseToken(accessToken);
-
+    public List<LetterListData> messageList(@PathVariable("userId") Long userId, Pageable pageable) {
         User user = userService.getUser(userId);
         return letterService.getMessageList(user, pageable);
     }
@@ -74,11 +66,7 @@ public class LetterController {
      */
     @GetMapping("/lists/{userId}/rooms/{roomId}")
     @ApiOperation(value = "메시지 내용 가져오기", notes = "유저 id와 방 id를 받아 메시지를 읽습니다.")
-    public List<LetterResultData> getMessage(@RequestHeader("Authorization") String authorization,
-                                             @PathVariable("userId") Long userId, @PathVariable("roomId") Long roomId) {
-        String accessToken = authorization.substring("Bearer ".length());
-        authenticationService.parseToken(accessToken);
-
+    public List<LetterResultData> getMessage(@PathVariable("userId") Long userId, @PathVariable("roomId") Long roomId) {
         User user = userService.getUser(userId);
         UserRoom userRoom = userRoomService.getUserRoom(roomId);
         return letterService.getMessage(user, userRoom);
