@@ -36,6 +36,7 @@ public class PostService {
     /**
      * 새로운 게시글을 DB에 저장합니다.
      * @param postRequestData 게시글 데이터
+     * @return Post 생성된 게시글
      */
     public Post savePost(User user, Category category, PostRequestData postRequestData){
         boolean imageCheck;
@@ -60,7 +61,7 @@ public class PostService {
 
     /**
      * 전체 게시글을 조회합니다.
-     * @return 전체 게시글
+     * @return List<Post> 조회한 전체 게시글
      */
     public List<Post> getPostList(){
         return postRepository.findAll();
@@ -68,7 +69,9 @@ public class PostService {
 
     /**
      * page에 해당하는 게시글을 반환합니다.
-     * @param pageable 얻고자 하는 page
+     * @param categoryId 카테고리 아이디
+     * @param pageable 페이지 정보
+     * @return List<PostListData> 조회된 게시글
      */
     public List<PostListData> getPosts(Long categoryId, Pageable pageable){
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
@@ -83,7 +86,7 @@ public class PostService {
     /**
      * 게시글을 DB에 찾고 없으면 에러를 반환합니다.
      * @param id 찾고자 하는 게시글의 식별자
-     * @return 찾았을 경우 게시글을 반환, 찾지 못하면 에러 반환
+     * @return Post 찾았을 경우 게시글을 반환, 찾지 못하면 에러 반환
      */
     public Post getPostById(Long id){
         return postRepository.findByIdAndDeletedIsFalse(id)
@@ -93,7 +96,7 @@ public class PostService {
     /**
      * 게시글의 내용과 제목을 업데이트합니다.
      * @param post 게시글
-     * @param postRequestData 게시글 내용
+     * @param postRequestData 업데이트한 게시글 내용
      */
     public Post update(Post post, PostRequestData postRequestData){
         post.update(postRequestData.getSubTitle(), postRequestData.getTitle(), postRequestData.getContent());
@@ -103,6 +106,7 @@ public class PostService {
     /**
      * 게시글을 삭제합니다.
      * @param post 삭제할 게시글
+     * @return Post 삭제된 게시글
      */
     public Post deletePost(Post post){
         post.setDeleted(true);
@@ -112,6 +116,8 @@ public class PostService {
     /**
      * 제목이 담긴 게시글을 반환합니다.
      * @param keyword 찾는 제목
+     * @param categoryId 카테고리 아이디
+     * @return List<PostResponseData> 게시글 정보
      */
     public List<PostResponseData> search(Long categoryId, String keyword, Pageable pageable){
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
@@ -125,6 +131,7 @@ public class PostService {
     /**
      * 카테고리의 베스트 게시글을 가져옵니다.
      * @param category 카테고리
+     * @return List<PostResponseData> 베스트 게시글 정보
      */
     public List<PostResponseData> getBestPost(Category category){
         LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
@@ -138,6 +145,7 @@ public class PostService {
     /**
      * 게시글을 신고합니다.
      * @param user 게시글 작성자
+     * @return String 신고된 게시글 번호
      */
     public String report(User user){
         user.setReported();
