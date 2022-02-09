@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -62,6 +63,8 @@ public class PostController {
      */
     @PostMapping("/write")
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "게시글 등록", notes = "카테고리별 게시글을 등록합니다.")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseData write(@RequestBody @Valid PostRequestData postRequestData) {
         User user = userService.getUser(postRequestData.getUserId());
         Category category = categoryService.getCategory(postRequestData.getCategoryId());
@@ -78,6 +81,7 @@ public class PostController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 수정", notes = "식별자 값과 게시글의 정보를 받아, 게시글을 입력한 정보로 변경합니다.")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseData update(@PathVariable("id") Long id, @RequestBody @Valid PostRequestData postRequestData) {
         Post post = postService.getPostById(id);
         postService.update(post, postRequestData);
@@ -88,10 +92,12 @@ public class PostController {
      * 게시글 삭제 API
      * [DELETE] /posts/:id
      * @param id (삭제할 게시글 아이디)
+     * @return PostResponseData (삭제한 게시글)
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "게시글 삭제", notes = "입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseData deletePost(@PathVariable("id") Long id) {
         Post post = postService.getPostById(id);
         postService.deletePost(post);
@@ -101,6 +107,7 @@ public class PostController {
     /**
      * 카테고리별 제목 검색 API
      * [GET] /posts/search/:categoryId?keyword=제목
+     * @param categoryId 카테고리 아이디
      * @param keyword 검색 제목
      * @return 제목이 담긴 게시글
      */
@@ -128,12 +135,14 @@ public class PostController {
     /**
      * 게시글 신고 API
      * [GET] /posts/report/:id
-     * @param userId 유저 아이디, postId 게시글 아이디
-     * @return 신고당한 유저 아이디
+     * @param userId 유저 아이디
+     * @param postId 게시글 아이디
+     * @return String 신고당한 유저 아이디
      */
     @PutMapping("/report/{userId}/{postId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 신고", notes = "게시글을 신고합니다.")
+    @PreAuthorize("isAuthenticated()")
     public String report(@PathVariable("userId") Long userId, @PathVariable("postId") Long postId) {
         User user = userService.getUser(userId);
         Post post = postService.getPostById(postId);
