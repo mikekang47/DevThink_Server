@@ -16,7 +16,7 @@ public class BookResponseData {
     private Long id;
 
     @ApiModelProperty(value = "책 isbn 번호", example = "8960773417")
-    private Integer isbn;
+    private String isbn;
 
     @ApiModelProperty(value = "책 이름", example = "토비의 스프링 3.1 Vol. 1: 스프링의 이해와 원리(에이콘 오픈소스 프로그래밍 시리즈 18)")
     private String name;
