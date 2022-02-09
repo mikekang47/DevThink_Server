@@ -12,10 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 사용자의 요청을 받아, 실제 내부에서 작동하는 클래스 입니다.
- */
-
 @Service
 @Transactional
 public class CategoryService {
@@ -31,7 +27,7 @@ public class CategoryService {
     /**
      * 전달받은 게시글 데이터로 새로운 게시글을 DB에 저장합니다.
      * @param categoryData 게시글 데이터
-     * @return  카테고리의 정보를 DB에 저장.
+     * @return Category DB에 저장된 카테고리
      */
     public Category save(CategoryData categoryData) {
         Category category = mapper.map(categoryData, Category.class);
@@ -41,7 +37,7 @@ public class CategoryService {
     /**
      * 전달받은 카테고리의 식별자를 이용하여 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
      * @param id 찾고자 하는 게시글의 식별자
-     * @return 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
+     * @return Category 찾았을 경우 게시글을 반환, 찾지 못하면 error를 반환.
      */
     public Category getCategory(Long id) {
         return categoryRepository.findByIdAndDeletedIsFalse(id)
@@ -58,6 +54,8 @@ public class CategoryService {
     /**
      * 전달받은 카테코리의 식별자와 수정하고자 하는 게시글의 내용을 이용하여 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
      * 있으면 게시글을 수정하여 DB에 저장합니다.
+     * @param category 수정할 카테고리
+     * @param categoryData 변경할 카테고리 내용
      */
     public void update(Category category, CategoryData categoryData) {
         category.update(categoryData.getName());
@@ -65,7 +63,7 @@ public class CategoryService {
 
     /**
      * 전달받은 카테고리의 식별자를 이용하여 게시글을 DB에 찾고, 없으면 Error를 보냅니다.
-     * @return 찾았을 경우 삭제한 게시글 반환, 찾지 못하면 error를 반환
+     * @param category 삭제할 카테고리
      */
     public void delete(Category category) {
         category.destroy();
