@@ -28,6 +28,9 @@ public class Post extends BaseTimeEntity {
 
     private String title;
 
+    @Builder.Default
+    private String subTitle = ""; // 프로젝트 구인글 용
+
     private String content;
 
     @Builder.Default
@@ -37,22 +40,17 @@ public class Post extends BaseTimeEntity {
     private Boolean deleted = false;
 
     @Builder.Default
-    private Integer heart = 0;
-
-
-    @Builder.Default
     private Integer heartCnt = 0;
 
-    public void update(String title, String content) {
+    public void update(String subTitle, String title, String content) {
+        this.subTitle = subTitle;
         this.title = title;
         this.content = content;
     }
 
-
     public void updateHeart(int heartCnt) {
         this.heartCnt = heartCnt;
     }
-
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
@@ -62,12 +60,13 @@ public class Post extends BaseTimeEntity {
         return PostListData.builder()
                 .userId(user.getId())
                 .categoryId(category.getId())
+                .subTitle(subTitle)
                 .content(content)
                 .title(title)
                 .deleted(deleted)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
-                .heart(heart)
+                .heartCnt(heartCnt)
                 .id(id)
                 .imageUrl(imageUrl)
                 .Image(isImage())
@@ -80,11 +79,12 @@ public class Post extends BaseTimeEntity {
                 .userId(user.getId())
                 .imageUrl(imageUrl)
                 .id(id)
+                .subTitle(subTitle)
                 .nickname(user.getNickname())
                 .categoryId(category.getId())
                 .deleted(deleted)
                 .createAt(getCreateAt())
-                .heart(heart)
+                .heartCnt(heartCnt)
                 .updateAt(getUpdateAt())
                 .content(content)
                 .Image(isImage())

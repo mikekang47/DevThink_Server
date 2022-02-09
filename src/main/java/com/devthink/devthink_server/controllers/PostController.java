@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.CategoryService;
 import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.application.UserService;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,15 +30,15 @@ public class PostController {
     private final CategoryService categoryService;
 
     /**
-     * 페이지를 요청하면 페이지의 게시글을 가져옵니다.
-     * [GET] /posts/list?page= &size= &sort= ,정렬방식
+     * 페이지를 요청하면 카테고리별 페이지의 게시글을 가져옵니다.
+     * [GET] /posts/list/:categoryId?page= &size= &sort= ,정렬방식
      * @return Pageable 기준에 따라 정렬된 페이지 리스트
      */
-    @GetMapping("/list")
+    @GetMapping("/list/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "게시글 리스트 조회", notes = "게시글 전체 리스트를 전달된 pageable 파라미터에 따라 정렬하여 조회합니다.")
-    public List<PostListData> list(Pageable pageable) {
-        return postService.getPosts(pageable);
+    @ApiOperation(value = "카테고리별 게시글 리스트 조회", notes = "게시글 전체 리스트를 전달된 pageable 파라미터에 따라 카테고리별 게시글을 정렬하여 조회합니다.")
+    public List<PostListData> list(@PathVariable("categoryId") Long categoryId, Pageable pageable) {
+        return postService.getPosts(categoryId, pageable);
     }
 
     /**
@@ -61,6 +63,8 @@ public class PostController {
      */
     @PostMapping("/write")
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "게시글 등록", notes = "카테고리별 게시글을 등록합니다.")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseData write(@RequestBody @Valid PostRequestData postRequestData) {
         User user = userService.getUser(postRequestData.getUserId());
         Category category = categoryService.getCategory(postRequestData.getCategoryId());
@@ -77,6 +81,7 @@ public class PostController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 수정", notes = "식별자 값과 게시글의 정보를 받아, 게시글을 입력한 정보로 변경합니다.")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseData update(@PathVariable("id") Long id, @RequestBody @Valid PostRequestData postRequestData) {
         Post post = postService.getPostById(id);
         postService.update(post, postRequestData);
@@ -87,10 +92,12 @@ public class PostController {
      * 게시글 삭제 API
      * [DELETE] /posts/:id
      * @param id (삭제할 게시글 아이디)
+     * @return PostResponseData (삭제한 게시글)
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "게시글 삭제", notes = "입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseData deletePost(@PathVariable("id") Long id) {
         Post post = postService.getPostById(id);
         postService.deletePost(post);
@@ -98,27 +105,28 @@ public class PostController {
     }
 
     /**
-     * 제목 검색 API
-     * [GET] /posts/search?keyword=제목
+     * 카테고리별 제목 검색 API
+     * [GET] /posts/search/:categoryId?keyword=제목
+     * @param categoryId 카테고리 아이디
      * @param keyword 검색 제목
      * @return 제목이 담긴 게시글
      */
-    @GetMapping("/search")
+    @GetMapping("/search/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "게시글 검색", notes = "사용자로부터 제목을 받아, 제목이 담긴 게시글을 반환합니다.")
-    public List<PostResponseData> search(@RequestParam String keyword, Pageable pageable) {
-        return postService.search(keyword, pageable);
+    @ApiOperation(value = "카테고리별 게시글 검색", notes = "사용자로부터 제목을 받아, 카테고리별 제목이 담긴 게시글을 반환합니다.")
+    public List<PostResponseData> search(@PathVariable("categoryId") Long categoryId, @RequestParam String keyword, Pageable pageable) {
+        return postService.search(categoryId, keyword, pageable);
     }
 
     /**
-     * 베스트 게시글 가져오기 API
+     * 카테고리별 베스트 게시글 가져오기 API
      * [GET] /posts/best/:categoryId?page=? 정렬방식
      * @param categoryId 카테고리 아이디
      * @return PostResponseData 게시글
      */
     @GetMapping("/best/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "베스트 게시글 가져오기", notes = "사용자로부터 카테고리 id를 받아, 베스트 게시글을 가져옵니다.")
+    @ApiOperation(value = "카테고리별 베스트 게시글 가져오기", notes = "사용자로부터 카테고리 id를 받아, 베스트 게시글을 가져옵니다.")
     public List<PostResponseData> searchBest(@PathVariable("categoryId") Long categoryId) {
         Category category = categoryService.getCategory(categoryId);
         return postService.getBestPost(category);
@@ -127,16 +135,19 @@ public class PostController {
     /**
      * 게시글 신고 API
      * [GET] /posts/report/:id
-     * @param id 게시글 아이디
-     * @return 신고당한 유저 아이디
+     * @param userId 유저 아이디
+     * @param postId 게시글 아이디
+     * @return String 신고당한 유저 아이디
      */
-    @PutMapping("/report/{id}")
+    @PutMapping("/report/{userId}/{postId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 신고", notes = "게시글을 신고합니다.")
-    public String report(@PathVariable("id") Long id) {
-        Post post = postService.getPostById(id);
-        User user = userService.getUser(post.getUser().getId());
-        return postService.report(user);
+    @PreAuthorize("isAuthenticated()")
+    public String report(@PathVariable("userId") Long userId, @PathVariable("postId") Long postId) {
+        User user = userService.getUser(userId);
+        Post post = postService.getPostById(postId);
+        User reportUser = userService.getUser(post.getUser().getId());
+        return postService.report(reportUser);
     }
 
 }

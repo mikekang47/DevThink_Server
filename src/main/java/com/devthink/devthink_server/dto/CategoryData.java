@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryRequestData {
+public class CategoryData {
 
     @Mapping("id")
     @ApiParam(value = "카테고리 고유 번호", example = "1")

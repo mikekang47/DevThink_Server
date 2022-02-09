@@ -29,6 +29,11 @@ public class LetterService {
 
     /**
      * 메시지 정보를 받아 메시지를 등록합니다.
+     * @param userRoom 방 번호
+     * @param sender    메시지 전송한 유저 정보
+     * @param target    메시지를 전달받을 유저 정보
+     * @param data  메시지 정보
+     * @return Letter 생성된 메시지
      */
     public Letter createMessage(UserRoom userRoom, User sender, User target, LetterSendData data) {
         Letter letter = letterRepository.save(
@@ -46,6 +51,8 @@ public class LetterService {
     /**
      * 전달받은 유저 아이디의 방 메시지 리스트를 불러옵니다.
      * @param user 유저 정보
+     * @param pageable 페이징 정보
+     * @return List<LetterListData> 메시지 리스트
      */
     public List<LetterListData> getMessageList(User user, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
@@ -63,7 +70,9 @@ public class LetterService {
 
     /**
      * 전달 받은 유저의 방 메시지를 읽음 처리 합니다.
-     * @param user, userRoom (유저, 유저 방)
+     * @param user 유저 정보
+     * @param userRoom  유저의 방 번호
+     * @return List<LetterResultData> 채팅방의 메시지 정보
      */
     public List<LetterResultData> getMessage(User user, UserRoom userRoom) {
         List<Letter> unReadLists = letterRepository.getUnReadLists(user.getId(), userRoom.getRoomId());
@@ -77,7 +86,11 @@ public class LetterService {
                 .collect(Collectors.toList());
     }
 
-    // 상대방 프로필, 닉네임 설정
+    /**
+     * 상대방의 프로필과 닉네임을 설정합니다.
+     * @param user  전달받은 유저 정보
+     * @param letterListData  상대방 프로필, 닉네임을 설정할 메시지
+     */
     private void setMessageList(User user, List<LetterListData> letterListData) {
         for (LetterListData letter : letterListData) {
             Long unread = letterRepository.countUnread(user.getId(), letter.getRoomId());

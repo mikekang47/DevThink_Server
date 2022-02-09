@@ -33,6 +33,9 @@ public class PostResponseData {
     @ApiModelProperty(notes = "제목", example = "test")
     private String title;
 
+    @ApiModelProperty(notes = "프로젝트 부제목", example = "test")
+    private String subTitle;
+
     @ApiModelProperty(notes = "내용", example = "Test")
     private String content;
 
@@ -40,7 +43,7 @@ public class PostResponseData {
     private Boolean deleted;
 
     @ApiModelProperty(notes = "좋아요 수", example = "1")
-    private Integer heart;
+    private Integer heartCnt;
 
     @ApiModelProperty(notes = "생성 시각", example = "2022-01-26T22:07:17.0831141")
     private LocalDateTime createAt;
