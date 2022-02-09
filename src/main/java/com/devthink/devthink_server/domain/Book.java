@@ -1,27 +1,32 @@
 package com.devthink.devthink_server.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.devthink.devthink_server.dto.BookDetailResponseData;
+import com.devthink.devthink_server.dto.BookResponseData;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Integer isbn;
+
+    private String name;
+
+    private String writer;
+
+    private String imgUrl;
 
     @Builder.Default
     private Integer reviewCnt = 0;
@@ -33,7 +38,7 @@ public class Book extends BaseTimeEntity {
     @OneToMany(mappedBy = "book")
     private List<Review> reviews = new ArrayList<>();
 
-    public void setScoreAvg(BigDecimal scoreAvg){
+    public void setScoreAvg(BigDecimal scoreAvg) {
         this.scoreAvg = scoreAvg;
     }
 
@@ -43,12 +48,31 @@ public class Book extends BaseTimeEntity {
         upReviewCnt();
     }
 
-    public void upReviewCnt(){
+    public void upReviewCnt() {
         reviewCnt++;
     }
 
-    public void downReviewCnt(){
+    public void downReviewCnt() {
         reviewCnt--;
+    }
+
+    public BookResponseData toBookResponseData() {
+        return BookResponseData.builder()
+                .id(id)
+                .isbn(isbn)
+                .name(name)
+                .writer(writer)
+                .imgUrl(imgUrl)
+                .reviewCnt(reviewCnt)
+                .scoreAvg(scoreAvg)
+                .build();
+    }
+
+    public BookDetailResponseData toBookDetailResponseData() {
+        return BookDetailResponseData.builder()
+                .book(toBookResponseData())
+                .reviews(reviews.stream().map(Review::toReviewResponseData).collect(Collectors.toList()))
+                .build();
     }
 
 }

@@ -19,7 +19,7 @@ public class SessionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "로그인 할 사용자의 세션 데이터", notes = "사용자의 세션 데이터를 입력받아 로그인을 진행합니다.")
+    @ApiOperation(value = "사용자 로그인", notes = "사용자의 세션 데이터를 입력받아 로그인을 진행합니다.")
     public SessionResponseData login(@RequestBody SessionRequestData sessionRequestData) {
         String email = sessionRequestData.getEmail();
         String password = sessionRequestData.getPassword();

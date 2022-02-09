@@ -4,20 +4,18 @@ package com.devthink.devthink_server.controllers;
 import com.devthink.devthink_server.application.BookService;
 import com.devthink.devthink_server.application.ReviewService;
 import com.devthink.devthink_server.application.UserService;
-import com.devthink.devthink_server.common.Error;
-import com.devthink.devthink_server.common.ErrorMessage;
 import com.devthink.devthink_server.domain.Book;
-import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
-import com.devthink.devthink_server.dto.ReviewRequestDto;
-import com.devthink.devthink_server.dto.ReviewResponseDto;
+import com.devthink.devthink_server.dto.ReviewDetailResponseData;
+import com.devthink.devthink_server.dto.ReviewRequestData;
+import com.devthink.devthink_server.dto.ReviewResponseData;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/reviews")
@@ -25,77 +23,84 @@ import java.util.Optional;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final BookService bookService;
     private final UserService userService;
+    private final BookService bookService;
 
     /**
-     * 리뷰 등록 API
+     * 입력한 valid한 리뷰 정보를 받아 리뷰를 생성합니다.
      * [POST] /reviews
-     * @param reviewRequestDto (userId, bookIsbn, content, score)
-     * @return reviewId (새로 생성된 리뷰 아이디)
+     *
+     * @param reviewRequestData (userId, bookIsbn, content, score)
+     * @return 새로 생성된 리뷰 아이디
      */
     @PostMapping
+    @ApiOperation(value = "리뷰 등록", notes = "전달된 정보에 따라 리뷰를 등록합니다.")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createReview(@Valid @RequestBody ReviewRequestDto reviewRequestDto){
-        User user = userService.getUser(reviewRequestDto.getUserId());
-        Book book = bookService.getBookByIsbn(reviewRequestDto.getBookIsbn());
-        String id = reviewService.createReview(user, book, reviewRequestDto);
+    public String create(@Valid @RequestBody ReviewRequestData reviewRequestData) {
+        User user = userService.getUser(reviewRequestData.getUserId());
+        Book book = bookService.getOrCreateBook(reviewRequestData.getBook());
+        String id = reviewService.createReview(user, book, reviewRequestData);
         return id;
     }
 
 
     /**
-     * 리뷰 상세 조회 API
+     * 주어진 id 의 리뷰를 상세 조회합니다.
      * [GET] /reviews/:id
+     *
      * @param id (조회할 리뷰 아이디)
-     * @return
+     * @return ReviewDetailResponseData ( 사용자 프로필, 리뷰, 댓글 )
      */
     @GetMapping("/{id}")
+    @ApiOperation(value = "리뷰 상세 조회", notes = "식별자 값의 리뷰를 상세 조회합니다.")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ReviewResponseDto getReview(@PathVariable("id") Long id){
-        Review review = reviewService.getReviewById(id);
-        return review.toReviewResponseDto();
+    public ReviewDetailResponseData detail(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id) {
+        return reviewService.getReviewDetailById(id);
     }
 
+
     /**
-     * 리뷰 내용 수정 API
+     * 주어진 id 의 리뷰 내용을 수정합니다.
      * [PATCH] /reviews/:id/content
+     *
      * @param id (수정할 리뷰 아이디)
      */
     @PatchMapping("/{id}/content")
+    @ApiOperation(value = "리뷰 내용 수정", notes = "식별자 값의 리뷰 내용을 전달된 내용으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto updateContent(@PathVariable("id") Long id, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
-        Review review = reviewService.getReviewById(id);
-        reviewService.updateContent(review, reviewRequestDto.getContent());
-        return review.toReviewResponseDto();
+    public ReviewResponseData updateContent(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData) {
+        return reviewService.updateContent(id, reviewRequestData.getContent());
     }
 
+
     /**
-     * 리뷰 점수 수정 API
+     * 주어진 id 의 리뷰 점수를 수정합니다.
      * [PATCH] /reviews/:id/score
+     *
      * @param id (수정할 리뷰 아이디 )
-     * @return review(삭제된 리뷰)
+     * @return ReviewResponseDto (삭제된 리뷰 )
      */
     @PatchMapping("/{id}/score")
+    @ApiOperation(value = "리뷰 별점 수정", notes = "식별자 값의 리뷰 별점을 전달된 별점으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto updateScore(@PathVariable("id") Long id, @Valid @RequestBody ReviewRequestDto reviewRequestDto){
-        Review review = reviewService.getReviewById(id);
-        reviewService.updateScore(review,reviewRequestDto.getScore());
-        return review.toReviewResponseDto();
+    public ReviewResponseData updateScore(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData) {
+        return reviewService.updateScore(id, reviewRequestData.getScore());
     }
 
+
     /**
-     * 리뷰 삭제 API
+     * 주어진 id 의 리뷰를 삭제합니다.
      * [DELETE] /reviews/:id
+     *
      * @param id
-     * @return review(삭제된 리뷰 객체)
+     * @return review(삭제된 리뷰 정보)
      */
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "리뷰 삭제", notes = "식별자 값의 리뷰를 삭제합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto deleteReview(@PathVariable("id") Long id){
-        Review review = reviewService.getReviewById(id);
-        reviewService.deleteReview(review);
-        return review.toReviewResponseDto();
+    public void destroy(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id) {
+        reviewService.deleteReview(id);
     }
+
 }

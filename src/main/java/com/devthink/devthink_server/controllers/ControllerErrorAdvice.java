@@ -47,11 +47,35 @@ public class ControllerErrorAdvice {
     public ErrorResponse handleReviewNotFound() {
         return new ErrorResponse("Review not found");
     }
-    
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AlreadyReviewedException.class)
+    public ErrorResponse handleAlreadyReviewed() {
+        return new ErrorResponse("User Already Reviewed");
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(PostNotFoundException.class)
     public ErrorResponse handlePostNotFound() {
         return new ErrorResponse("Post not found");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(StackNotFoundException.class)
+    public ErrorResponse handleStackNotFound() {
+        return new ErrorResponse("Stack not found");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserStackBadRequestException.class)
+    public ErrorResponse handleStackBadRequest() {
+        return new ErrorResponse("Stack id doesn't exits");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(BookNotFoundException.class)
+    public ErrorResponse handleBookNotFound() {
+        return new ErrorResponse("Book not found");
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -60,6 +84,7 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Heart not found");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CategoryNotFoundException.class)
     public ErrorResponse handleCategoryNotFound() {
         return new ErrorResponse("Category not found");
@@ -88,5 +113,19 @@ public class ControllerErrorAdvice {
     public ErrorResponse handlePostCommentBadRequest() {
         return new ErrorResponse("Can't create comment with null postId");
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ReplyNotFoundException.class)
+    public ErrorResponse handleReplyNotFound() {
+        return new ErrorResponse("Reply not found");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ReplyBadRequestException.class)
+    public ErrorResponse handleReplyBadRequest() {
+        return new ErrorResponse("Can't create reply with null commentId");
+    }
+
+
 }
 

@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @ApiModel("댓글 조회 정보")
-public class CommentResponseData {
+public class ReplyResponseData {
 
     @ApiModelProperty(value = "댓글 식별자", example = "1")
     @NotNull
-    private final Long commentId;
+    private final Long replyId;
 
     @ApiModelProperty(value = "사용자 식별자", example = "1")
     @NotNull
