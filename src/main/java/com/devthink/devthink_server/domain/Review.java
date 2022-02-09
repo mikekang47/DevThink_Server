@@ -83,7 +83,7 @@ public class Review extends BaseTimeEntity {
         return ReviewDetailResponseData.builder()
                 .userProfile(user.toUserProfileData())
                 .review(toReviewResponseData())
-                .comments(comments.stream().map(Comment::toCommentResponseDto).collect(Collectors.toList()))
+                .comments(comments.stream().map(Comment::toCommentResponseData).collect(Collectors.toList()))
                 .build();
     }
 
