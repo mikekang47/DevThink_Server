@@ -79,11 +79,15 @@ public class Review extends BaseTimeEntity {
                 .build();
     }
 
+    /**
+     * 댓글 리스트가 추가 된 리뷰 상세 정보로 변환합니다.
+     * @return 변환 된 CommentDetailResponseData 객체
+     */
     public ReviewDetailResponseData toReviewDetailResponseData() {
         return ReviewDetailResponseData.builder()
                 .userProfile(user.toUserProfileData())
                 .review(toReviewResponseData())
-                .comments(comments.stream().map(Comment::toCommentResponseData).collect(Collectors.toList()))
+                .comments(comments.stream().map(Comment::toCommentDetailResponseData).collect(Collectors.toList()))
                 .build();
     }
 

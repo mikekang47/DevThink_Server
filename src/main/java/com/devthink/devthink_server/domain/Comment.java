@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.domain;
 
+import com.devthink.devthink_server.dto.CommentDetailResponseData;
 import com.devthink.devthink_server.dto.CommentResponseData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -39,6 +44,10 @@ public class Comment extends BaseTimeEntity {
     @Builder.Default
     Integer heartCnt = 0;
 
+    @OneToMany(mappedBy = "comment")
+    @Builder.Default
+    private final List<Reply> replys = new ArrayList<>();
+
     public CommentResponseData toCommentResponseData() {
         return CommentResponseData.builder()
                 .commentId(id)
@@ -48,6 +57,17 @@ public class Comment extends BaseTimeEntity {
                 .content(content)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
+                .build();
+    }
+
+    /**
+     * 답글 리스트가 추가 된 댓글 상세 정보로 변환합니다.
+     * @return 변환 된 CommentDetailResponseData 객체
+     */
+    public CommentDetailResponseData toCommentDetailResponseData() {
+        return CommentDetailResponseData.builder()
+                .comment(toCommentResponseData())
+                .replys(replys.stream().map(Reply::toReplyResponseData).collect(Collectors.toList()))
                 .build();
     }
 
