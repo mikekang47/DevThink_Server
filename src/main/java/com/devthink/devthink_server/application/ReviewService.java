@@ -3,22 +3,18 @@ package com.devthink.devthink_server.application;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
-import com.devthink.devthink_server.dto.BookRequestData;
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
 import com.devthink.devthink_server.errors.AlreadyReviewedException;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
-import com.devthink.devthink_server.errors.UserNotFoundException;
 import com.devthink.devthink_server.infra.BookRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
-import com.devthink.devthink_server.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,7 +23,6 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final BookRepository bookRepository;
-    private final UserRepository userRepository;
 
     /**
      * 전달된 값으로 리뷰를 생성합니다.
@@ -37,8 +32,11 @@ public class ReviewService {
      */
     @Transactional
     public String createReview(User user, Book book, ReviewRequestData reviewRequestData) {
-
-        if (!reviewRepository.findByBookAndUser(book, user).isEmpty()) { // 이미 작성한 리뷰인지 확인합니다.
+        if (!reviewRepository.findByBookAndUserAndDeletedIsFalse(book, user).isEmpty()) {
+            /*
+            주어진 책에 대해 주어진 사용자가 이미리뷰를 작성했는지 확인합니다.
+            삭제한 경우는 작성하지 않은 것으로 간주합니다.
+            */
             throw new AlreadyReviewedException(book.getId());
         }
 
