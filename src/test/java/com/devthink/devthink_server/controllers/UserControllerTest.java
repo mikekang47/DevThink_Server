@@ -33,6 +33,9 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private AuthenticationService authenticationService;
+
     @BeforeEach
     void setUp() {
         given(userService.registerUser(any(UserRegistrationData.class)))
@@ -75,7 +78,7 @@ class UserControllerTest {
     }
 
     @Test
-    void registerUserWithValidAttributes() throws Exception {
+    void 올바른_정보로_가입하려는_경우() throws Exception {
         mockMvc.perform(
                         post("/users")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +100,7 @@ class UserControllerTest {
     }
 
     @Test
-    void registerUserWithInvalidAttributes() throws Exception {
+    void 올바르지_않은_정보로_가입하려는_경우() throws Exception {
         mockMvc.perform(
                         post("/users")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +110,7 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUserWithValidAttributes() throws Exception {
+    void 올바른_정보로_사용자_정보를_수정하려는_경우() throws Exception {
         mockMvc.perform(
                         patch("/users/1")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -125,7 +128,7 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUserWithInvalidAttributes() throws Exception {
+    void 올바르지_않은_정보로_사용자_정보를_수정하려는_경우() throws Exception {
         mockMvc.perform(
                         patch("/users/1")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -135,7 +138,7 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUserWithNotExsitedId() throws Exception {
+    void 존재하지_않는_사용자의_정보를_수정하려는_경우() throws Exception {
         mockMvc.perform(
                         patch("/users/100")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -148,7 +151,7 @@ class UserControllerTest {
     }
 
     @Test
-    void destroyWithExistedId() throws Exception {
+    void 존재하는_사용자를_삭제하려는_경우() throws Exception {
         mockMvc.perform(delete("/users/1"))
                 .andExpect(status().isNoContent());
 
@@ -156,7 +159,7 @@ class UserControllerTest {
     }
 
     @Test
-    void destroyWithNotExistedId() throws Exception {
+    void 존재하지_않는_사용자를_삭제하려는_경우() throws Exception {
         mockMvc.perform(delete("/users/100"))
                 .andExpect(status().isNotFound());
 
