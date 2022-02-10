@@ -27,6 +27,14 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 authenticationManager(), authenticationService);
         Filter authenticationErrorFilter = new AuthenticationErrorFilter();
         http
+                .authorizeRequests()
+                .antMatchers("/h2-console/*")
+                .permitAll();
+        http
+                .headers()
+                .frameOptions()
+                .disable();
+        http
                 .csrf().disable()
                 .addFilter(authenticationFilter)
                 .addFilterBefore(authenticationErrorFilter, JwtAuthenticationFilter.class)
