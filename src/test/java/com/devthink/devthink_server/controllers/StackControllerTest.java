@@ -59,11 +59,20 @@ class StackControllerTest {
     }
 
     @Test
-    void 스택을_등록하려는_경우() throws Exception {
+    void 올바른_정보로_스택을_등록하려는_경우() throws Exception {
         mvc.perform(post("/stacks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"C/C++\"}")
                 )
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void 올바르지_않은_정보로_스택을_등록하려는_경우() throws Exception {
+        mvc.perform(post("/stacks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")
+                )
+                .andExpect(status().isBadRequest());
     }
 }
