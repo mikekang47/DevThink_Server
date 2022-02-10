@@ -14,13 +14,12 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @ApiModel("스택 정보")
 public class StackData {
 
     @Mapping("name")
     @NotNull
-    @NotBlank
+    @NotBlank(message = "이름이 공백일 수 없습니다.")
     @ApiModelProperty(value = "스택 이름", example = "C/C++")
     private String name;
 
