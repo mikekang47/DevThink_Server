@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 public class ReviewRequestData {
 
     @NotNull
-    @ApiModelProperty(value = "사용자 식별자", example = "1")
+    @ApiModelProperty(value = "사용자 식별자", required = true, example = "1")
     private Long userId;
 
     @Valid
@@ -34,7 +34,7 @@ public class ReviewRequestData {
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
-    @ApiModelProperty(value = "별점", example = "4.5")
+    @ApiModelProperty(value = "별점", required = true, example = "4.5")
     @DecimalMin("0") @DecimalMax("5")
     @NotNull(message = "별점을 입력해주세요.")
     private BigDecimal score;
