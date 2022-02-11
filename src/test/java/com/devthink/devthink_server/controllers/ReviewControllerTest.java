@@ -1,11 +1,12 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.BookService;
 import com.devthink.devthink_server.application.ReviewService;
 import com.devthink.devthink_server.application.UserService;
-import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
+import com.devthink.devthink_server.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +24,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ReviewControllerTest {
 
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
 
     @MockBean
     private ReviewService reviewService;
 
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private BookService bookService;
+
+    @MockBean
+    private AuthenticationService authenticationService;
+
     @BeforeEach
     void setUp() {
         User user = User.builder().id(1L).build();
-        Book book = Book.builder().isbn(1).build();
+        Book book = Book.builder().id(1L).isbn("9788960773431").build();
 
         Review review = Review.builder()
                 .id(5L)
@@ -49,9 +59,9 @@ class ReviewControllerTest {
         mvc.perform(post("/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
-                                "    \"userId\": \"13\",\n" +
+                                "    \"userId\": \"1\",\n" +
                                 "    \"book\" : {\n" +
-                                "        \"isbn\" : 10,\n" +
+                                "        \"isbn\" : \"9788960773431\",\n" +
                                 "        \"name\" : \"자바 기초\",\n" +
                                 "        \"writer\" : \"이비\",\n" +
                                 "        \"imgUrl\" : \"www.img.com\"\n" +
@@ -67,9 +77,9 @@ class ReviewControllerTest {
         mvc.perform(post("/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
-                                "    \"userId\": \"13\",\n" +
+                                "    \"userId\": \"1\",\n" +
                                 "    \"book\" : {\n" +
-                                "        \"isbn\" : 10,\n" +
+                                "        \"isbn\" : \"9788960773431\",\n" +
                                 "        \"name\" : \"자바 기초\",\n" +
                                 "        \"writer\" : \"이비\",\n" +
                                 "        \"imgUrl\" : \"www.img.com\"\n" +
@@ -80,15 +90,14 @@ class ReviewControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-
     @Test
     void 책정보_누락시_리뷰생성_실패() throws Exception {
         mvc.perform(post("/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
-                                "    \"userId\": \"13\",\n" +
+                                "    \"userId\": \"1\",\n" +
                                 "    \"book\" : {\n" +
-                                "        \"isbn\" : 10,\n" +
+                                "        \"isbn\" : \"9788960773431\",\n" +
                                 "        \"writer\" : \"이비\",\n" +
                                 "        \"imgUrl\" : \"www.img.com\"\n" +
                                 "    },\n" +
@@ -103,14 +112,50 @@ class ReviewControllerTest {
         mvc.perform(post("/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
-                                "    \"userId\": \"13\",\n" +
+                                "    \"userId\": \"1\",\n" +
                                 "    \"book\" : {\n" +
-                                "        \"isbn\" : 10,\n" +
+                                "        \"isbn\" : \"9788960773431\",\n" +
                                 "        \"name\" : \"자바 기초\",\n" +
                                 "        \"writer\" : \"이비\",\n" +
                                 "        \"imgUrl\" : \"www.img.com\"\n" +
                                 "    },\n" +
                                 "    \"content\" : \"내용~~~~~~~\",\n"+
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void 평점범위초과_리뷰생성_실패() throws Exception {
+        mvc.perform(post("/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"userId\": \"1\",\n" +
+                                "    \"book\" : {\n" +
+                                "        \"isbn\" : \"9788960773431\",\n" +
+                                "        \"name\" : \"자바 기초\",\n" +
+                                "        \"writer\" : \"이비\",\n" +
+                                "        \"imgUrl\" : \"www.img.com\"\n" +
+                                "    },\n" +
+                                "    \"content\" : \"내용~~~~~~~\",\n" +
+                                "    \"score\" : \"13.0\"\n" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void ISBN형식위반_리뷰생성_실패() throws Exception {
+        mvc.perform(post("/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"userId\": \"1\",\n" +
+                                "    \"book\" : {\n" +
+                                "        \"isbn\" : \"978896077\",\n" +
+                                "        \"name\" : \"자바 기초\",\n" +
+                                "        \"writer\" : \"이비\",\n" +
+                                "        \"imgUrl\" : \"www.img.com\"\n" +
+                                "    },\n" +
+                                "    \"content\" : \"내용~~~~~~~\",\n" +
+                                "    \"score\" : \"5.0\"\n" +
                                 "}"))
                 .andExpect(status().isBadRequest());
     }
