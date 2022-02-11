@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter
 @AllArgsConstructor
@@ -14,7 +15,8 @@ import javax.validation.constraints.NotNull;
 public class BookRequestData {
 
     @NotNull
-    @ApiModelProperty(value = "책 isbn 번호", required = true, example = "8960773417")
+    @ApiModelProperty(value = "책 isbn 문자열 13자리", required = true, example = "9788960773431")
+    @Size(min=13, max=13)
     private String isbn;
 
     @NotBlank
