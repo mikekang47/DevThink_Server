@@ -24,7 +24,11 @@ public class ReviewRequestData {
     @Valid
     private BookRequestData book;
 
-    @ApiModelProperty(value = "작성된 리뷰 내용", example = "★ 스프링의 3대 핵심 기술인 IoC/DI, PSA, AOP를 빠르고 효과적으로 배울 수 있는 실전 예제 중심의 설명\n" +
+    @ApiModelProperty(value = "제목", example = "스프링 개념의 바이블!")
+    @NotBlank(message = "제목을 입력해주세요.")
+    private String title;
+
+    @ApiModelProperty(value = "내용", example = "★ 스프링의 3대 핵심 기술인 IoC/DI, PSA, AOP를 빠르고 효과적으로 배울 수 있는 실전 예제 중심의 설명\n" +
             "\n" +
             "개발 현장에서 매일 만나는 평범한 자바코드를 스프링의 핵심 기술을 적용해서 깔끔하고 스프링다운 코드로 개선해나가는 과정을 상세하게 보여줌으로써 스프링의 핵심 원리와 적용 방법을 이해할 수 있게 해준다.\n" +
             "\n" +

@@ -44,6 +44,7 @@ public class ReviewService {
                 Review.builder()
                         .user(user)
                         .book(book)
+                        .title(reviewRequestData.getTitle())
                         .content(reviewRequestData.getContent())
                         .score(reviewRequestData.getScore())
                         .build()
