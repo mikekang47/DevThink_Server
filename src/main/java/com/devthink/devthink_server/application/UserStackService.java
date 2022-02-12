@@ -6,7 +6,6 @@ import com.devthink.devthink_server.domain.UserStack;
 import com.devthink.devthink_server.dto.UserStackData;
 import com.devthink.devthink_server.errors.StackNotFoundException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
-import com.devthink.devthink_server.errors.UserStackBadRequestException;
 import com.devthink.devthink_server.errors.UserStackNotFoundException;
 import com.devthink.devthink_server.infra.StackRepository;
 import com.devthink.devthink_server.infra.UserRepository;
@@ -29,15 +28,11 @@ public class UserStackService {
         return userStackRepository.findAllByUserId(userId);
     }
 
-    public UserStack create(UserStackData userStackData) {
-        User user = findUser(userStackData.getUserId());
+    public UserStack create(Long userId, UserStackData userStackData) {
+        User user = findUser(userId);
         Stack stack = findStack(userStackData.getStackId());
-        try {
-            UserStack userStack = UserStack.builder().user(user).stack(stack).build();
-            return userStackRepository.save(userStack);
-        } catch(Exception e){
-            throw new UserStackBadRequestException();
-        }
+        UserStack userStack = UserStack.builder().user(user).stack(stack).build();
+        return userStackRepository.save(userStack);
     }
 
     private User findUser(Long userId) {
