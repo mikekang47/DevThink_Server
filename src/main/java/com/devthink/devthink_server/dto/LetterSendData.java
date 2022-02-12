@@ -16,11 +16,6 @@ public class LetterSendData {
     @NotNull
     private Long roomId;
 
-    @Mapping("senderId")
-    @ApiModelProperty(value = "보낸 사람 고유번호", required = true, example = "1")
-    @NotNull
-    private Long senderId;
-
     @Mapping("targetId")
     @ApiModelProperty(value = "받을 사람 고유번호", required = true, example = "2")
     @NotNull

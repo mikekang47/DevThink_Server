@@ -39,9 +39,11 @@ public class LetterController {
     @PostMapping
     @ApiOperation(value = "메시지 전송", notes = "메시지 정보를 받아 메시지 리스트에서 쪽지를 보냅니다.")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isAuthenticated()")
-    public LetterResultData createMessage(@RequestBody @Valid LetterSendData letterAddData) {
-        User sender = userService.getUser(letterAddData.getSenderId());
+    //@PreAuthorize("isAuthenticated()")
+    public LetterResultData createMessage(@RequestBody @Valid LetterSendData letterAddData,
+                                          String accessToken) {
+        Long userId = authenticationService.parseToken(accessToken);
+        User sender = userService.getUser(userId);
         User target = userService.getUser(letterAddData.getTargetId());
         UserRoom userRoom = getUserRoom(letterAddData, sender, target);
         Letter letter = letterService.createMessage(userRoom, sender, target, letterAddData);
@@ -54,25 +56,26 @@ public class LetterController {
      * @Param userId 유저 아이디
      * @return List<LetterResultData> 쪽지 리스트
      */
-    @GetMapping("/lists/{userId}")
-    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/lists")
+    //@PreAuthorize("isAuthenticated()")
     @ApiOperation(value = "쪽지 리스트", notes = "유저 Id를 받아 쪽지 리스트를 반환합니다.")
-    public List<LetterListData> messageList(@PathVariable("userId") Long userId, Pageable pageable) {
+    public List<LetterListData> messageList(Pageable pageable, String accessToken) {
+        Long userId = authenticationService.parseToken(accessToken);
         User user = userService.getUser(userId);
         return letterService.getMessageList(user, pageable);
     }
 
     /**
      * 메시지 읽기 API
-     * [GET] /messages/lists/:userId/rooms/:roomId
-     * @param userId 유저 아이디
+     * [GET] /messages/lists/rooms/:roomId
      * @param roomId 방 아이디
      * @return List<LetterResultData> 읽은 메시지
      */
-    @GetMapping("/lists/{userId}/rooms/{roomId}")
+    @GetMapping("/lists/rooms/{roomId}")
     @ApiOperation(value = "메시지 내용 가져오기", notes = "유저 id와 방 id를 받아 메시지를 읽습니다.")
-    @PreAuthorize("isAuthenticated()")
-    public List<LetterResultData> getMessage(@PathVariable("userId") Long userId, @PathVariable("roomId") Long roomId) {
+    //@PreAuthorize("isAuthenticated()")
+    public List<LetterResultData> getMessage(@PathVariable("roomId") Long roomId, String accessToken) {
+        Long userId = authenticationService.parseToken(accessToken);
         User user = userService.getUser(userId);
         UserRoom userRoom = userRoomService.getUserRoom(roomId);
         return letterService.getMessage(user, userRoom);
@@ -93,7 +96,7 @@ public class LetterController {
                 userRoom = userRoomService.getExistUserRoom(sender.getId(), target.getId());
             }
         } else {
-            userRoom = userRoomService.getUserRoom(letterAddData.getSenderId(), letterAddData.getTargetId(), letterAddData.getRoomId());
+            userRoom = userRoomService.getUserRoom(sender.getId(), letterAddData.getTargetId(), letterAddData.getRoomId());
         }
         return userRoom;
     }
