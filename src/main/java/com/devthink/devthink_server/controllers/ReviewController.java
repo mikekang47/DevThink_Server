@@ -9,6 +9,7 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
+import com.devthink.devthink_server.errors.PointNotValidException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +40,13 @@ public class ReviewController {
     public String create(@Valid @RequestBody ReviewRequestData reviewRequestData) {
         User user = userService.getUser(reviewRequestData.getUserId());
         Book book = bookService.getOrCreateBook(reviewRequestData.getBook());
-        String id = reviewService.createReview(user, book, reviewRequestData);
-        return id;
+        int point = reviewRequestData.getPoint();
+        if(point == 0 || point == 5 || point == 7){ // point 값이 0, 5, 7 중 하나여야 합니다.
+            String id = reviewService.createReview(user, book, reviewRequestData);
+            return id;
+        } else {
+            throw new PointNotValidException();
+        }
     }
 
 

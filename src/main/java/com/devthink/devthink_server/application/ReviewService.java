@@ -25,7 +25,7 @@ public class ReviewService {
     private final BookRepository bookRepository;
 
     /**
-     * 전달된 값으로 리뷰를 생성합니다.
+     * 전달된 값으로 리뷰를 생성하며, 유저에게 포인트가 적립됩니다.
      *
      * @param reviewRequestData
      * @return 생성 된 리뷰 id
@@ -39,7 +39,6 @@ public class ReviewService {
             */
             throw new AlreadyReviewedException(book.getId());
         }
-
         Review review = reviewRepository.save(
                 Review.builder()
                         .user(user)
@@ -47,10 +46,12 @@ public class ReviewService {
                         .title(reviewRequestData.getTitle())
                         .content(reviewRequestData.getContent())
                         .score(reviewRequestData.getScore())
+                        .point(reviewRequestData.getPoint())
                         .build()
         );
         review.getBook().addReview(review);
         review.getBook().setScoreAvg(bookRepository.calcScoreAvg(book.getId()));
+        user.addPoint(reviewRequestData.getPoint()); // 유저에게 포인트를 적립합니다.
         return review.getId().toString();
     }
 
