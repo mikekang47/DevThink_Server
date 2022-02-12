@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @ApiModel("스택 정보")
 public class StackData {
+    private Long id;
 
     @Mapping("name")
     @NotNull
