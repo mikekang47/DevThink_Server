@@ -59,15 +59,13 @@ public class UserController {
 
     /**
      * 사용자의 식별자를 전달받아 사용자를 리턴합니다.
-     * @param accessToken 사용자의 토큰
      * @return 사용자
      */
-    @GetMapping  ("/{accessToken}")
+    @GetMapping
     @ApiOperation(value="사용자 조회", notes = "입력된 식별자와 일치하는 사용자의 정보를 리턴합니다.")
     @ApiImplicitParam(name="id", dataType = "Long", value="사용자 식별자")
-    public UserResultData detail(@PathVariable String accessToken) {
-        Long userId = authenticationService.parseToken(accessToken);
-        User user = userService.getUser(userId);
+    public UserResultData detail(UserAuthentication userAuthentication) {
+        User user = userService.getUser(userAuthentication.getUserId());
         return getUserResultData(user);
     }
 
