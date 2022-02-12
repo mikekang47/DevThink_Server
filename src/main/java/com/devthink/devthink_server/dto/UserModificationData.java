@@ -15,7 +15,6 @@ import javax.validation.constraints.Size;
 @Getter
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor
 @ApiModel("사용자 수정 정보")
 public class UserModificationData {
     @NotBlank(message = "닉네임을 입력해주세요.")
@@ -43,4 +42,10 @@ public class UserModificationData {
     @ApiParam(value = "사용자의 github 닉네임", example = "mikekang47")
     private String gitNickname;
 
+    private Integer point;
+
+    public UserModificationData() {
+        this.blogAddr = "";
+        this.gitNickname = "";
+    }
 }
