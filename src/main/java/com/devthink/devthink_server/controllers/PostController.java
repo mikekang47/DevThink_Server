@@ -11,14 +11,18 @@ import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostRequestData;
 import com.devthink.devthink_server.dto.PostResponseData;
 import com.devthink.devthink_server.errors.PostDeleteBadRequestException;
+import com.devthink.devthink_server.errors.PostReportBadRequestException;
 import com.devthink.devthink_server.errors.PostUpdateBadRequestException;
+import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -29,7 +33,6 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
     private final CategoryService categoryService;
-    private final AuthenticationService authenticationService;
 
     /**
      * 페이지를 요청하면 카테고리별 페이지의 게시글을 가져옵니다.
@@ -66,10 +69,11 @@ public class PostController {
     @PostMapping("/write")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "게시글 등록", notes = "카테고리별 게시글을 등록합니다.")
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseData write(@RequestBody @Valid PostRequestData postRequestData,
-                                  String accessToken){
-        Long userId = authenticationService.parseToken(accessToken);
+                                  UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
         Category category = categoryService.getCategory(postRequestData.getCategoryId());
         Post post = postService.savePost(user, category, postRequestData);
@@ -85,19 +89,24 @@ public class PostController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 수정", notes = "식별자 값과 게시글의 정보를 받아, 게시글을 입력한 정보로 변경합니다.")
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseData update(@PathVariable("id") Long id,
                                    @RequestBody @Valid PostRequestData postRequestData,
-                                   String accessToken) {
-        Long userId = authenticationService.parseToken(accessToken);
+                                   UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
         Post post = postService.getPostById(id);
 
+        // 만약 유저 아이디와 게시글의 유저 아이디가 같다면
         if(user.getId() == post.getUser().getId()) {
+            // 업데이트를 진행한다
             postService.update(post, postRequestData);
             return post.toPostResponseData();
         }
+        // 유저 아이디와 게시글의 유저 아이디가 다르다면
         else {
+            // 예외를 반환한다
             throw new PostUpdateBadRequestException();
         }
     }
@@ -111,18 +120,23 @@ public class PostController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "게시글 삭제", notes = "입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.")
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseData deletePost(@PathVariable("id") Long id,
-                                       String accessToken) {
-        Long userId = authenticationService.parseToken(accessToken);
+                                       UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
         Post post = postService.getPostById(id);
 
+        // 만약 유저 아이디와 게시글의 유저 아이디가 같다면
         if(user.getId() == post.getUser().getId()) {
+            // 삭제한다
             postService.deletePost(post);
             return post.toPostResponseData();
         }
+        // 유저 아이디와 게시글의 유저 아이디가 다르다면
         else {
+            // 예외를 반환한다.
             throw new PostDeleteBadRequestException();
         }
     }
@@ -164,14 +178,31 @@ public class PostController {
     @PutMapping("/report/{postId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 신고", notes = "게시글을 신고합니다.")
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public String report(@PathVariable("postId") Long postId,
-                         String accessToken) {
-        Long userId = authenticationService.parseToken(accessToken);
+                         UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
         Post post = postService.getPostById(postId);
         User reportUser = userService.getUser(post.getUser().getId());
-        return postService.report(reportUser);
+        //만약 신고한 유저가 게시글의 유저라면
+        if(user.getId() == reportUser.getId()) {
+            // 예외를 반환한다
+            throw new PostReportBadRequestException();
+        }
+        // 만약 신고한 유저가 게시글의 유저와 다르다면
+        else {
+            // 만약 신고한 유저가 해당 게시글을 신고한 기록이 있다면
+            if(postService.checkPostReport(user, post)) {
+                // 예외를 반환한다
+                throw new PostReportBadRequestException();
+            }
+            else{
+                // 신고한 기록이 없으면 신고한다
+                return postService.report(user, post, reportUser);
+            }
+        }
     }
 
 }
