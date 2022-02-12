@@ -16,7 +16,6 @@ public class PostRequestData {
 
     @ApiModelProperty(value = "카테고리 아이디", example = "1")
     @ApiParam(value = "카테고리 아이디", example = "1")
-    @NotNull
     private Long categoryId;
 
     @NotBlank(message = "제목을 입력해주세요.")
