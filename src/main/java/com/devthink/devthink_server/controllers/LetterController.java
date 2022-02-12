@@ -1,6 +1,5 @@
 package com.devthink.devthink_server.controllers;
 
-import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.LetterService;
 import com.devthink.devthink_server.application.UserRoomService;
 import com.devthink.devthink_server.application.UserService;
@@ -10,6 +9,7 @@ import com.devthink.devthink_server.domain.UserRoom;
 import com.devthink.devthink_server.dto.LetterListData;
 import com.devthink.devthink_server.dto.LetterSendData;
 import com.devthink.devthink_server.dto.LetterResultData;
+import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -28,10 +29,9 @@ public class LetterController {
     private final LetterService letterService;
     private final UserService userService;
     private final UserRoomService userRoomService;
-    private final AuthenticationService authenticationService;
 
     /**
-     * 쪽지 전송 API
+     * 닉네임을 통한 쪽지 전송 API
      * [POST] /messages
      * @param letterAddData 쪽지 데이터
      * @return LetterResultData 보낸 쪽지
@@ -39,12 +39,14 @@ public class LetterController {
     @PostMapping
     @ApiOperation(value = "메시지 전송", notes = "메시지 정보를 받아 메시지 리스트에서 쪽지를 보냅니다.")
     @ResponseStatus(HttpStatus.CREATED)
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public LetterResultData createMessage(@RequestBody @Valid LetterSendData letterAddData,
-                                          String accessToken) {
-        Long userId = authenticationService.parseToken(accessToken);
+                                          UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
         User sender = userService.getUser(userId);
-        User target = userService.getUser(letterAddData.getTargetId());
+        // 상대방의 닉네임을 가져와서 상대방의 아이디를 가져옵니다.
+        User target = letterService.findByNickname(letterAddData.getNickname());
         UserRoom userRoom = getUserRoom(letterAddData, sender, target);
         Letter letter = letterService.createMessage(userRoom, sender, target, letterAddData);
         return letter.toLetterResultData();
@@ -52,15 +54,17 @@ public class LetterController {
 
     /**
      * 쪽지 리스트 API
-     * [GET] /messages/lists/:id?page= &size= &sort= ,정렬방식
-     * @Param userId 유저 아이디
+     * [GET] /messages/lists?page= &size= &sort= ,정렬방식
+     * @Param pageable 페이지 정렬 방식
      * @return List<LetterResultData> 쪽지 리스트
      */
     @GetMapping("/lists")
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     @ApiOperation(value = "쪽지 리스트", notes = "유저 Id를 받아 쪽지 리스트를 반환합니다.")
-    public List<LetterListData> messageList(Pageable pageable, String accessToken) {
-        Long userId = authenticationService.parseToken(accessToken);
+    public List<LetterListData> messageList(Pageable pageable,
+                                            UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
         return letterService.getMessageList(user, pageable);
     }
@@ -73,9 +77,11 @@ public class LetterController {
      */
     @GetMapping("/lists/rooms/{roomId}")
     @ApiOperation(value = "메시지 내용 가져오기", notes = "유저 id와 방 id를 받아 메시지를 읽습니다.")
-    //@PreAuthorize("isAuthenticated()")
-    public List<LetterResultData> getMessage(@PathVariable("roomId") Long roomId, String accessToken) {
-        Long userId = authenticationService.parseToken(accessToken);
+    @PreAuthorize("isAuthenticated()")
+    public List<LetterResultData> getMessage(@PathVariable("roomId") Long roomId,
+                                             UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
         UserRoom userRoom = userRoomService.getUserRoom(roomId);
         return letterService.getMessage(user, userRoom);
@@ -96,7 +102,7 @@ public class LetterController {
                 userRoom = userRoomService.getExistUserRoom(sender.getId(), target.getId());
             }
         } else {
-            userRoom = userRoomService.getUserRoom(sender.getId(), letterAddData.getTargetId(), letterAddData.getRoomId());
+            userRoom = userRoomService.getUserRoom(sender.getId(), target.getId(), letterAddData.getRoomId());
         }
         return userRoom;
     }
