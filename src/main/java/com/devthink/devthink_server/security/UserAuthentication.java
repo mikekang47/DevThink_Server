@@ -24,6 +24,10 @@ public class UserAuthentication extends AbstractAuthenticationToken {
     public Object getPrincipal() {
         return userId;
     }
+
+    public Long getUserId() {
+        return userId;
+    }
      
     private static List<GrantedAuthority> authorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
