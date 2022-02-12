@@ -7,8 +7,6 @@ import com.devthink.devthink_server.domain.UserStack;
 import com.devthink.devthink_server.infra.StackRepository;
 import com.devthink.devthink_server.infra.UserRepository;
 import com.devthink.devthink_server.infra.UserStackRepository;
-import com.github.dozermapper.core.DozerBeanMapperBuilder;
-import com.github.dozermapper.core.Mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,9 +32,7 @@ class UserStackServiceTest {
 
     @BeforeEach
     void setUp() {
-        Mapper mapper = DozerBeanMapperBuilder.buildDefault();
-
-        userStackService = new UserStackService(mapper, userStackRepository, userRepository, stackRepository);
+        userStackService = new UserStackService(userStackRepository, userRepository, stackRepository);
 
         User user = User.builder()
                 .id(1L)
