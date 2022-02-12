@@ -5,9 +5,11 @@ import com.devthink.devthink_server.domain.*;
 import com.devthink.devthink_server.dto.HeartCommentResponseData;
 import com.devthink.devthink_server.dto.HeartPostResponseData;
 import com.devthink.devthink_server.dto.HeartReviewResponseData;
+import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -46,10 +48,12 @@ public class HeartController {
             value= "개시글 좋아요 생성",
             notes = "좋아요를 생성하려는 게시글의 객체와 사용자의 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다."
     )
-    @PostMapping("/post")
+    @PostMapping("/post/{postId}")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
-    public HeartPostResponseData createPostHeart(@RequestBody Post post, @RequestBody User user) {
-        Heart heart = heartService.createPostHeart(post, user);
+    public HeartPostResponseData createPostHeart(@PathVariable Long postId, UserAuthentication userAuthentication) {
+        Long userId = userAuthentication.getUserId();
+        Heart heart = heartService.createPostHeart(postId, userId);
         return getPostHeartData(heart);
     }
 
