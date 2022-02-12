@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.controllers;
 
 
+import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.UserModificationData;
@@ -25,9 +26,11 @@ import java.nio.file.AccessDeniedException;
 public class UserController {
 
     private final UserService userService;
+    private AuthenticationService authenticationService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationService authenticationService) {
         this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     /**
@@ -56,14 +59,15 @@ public class UserController {
 
     /**
      * 사용자의 식별자를 전달받아 사용자를 리턴합니다.
-     * @param id 사용자의 식별자
+     * @param accessToken 사용자의 토큰
      * @return 사용자
      */
-    @GetMapping("/{id}")
+    @GetMapping  ("/{accessToken}")
     @ApiOperation(value="사용자 조회", notes = "입력된 식별자와 일치하는 사용자의 정보를 리턴합니다.")
     @ApiImplicitParam(name="id", dataType = "Long", value="사용자 식별자")
-    public UserResultData detail(@PathVariable Long id) {
-        User user = userService.getUser(id);
+    public UserResultData detail(@PathVariable String accessToken) {
+        Long userId = authenticationService.parseToken(accessToken);
+        User user = userService.getUser(userId);
         return getUserResultData(user);
     }
 
