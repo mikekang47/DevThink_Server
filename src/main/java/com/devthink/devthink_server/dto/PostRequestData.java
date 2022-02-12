@@ -13,10 +13,6 @@ import javax.validation.constraints.Size;
 @Getter
 @AllArgsConstructor
 public class PostRequestData {
-    @ApiModelProperty(value = "유저 아이디", example = "1")
-    @ApiParam(value = "유저 아이디", example = "1")
-    @NotNull
-    private Long userId;
 
     @ApiModelProperty(value = "카테고리 아이디", example = "1")
     @ApiParam(value = "카테고리 아이디", example = "1")
