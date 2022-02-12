@@ -126,6 +126,17 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Can't create reply with null commentId");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PostUpdateBadRequestException.class)
+    public ErrorResponse handlePostUpdateBadRequest() {
+        return new ErrorResponse("Can't update Post with invalid userId");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PostDeleteBadRequestException.class)
+    public ErrorResponse handlePostDeleteBadRequest() {
+        return new ErrorResponse("Can't delete Post with invalid userId");
+    }
 
 }
 
