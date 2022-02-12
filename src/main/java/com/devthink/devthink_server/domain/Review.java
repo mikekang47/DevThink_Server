@@ -38,6 +38,8 @@ public class Review extends BaseTimeEntity {
 
     private BigDecimal score;
 
+    private Integer point;
+
     @Builder.Default
     private Boolean deleted = Boolean.FALSE;
 
