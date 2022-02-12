@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class StackController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "스택 등록", notes = "새로운 스택을 생성합니다.")
-    public StackData registerStack(@RequestBody StackData stackData) {
+    public StackData registerStack(@RequestBody @Valid StackData stackData) {
          Stack stack = stackService.register(stackData);
          return StackData.builder().name(stack.getName()).build();
 
