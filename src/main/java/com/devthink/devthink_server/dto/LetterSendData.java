@@ -16,10 +16,10 @@ public class LetterSendData {
     @NotNull
     private Long roomId;
 
-    @Mapping("targetId")
-    @ApiModelProperty(value = "받을 사람 고유번호", required = true, example = "2")
-    @NotNull
-    private Long targetId;
+    @Mapping("nickname")
+    @ApiModelProperty(value = "상대방 닉네임", required = true, example = "tester22")
+    @NotBlank(message = "메시지를 받을 사람의 닉네임을 입력해주세요.")
+    private String nickname;
 
     @Mapping("content")
     @ApiModelProperty(value = "메시지 내용", required = true, example = "test")
