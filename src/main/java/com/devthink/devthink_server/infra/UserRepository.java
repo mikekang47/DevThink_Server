@@ -16,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByIdAndDeletedIsFalse(Long id);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByNickname(String userNickname);
     
     boolean existsByEmail(String existed_email);
 
@@ -26,4 +28,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u.nickname from User u where u.id = :id")
     String findNicknameById(Long id);
+
 }
