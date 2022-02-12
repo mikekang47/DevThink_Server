@@ -41,6 +41,19 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() throws AccessDeniedException {
+        User user = User.builder()
+                .id(1L)
+                .email("test123@email.com")
+                .password("1234567890")
+                .role("string")
+                .gitNickname("123124")
+                .nickname("test")
+                .name("123124")
+                .phoneNum("01012341234")
+                .build();
+        
+        given(userService.getUser(1L)).willReturn(user);
+        
         given(userService.registerUser(any(UserRegistrationData.class)))
                 .will(invocation -> {
                     UserRegistrationData registrationData = invocation.getArgument(0);
@@ -82,6 +95,16 @@ class UserControllerTest {
         given(authenticationService.parseToken(VALID_TOKEN)).willReturn(1L);
     }
 
+    @Test
+    void 존재하는_사용자를_조회하는_경우() throws Exception {
+        mockMvc.perform(
+                get("/users/"+VALID_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"test123@email.com\", \"name\":\"test\"}")
+                )
+                .andExpect(status().isOk());
+    }
+    
     @Test
     void 올바른_정보로_가입하려는_경우() throws Exception {
         mockMvc.perform(
