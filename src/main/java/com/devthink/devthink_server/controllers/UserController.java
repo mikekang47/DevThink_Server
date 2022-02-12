@@ -6,13 +6,16 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.UserModificationData;
 import com.devthink.devthink_server.dto.UserResultData;
 import com.devthink.devthink_server.dto.UserRegistrationData;
+import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.file.AccessDeniedException;
 
 /**
  * 사용자의 HTTP 요청을 처리하는 클래스입니다.
@@ -87,11 +90,13 @@ public class UserController {
     @PatchMapping("/{id}")
     @ApiOperation(value = "사용자 업데이트", notes = "전달받은 사용자의 식별자로 수정할 사용자를 찾아, 주어진 데이터로 사용자의 정보를 갱신합니다.")
     @ApiImplicitParam(name="id", dataType = "Long", value="사용자 식별자")
+    @PreAuthorize("isAuthenticated()")
     public UserResultData update(
             @PathVariable Long id,
-            @RequestBody @Valid UserModificationData modificationData
-    ) {
-        User user = userService.updateUser(id, modificationData);
+            @RequestBody @Valid UserModificationData modificationData, UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
+        User user = userService.updateUser(id, modificationData, userId);
         return getUserResultData(user);
     }
 
@@ -101,6 +106,7 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
     @ApiOperation(value = "사용자 삭제", notes = "전달받은 사용자 식별자를 가진 사용자를 삭제합니다.")
     @ApiImplicitParam(name="id", dataType = "Long", value="사용자 식별자")
     public void destroy(@PathVariable Long id) {
