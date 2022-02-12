@@ -50,19 +50,22 @@ class UserStackServiceTest {
         Stack stack = Stack.builder()
                 .name("Java")
                 .build();
+
         UserStack userStack = UserStack.builder().user(user).stack(stack).build();
 
         given(userStackRepository.findAllByUserId(1L)).willReturn(List.of(userStack));
+
     }
 
     @Test
     void 유저스택을_모두_불러오는_경우() {
         Long userId = 1L;
-        List<UserStack> stacks = userStackService.getUserStacks(1L);
+        List<UserStack> stacks = userStackService.getUserStacks(userId);
 
         assertThat(stacks).isNotEmpty();
 
         User user = stacks.get(0).getUser();
         assertThat(user.getEmail()).isEqualTo("test@email.com");
     }
+
 }
