@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @ApiModel("스택 정보")
 public class StackData {
 
