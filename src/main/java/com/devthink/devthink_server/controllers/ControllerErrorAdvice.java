@@ -138,5 +138,17 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Can't delete Post with invalid userId");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PostReportBadRequestException.class)
+    public ErrorResponse handlePostReportBadRequest() {
+        return new ErrorResponse("can't report post with invalid approach");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(LetterUserNotFoundException.class)
+    public ErrorResponse handleLetterUserNotFoundException() {
+        return new ErrorResponse("The user of the nickname could not be found");
+    }
+
 }
 
