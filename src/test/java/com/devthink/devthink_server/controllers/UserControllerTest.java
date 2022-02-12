@@ -96,11 +96,12 @@ class UserControllerTest {
     }
 
     @Test
-    void 존재하는_사용자를_조회하는_경우() throws Exception {
+    void 존재하는_특정_사용자를_조회하는_경우() throws Exception {
         mockMvc.perform(
-                get("/users/"+VALID_TOKEN)
+                get("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\":\"test123@email.com\", \"name\":\"test\"}")
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                 .andExpect(status().isOk());
     }
