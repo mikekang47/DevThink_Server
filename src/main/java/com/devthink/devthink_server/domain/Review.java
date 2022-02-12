@@ -76,8 +76,10 @@ public class Review extends BaseTimeEntity {
                 .id(id)
                 .userId(user.getId())
                 .bookIsbn(book.getIsbn())
+                .title(title)
                 .content(content)
                 .score(score)
+                .heartCnt(heartCnt)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
                 .build();
