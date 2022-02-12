@@ -2,11 +2,13 @@ package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Category;
 import com.devthink.devthink_server.domain.Post;
+import com.devthink.devthink_server.domain.PostReport;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostRequestData;
 import com.devthink.devthink_server.dto.PostResponseData;
 import com.devthink.devthink_server.errors.PostNotFoundException;
+import com.devthink.devthink_server.infra.PostReportRepository;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.data.domain.PageRequest;
@@ -26,11 +28,21 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostReportRepository postReportRepository;
     private final Mapper mapper;
 
-    public PostService(PostRepository postRepository, Mapper mapper) {
+    public PostService(PostRepository postRepository, PostReportRepository postReportRepository, Mapper mapper) {
         this.postRepository = postRepository;
+        this.postReportRepository = postReportRepository;
         this.mapper = mapper;
+    }
+
+    /**
+     * 해당 유저가 해당 게시글을 신고한 기록이 있는지 확인합니다.
+     *
+     */
+    public boolean checkPostReport(User user, Post post){
+        return postReportRepository.existsPostReport(user.getId(), post.getId());
     }
 
     /**
@@ -147,9 +159,14 @@ public class PostService {
      * @param user 게시글 작성자
      * @return String 신고된 게시글 번호
      */
-    public String report(User user){
-        user.setReported();
-        return user.getId().toString();
+    public String report(User user, Post post, User reportUser){
+        reportUser.setReported();
+        PostReport postReport = PostReport.builder()
+                .post(post)
+                .user(user)
+                .build();
+        postReportRepository.save(postReport);
+        return reportUser.getId().toString();
     }
 
 }
