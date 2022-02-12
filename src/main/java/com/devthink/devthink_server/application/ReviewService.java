@@ -28,10 +28,10 @@ public class ReviewService {
      * 전달된 값으로 리뷰를 생성하며, 유저에게 포인트가 적립됩니다.
      *
      * @param reviewRequestData
-     * @return 생성 된 리뷰 id
+     * @return 생성 된 리뷰 객체
      */
     @Transactional
-    public String createReview(User user, Book book, ReviewRequestData reviewRequestData) {
+    public Review createReview(User user, Book book, ReviewRequestData reviewRequestData) {
         if (!reviewRepository.findByBookAndUserAndDeletedIsFalse(book, user).isEmpty()) {
             /*
             주어진 책에 대해 주어진 사용자가 이미리뷰를 작성했는지 확인합니다.
@@ -51,8 +51,8 @@ public class ReviewService {
         );
         review.getBook().addReview(review);
         review.getBook().setScoreAvg(bookRepository.calcScoreAvg(book.getId()));
-        user.addPoint(reviewRequestData.getPoint()); // 유저에게 포인트를 적립합니다.
-        return review.getId().toString();
+        user.upPoint(reviewRequestData.getPoint()); // 유저에게 포인트를 적립합니다.
+        return review;
     }
 
     /**
@@ -96,6 +96,7 @@ public class ReviewService {
 
     /**
      * 전달된 리뷰의 deleted 컬럼을 true로 변경하고, 해당 책의 리뷰수를 감소시키며, 평점을 다시 계산합니다.
+     * 사용자의 포인트를 회수합니다.
      *
      * @param id (삭제할 리뷰 식별자)
      * @return 수정된 리뷰
@@ -104,8 +105,9 @@ public class ReviewService {
     public void deleteReview(long id) {
         Review review = getReviewById(id);
         review.setDeleted(true);
-        review.getBook().downReviewCnt();
-        review.getBook().setScoreAvg(bookRepository.calcScoreAvg(review.getBook().getId()));
+        review.getBook().downReviewCnt(); // 책의 리뷰수를 감소시킵니다.
+        review.getBook().setScoreAvg(bookRepository.calcScoreAvg(review.getBook().getId()));    // 책의 평점을 다시 계산합니다.
+        review.getUser().downPoint(review.getPoint()); // 사용자의 포인트를 회수합니다.
     }
 
     /**

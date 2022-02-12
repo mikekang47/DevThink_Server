@@ -67,8 +67,12 @@ public class User extends BaseTimeEntity {
         return !deleted && password.equals(this.password);
     }
 
-    public void addPoint(int point) {
+    public void upPoint(int point) {
         this.point += point;
+    }
+
+    public void downPoint(int point) {
+        this.point -= point;
     }
 
     /**
