@@ -5,6 +5,7 @@ import com.devthink.devthink_server.application.BookService;
 import com.devthink.devthink_server.application.ReviewService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.Book;
+import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
@@ -37,13 +38,13 @@ public class ReviewController {
     @PostMapping
     @ApiOperation(value = "리뷰 등록", notes = "전달된 정보에 따라 리뷰를 등록합니다.")
     @ResponseStatus(HttpStatus.CREATED)
-    public String create(@Valid @RequestBody ReviewRequestData reviewRequestData) {
+    public ReviewResponseData create(@Valid @RequestBody ReviewRequestData reviewRequestData) {
         User user = userService.getUser(reviewRequestData.getUserId());
         Book book = bookService.getOrCreateBook(reviewRequestData.getBook());
         int point = reviewRequestData.getPoint();
         if(point == 0 || point == 5 || point == 7){ // point 값이 0, 5, 7 중 하나여야 합니다.
-            String id = reviewService.createReview(user, book, reviewRequestData);
-            return id;
+            Review review = reviewService.createReview(user, book, reviewRequestData);
+            return review.toReviewResponseData();
         } else {
             throw new PointNotValidException();
         }
