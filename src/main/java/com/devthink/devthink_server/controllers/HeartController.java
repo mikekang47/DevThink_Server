@@ -39,14 +39,15 @@ public class HeartController {
     }
 
     /**
-     * 좋아요를 생성하려는 게시글 객체와 사용자 객체로 새로운 좋아요를 생성하여, 그 정보를 리턴합니다.
-     * @param post 좋아요를 생성하려는 게시글
-     * @param user 좋아요를 생성하는 사용자
+     * 좋아요를 생성하려는 게시글 객체와 사용자 토큰으로 새로운 좋아요를 생성하여, 그 정보를 리턴합니다.
+     * @param postId 좋아요를 생성하려는 게시글의 식별자
+     * @header accessToken 사용자의 토큰
      * @return 생성된 좋아요의 정보
      */
     @ApiOperation(
             value= "개시글 좋아요 생성",
-            notes = "좋아요를 생성하려는 게시글의 객체와 사용자의 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다."
+            notes = "좋아요를 생성하려는 게시글 객체와 사용자 토큰으로 새로운 게시글 좋아요를 생성하여, 그 정보를 리턴합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            response = HeartPostResponseData.class
     )
     @PostMapping("/post/{postId}")
     @PreAuthorize("isAuthenticated()")
@@ -58,36 +59,38 @@ public class HeartController {
     }
 
     /**
-     * 좋아요를 생성하려는 댓글의 식별자와 사용자의 식별자로 새로운 좋아요를 생성하여, 그 정보를 리턴합니다.
-     * @param comment 좋아요를 생성하려는 댓글의 식별자
-     * @param user 좋아요를 생성하는 사용자의 식별자
+     * 좋아요를 생성하려는 댓글의 식별자와 사용자 토큰으로 새로운 댓글 좋아요를 생성하여, 그 정보를 리턴합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.
+     * @param commentId 좋아요를 생성하려는 댓글의 식별자
      * @return 생성된 좋아요의 정보
      */
     @ApiOperation(
             value = "댓글 좋아요 생성",
-            notes = "좋아요를 생성하려는 댓글의 객체와 사용자 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다."
+            notes = "좋아요를 생성하려는 댓글의 객체와 사용자 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            response = HeartCommentResponseData.class
     )
-    @PostMapping("/comment")
+    @PostMapping("/comment/{commentId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public HeartCommentResponseData createCommentHeart(@RequestBody Comment comment, @RequestBody User user) {
-        Heart heart = heartService.createCommentHeart(comment, user);
+    public HeartCommentResponseData createCommentHeart(@PathVariable Long commentId, UserAuthentication userAuthentication) {
+        Long userId = userAuthentication.getUserId();
+        Heart heart = heartService.createCommentHeart(commentId, userId);
         return getCommentHeartData(heart);
     }
 
     /**
      * 좋아요를 생성하려는 리뷰 객체와 사용자 객체로 새로운 좋아요를 생성하여, 그 정보를 리턴합니다.
-     * @param review 좋아요를 생성하려는 게시글
-     * @param user 좋아요를 생성하는 사용자
+     * @param reviewId 좋아요를 생성하려는 리뷰 식별자
      * @return 생성된 좋아요의 정보
      */
     @ApiOperation(
             value = "리뷰 좋아요 생성",
-            notes ="좋아요를 생성하려는 리뷰 객체와 사용자 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다."
+            notes ="좋아요를 생성하려는 리뷰 객체와 사용자 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다.",
+            response = HeartReviewResponseData.class
     )
-    @PostMapping("/review")
+    @PostMapping("/review/{reviewId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public HeartReviewResponseData createReviewHeart(@RequestBody Review review, @RequestBody User user) {
-        Heart heart = heartService.createReviewHeart(review, user);
+    public HeartReviewResponseData createReviewHeart(@PathVariable Long reviewId, UserAuthentication userAuthentication) {
+        Long userId = userAuthentication.getUserId();
+        Heart heart = heartService.createReviewHeart(reviewId, userId);
         return getReviewHeartData(heart);
     }
 
@@ -100,10 +103,40 @@ public class HeartController {
             notes= "삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다."
     )
     @ApiImplicitParam(name="heartId", dataType = "integer", value = "좋아요 식별자")
-    @DeleteMapping("/{heartId}")
+    @DeleteMapping("/{heartId}/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void destroy(@PathVariable Long heartId) {
-        heartService.destroyPostHeart(heartId);
+    public void destroyPostHeart(@PathVariable Long heartId, @PathVariable Long postId) {
+        heartService.destroyPostHeart(heartId, postId);
+    }
+
+    /**
+     * 삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다.
+     * @param heartId 삭제하고자 하는 좋아요의 식별자
+     */
+    @ApiOperation(
+            value= "좋아요 삭제(좋아요 취소)",
+            notes= "삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다."
+    )
+    @ApiImplicitParam(name="heartId", dataType = "integer", value = "좋아요 식별자")
+    @DeleteMapping("/{heartId}/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void destroyReviewHeart(@PathVariable Long heartId, @PathVariable Long reviewId) {
+        heartService.destroyReviewHeart(heartId, reviewId);
+    }
+
+    /**
+     * 삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다.
+     * @param heartId 삭제하고자 하는 좋아요의 식별자
+     */
+    @ApiOperation(
+            value= "좋아요 삭제(좋아요 취소)",
+            notes= "삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다."
+    )
+    @ApiImplicitParam(name="heartId", dataType = "integer", value = "좋아요 식별자")
+    @DeleteMapping("/{heartId}/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void destroyCommentHeart(@PathVariable Long heartId, @PathVariable Long commentId) {
+        heartService.destroyCommentHeart(heartId, commentId);
     }
 
     /**
