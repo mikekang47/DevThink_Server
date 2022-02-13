@@ -11,4 +11,6 @@ public interface PostHeartRepository extends JpaRepository<PostHeart, Long> {
     PostHeart save(PostHeart postHeart);
 
     Optional<PostHeart> findByPostIdAndUserId(Long postId, Long userId);
+
+    boolean existsByPostIdAndUserId(Long postId, Long userId);
 }
