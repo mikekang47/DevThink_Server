@@ -1,7 +1,6 @@
 package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.ReviewHeartService;
-import com.devthink.devthink_server.domain.Heart;
 import com.devthink.devthink_server.domain.ReviewHeart;
 import com.devthink.devthink_server.dto.ReviewHeartResponseData;
 import com.devthink.devthink_server.security.UserAuthentication;

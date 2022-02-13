@@ -1,6 +1,5 @@
 package com.devthink.devthink_server.application;
 
-import com.devthink.devthink_server.domain.Heart;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.PostHeart;
 import com.devthink.devthink_server.domain.User;

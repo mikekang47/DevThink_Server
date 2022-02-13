@@ -1,6 +1,5 @@
 package com.devthink.devthink_server.application;
 
-import com.devthink.devthink_server.domain.Heart;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.ReviewHeart;
 import com.devthink.devthink_server.domain.User;
@@ -8,6 +7,7 @@ import com.devthink.devthink_server.errors.HeartAlreadyExistsException;
 import com.devthink.devthink_server.errors.HeartNotFoundException;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
+import com.devthink.devthink_server.infra.ReviewHeartRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
 import com.devthink.devthink_server.infra.UserRepository;
 import org.springframework.stereotype.Service;
