@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @Getter
 @ApiModel(value = "리뷰 좋아요 생성 정보")
-public class HeartReviewResponseData {
+public class ReviewHeartResponseData {
     Long id;
 
     @NotBlank
