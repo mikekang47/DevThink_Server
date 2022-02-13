@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @Getter
 @ApiModel(value = "게시글 좋아요 생성 정보")
-public class HeartPostResponseData {
+public class PostHeartResponseData {
     private Long id;
 
     @NotBlank
