@@ -4,6 +4,7 @@ import com.devthink.devthink_server.application.PostHeartService;
 import com.devthink.devthink_server.domain.PostHeart;
 import com.devthink.devthink_server.dto.PostHeartResponseData;
 import com.devthink.devthink_server.security.UserAuthentication;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +39,23 @@ public class PostHeartController {
         return getPostHeartData(postHeart);
     }
 
+    /**
+     * 좋아요를 취소하고자 하는 게시글 식별자를 받아 좋아요를 취소합니다.
+     * @param postId 좋아요를 취소하고자 하는 게시글 식별자
+     */
+    @ApiOperation(
+            value= "게시글 좋아요 삭제(좋아요 취소)",
+            notes= "좋아요를 취소하고자 하는 게시글 식별자를 받아 좋아요를 취소합니다. 헤더에 사용자 토큰 주입을 필요로 합니다."
+    )
+    @ApiImplicitParam(name="postId", dataType = "integer", value = "좋아요를 취소하고자 하는 게시글 식별자")
+    @DeleteMapping("/{postId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
+    public void destroyPostHeart(@PathVariable Long postId, UserAuthentication userAuthentication) {
+        Long userId = userAuthentication.getUserId();
+        postHeartService.destroyPostHeart(postId, userId);
+    }
+    
     /**
      * 게시글과 관련한 좋아요의 정보를 받아서 dto로 변환후 리턴합니다.
      * @param postHeart 변환할 좋아요의 정보
