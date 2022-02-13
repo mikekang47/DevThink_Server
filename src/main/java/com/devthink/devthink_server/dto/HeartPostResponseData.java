@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.NotBlank;
+
 
 @Builder
 @Getter
@@ -12,9 +14,11 @@ import lombok.Getter;
 public class HeartPostResponseData {
     private Long id;
 
+    @NotBlank
     @ApiParam(value = "사용자 식별자", required = true, example = "10")
     private Long userId;
 
+    @NotBlank
     @ApiParam(value = "게시글 식별자", required = true, example = "25")
     private Long postId;
 }
