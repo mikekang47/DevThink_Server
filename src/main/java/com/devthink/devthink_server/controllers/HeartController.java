@@ -46,7 +46,7 @@ public class HeartController {
      */
     @ApiOperation(
             value= "개시글 좋아요 생성",
-            notes = "좋아요를 생성하려는 게시글 객체와 사용자 토큰으로 새로운 게시글 좋아요를 생성하여, 그 정보를 리턴합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            notes = "좋아요를 생성하려는 게시글 식별자와 사용자 토큰으로 새로운 게시글 좋아요를 생성하여, 그 정보를 리턴합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = HeartPostResponseData.class
     )
     @PostMapping("/post/{postId}")
@@ -65,10 +65,11 @@ public class HeartController {
      */
     @ApiOperation(
             value = "댓글 좋아요 생성",
-            notes = "좋아요를 생성하려는 댓글의 객체와 사용자 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            notes = "좋아요를 생성하려는 댓글의 식별자와 사용자 토큰으로 새로운 댓글 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = HeartCommentResponseData.class
     )
     @PostMapping("/comment/{commentId}")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
     public HeartCommentResponseData createCommentHeart(@PathVariable Long commentId, UserAuthentication userAuthentication) {
         Long userId = userAuthentication.getUserId();
@@ -77,16 +78,17 @@ public class HeartController {
     }
 
     /**
-     * 좋아요를 생성하려는 리뷰 객체와 사용자 객체로 새로운 좋아요를 생성하여, 그 정보를 리턴합니다.
+     * 좋아요를 생성하려는 리뷰 식별자와 사용자 식별자로 새로운 리뷰 좋아요를 생성하여, 그 정보를 리턴합니다.
      * @param reviewId 좋아요를 생성하려는 리뷰 식별자
      * @return 생성된 좋아요의 정보
      */
     @ApiOperation(
             value = "리뷰 좋아요 생성",
-            notes ="좋아요를 생성하려는 리뷰 객체와 사용자 객체로 새로운 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다.",
+            notes ="좋아요를 생성하려는 리뷰의 식별자와 사용자 토큰으로 새로운 리뷰 좋아요를 생성하여, 생성된 좋아요의 정보를 리턴합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = HeartReviewResponseData.class
     )
     @PostMapping("/review/{reviewId}")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
     public HeartReviewResponseData createReviewHeart(@PathVariable Long reviewId, UserAuthentication userAuthentication) {
         Long userId = userAuthentication.getUserId();
@@ -95,16 +97,18 @@ public class HeartController {
     }
 
     /**
-     * 삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다.
+     * 삭제하고자 하는 좋아요의 식별자와 게시글 식별자를 받아 삭제합니다.
      * @param heartId 삭제하고자 하는 좋아요의 식별자
+     * @param postId 삭제하고자 하는 게시글의 식별자
      */
     @ApiOperation(
-            value= "좋아요 삭제(좋아요 취소)",
-            notes= "삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다."
+            value= "게시글 좋아요 삭제(좋아요 취소)",
+            notes= "삭제하고자 하는 좋아요의 식별자와 게시글 식별자를 받아 좋아요를 삭제합니다.헤더에 사용자 토큰 주입을 필요로 합니다."
     )
-    @ApiImplicitParam(name="heartId", dataType = "integer", value = "좋아요 식별자")
+    @ApiImplicitParam(name="heartId, postId", dataType = "integer", value = "좋아요 식별자")
     @DeleteMapping("/{heartId}/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
     public void destroyPostHeart(@PathVariable Long heartId, @PathVariable Long postId) {
         heartService.destroyPostHeart(heartId, postId);
     }
@@ -112,14 +116,16 @@ public class HeartController {
     /**
      * 삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다.
      * @param heartId 삭제하고자 하는 좋아요의 식별자
+     * @param reviewId 삭제하고자 하는 리뷰의 식별자
      */
     @ApiOperation(
-            value= "좋아요 삭제(좋아요 취소)",
-            notes= "삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다."
+            value= "리뷰 좋아요 삭제(좋아요 취소)",
+            notes= "삭제하고자 하는 좋아요의 식별자와 리뷰 식별자를 받아 좋아요를 삭제합니다.헤더에 사용자 토큰 주입을 필요로 합니다."
     )
-    @ApiImplicitParam(name="heartId", dataType = "integer", value = "좋아요 식별자")
+    @ApiImplicitParam(name="heartId, reviewId", dataType = "integer", value = "좋아요 식별자와 리뷰 식별자")
     @DeleteMapping("/{heartId}/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
     public void destroyReviewHeart(@PathVariable Long heartId, @PathVariable Long reviewId) {
         heartService.destroyReviewHeart(heartId, reviewId);
     }
@@ -129,12 +135,13 @@ public class HeartController {
      * @param heartId 삭제하고자 하는 좋아요의 식별자
      */
     @ApiOperation(
-            value= "좋아요 삭제(좋아요 취소)",
-            notes= "삭제하고자 하는 좋아요의 식별자를 받아 삭제합니다."
+            value= "댓글 좋아요 삭제(좋아요 취소)",
+            notes= "삭제하고자 하는 좋아요의 식별자와 댓글 식별자를 받아 좋아요를 삭제합니다. 헤더에 사용자 토큰 주입을 필요로 합니다."
     )
-    @ApiImplicitParam(name="heartId", dataType = "integer", value = "좋아요 식별자")
+    @ApiImplicitParam(name="heartId, commentId", dataType = "integer", value = "좋아요 식별자와 댓글 식별자")
     @DeleteMapping("/{heartId}/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
     public void destroyCommentHeart(@PathVariable Long heartId, @PathVariable Long commentId) {
         heartService.destroyCommentHeart(heartId, commentId);
     }
