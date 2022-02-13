@@ -13,12 +13,16 @@ public class HeartService {
     private final HeartRepository heartRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final ReviewRepository reviewRepository;
 
     public HeartService(HeartRepository heartRepository, PostRepository postRepository,
-                        UserRepository userRepository) {
+                        UserRepository userRepository, CommentRepository commentRepository, ReviewRepository reviewRepository) {
         this.heartRepository = heartRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     /**
@@ -56,34 +60,69 @@ public class HeartService {
 
     /**
      * 전달받은 댓글 식별자와 사용자 식별자로 좋아요를 생성합니다.
-     * @param comment 댓글 식별자
-     * @param user 사용자 식별자
+     * @param commentId 댓글 식별자
+     * @param userId 사용자 식별자
      * @return 생성된 댓글 좋아요 객체
      */
-    public Heart createCommentHeart(Comment comment, User user) {
+    public Heart createCommentHeart(Long commentId, Long userId) {
+        User user = findUser(userId);
+        Comment comment = findComment(commentId);
         comment.updateHeart(comment.getHeartCnt()+1);
         Heart heart = Heart.builder().user(user).comment(comment).build();
         return heartRepository.save(heart);
     }
 
+    private Comment findComment(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
+    }
+
     /**
      * 전달받은 리뷰 객체와 사용자 객체로 좋아요를 생성합니다.
-     * @param review 리뷰 객체
-     * @param user 사용자 객체
+     * @param reviewId 리뷰 식별자
+     * @param userId 사용자 식별자
      * @return 생성된 댓글 좋아요 객체
      */
-    public Heart createReviewHeart(Review review, User user) {
+    public Heart createReviewHeart(Long reviewId, Long userId) {
+        User user = findUser(userId);
+        Review review = findReview(reviewId);
         review.updateHeart(review.getHeartCnt()+1);
         Heart heart = Heart.builder().user(user).review(review).build();
         return heartRepository.save(heart);
+    }
+
+    private Review findReview(Long reviewId) {
+        return reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException(reviewId));
     }
 
     /**
      * 전달받은 좋아요 식별자를 찾아 삭제합니다.
      * @param id 삭제하고자하는 좋아요 식별자
      */
-    public void destroyPostHeart(Long id) {
+    public void destroyPostHeart(Long id, Long postId) {
+        Post post = findPost(postId);
+        findHeart(id);
+        post.updateHeart(post.getHeartCnt()-1);
         heartRepository.deleteById(id);
+    }
+
+    public void destroyReviewHeart(Long id, Long reviewId) {
+        Review review = findReview(reviewId);
+        findHeart(id);
+        review.updateHeart(review.getHeartCnt()-1);
+        heartRepository.deleteById(id);
+    }
+
+    public void destroyCommentHeart(Long id, Long commentId) {
+        Comment comment = findComment(commentId);
+        findHeart(id);
+        comment.updateHeart(comment.getHeartCnt()-1);
+        heartRepository.deleteById(id);
+    }
+
+    private Heart findHeart(Long id) {
+        return heartRepository.findById(id)
+                .orElseThrow(() -> new HeartNotFoundException(id));
     }
 
 }
