@@ -38,7 +38,7 @@ public class Comment extends BaseTimeEntity {
     private Review review;
 
     @ManyToOne(fetch = LAZY)
-    private Heart heart;
+    private CommentHeart heart;
 
     private String content;
 
