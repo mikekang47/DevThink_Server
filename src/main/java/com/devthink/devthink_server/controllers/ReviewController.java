@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -38,6 +39,7 @@ public class ReviewController {
     @PostMapping
     @ApiOperation(value = "리뷰 등록", notes = "전달된 정보에 따라 리뷰를 등록합니다.")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAuthenticated()")
     public ReviewResponseData create(@Valid @RequestBody ReviewRequestData reviewRequestData) {
         User user = userService.getUser(reviewRequestData.getUserId());
         Book book = bookService.getOrCreateBook(reviewRequestData.getBook());
@@ -76,6 +78,7 @@ public class ReviewController {
     @PatchMapping("/{id}/content")
     @ApiOperation(value = "리뷰 내용 수정", notes = "식별자 값의 리뷰 내용을 전달된 내용으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public ReviewResponseData updateContent(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData) {
         return reviewService.updateContent(id, reviewRequestData.getContent());
     }
@@ -91,6 +94,7 @@ public class ReviewController {
     @PatchMapping("/{id}/score")
     @ApiOperation(value = "리뷰 별점 수정", notes = "식별자 값의 리뷰 별점을 전달된 별점으로 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public ReviewResponseData updateScore(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, @Valid @RequestBody ReviewRequestData reviewRequestData) {
         return reviewService.updateScore(id, reviewRequestData.getScore());
     }
@@ -106,6 +110,7 @@ public class ReviewController {
     @DeleteMapping("/{id}")
     @ApiOperation(value = "리뷰 삭제", notes = "식별자 값의 리뷰를 삭제합니다.")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public void destroy(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id) {
         reviewService.deleteReview(id);
     }
