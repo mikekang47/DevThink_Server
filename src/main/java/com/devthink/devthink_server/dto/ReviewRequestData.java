@@ -25,7 +25,7 @@ public class ReviewRequestData {
     @Valid
     private BookRequestData book;
 
-    @ApiModelProperty(value = "제목", example = "스프링 개념의 바이블!")
+    @ApiModelProperty(value = "제목", required = true, example = "스프링 개념의 바이블!")
     @NotBlank(message = "제목을 입력해주세요.")
     private String title;
 
@@ -44,15 +44,8 @@ public class ReviewRequestData {
     @NotNull(message = "별점을 입력해주세요.")
     private BigDecimal score;
 
-    @ApiModelProperty(value = "적립 포인트(5 or 7)", example = "5")
+    @ApiModelProperty(value = "적립 포인트(5 or 7)", required = true, example = "5")
+    @NotNull(message = "별점을 입력해주세요.")
     private Integer point;
-
-    public ReviewRequestData(String content){
-        this.content = content;
-    }
-
-    public ReviewRequestData(BigDecimal score){
-        this.score = score;
-    }
 
 }
