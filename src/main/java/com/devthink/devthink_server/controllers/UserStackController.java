@@ -34,13 +34,11 @@ public class UserStackController {
 
     /**
      * 전달받은 사용자 식별자로 사용자의 스택을 조회힙니다.
-     *
      * @return 사용자의 스택
      */
     @GetMapping
-    @ApiOperation(value = "사용자 스택 조회", notes="사용자의 스택을 조회합니다.")
+    @ApiOperation(value = "사용자 스택 조회", notes="현재 사용자의 스택을 조회합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
     @PreAuthorize("isAuthenticated()")
-    @ApiImplicitParam(name="userId", dataType = "Long", value = "사용자 식별자")
     public List<UserStackResponseData> detail(UserAuthentication userAuthentication) {
         Long userId = userAuthentication.getUserId();
 
@@ -55,16 +53,18 @@ public class UserStackController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
-    @ApiOperation(value = "사용자 스택 생성", notes = "사용자의 스택을 생성합니다.")
+    @ApiOperation(value = "사용자 스택 생성", notes = "현재 사용자의 스택을 생성하고 그 정보를 반환합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
+    @ApiImplicitParam(name="유저 스택 생성 데이터", required = true)
     public UserStackResponseData createUserStack(@RequestBody @Valid UserStackRequestData userStackRequestData, UserAuthentication userAuthentication) {
         Long userId = userAuthentication.getUserId();
         UserStack userStack = userStackService.create(userId, userStackRequestData);
         return getUserStackData(userStack);
     }
 
-    @DeleteMapping("{id}")
-    @ApiOperation(value = "사용자 스택 수정", notes = "사용자의 스택을 수정합니다.")
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "사용자 스택 삭제", notes = "현재 사용자의 스택을 삭제할 수 있습니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
     @PreAuthorize("isAuthenticated()")
+    @ApiImplicitParam(dataType="integer", name="사용자 스택 식별자", required = true)
     public void deleteUserStack(@PathVariable Long id,UserAuthentication userAuthentication) {
         userStackService.destroy(id);
     }

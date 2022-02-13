@@ -37,7 +37,7 @@ public class StackController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "스택 등록", notes = "새로운 스택을 생성합니다.")
+    @ApiOperation(value = "스택 등록", notes = "새로운 스택을 생성해서 생성된 스택을 반환합니다.")
     public StackData registerStack(@RequestBody @Valid StackData stackData) {
          Stack stack = stackService.register(stackData);
          return StackData.builder().name(stack.getName()).build();
