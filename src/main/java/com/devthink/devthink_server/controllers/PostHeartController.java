@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/hearts/posts")
+@RequestMapping("/posts/hearts")
 @RestController
 public class PostHeartController {
     private final PostHeartService postHeartService;
