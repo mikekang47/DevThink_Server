@@ -32,67 +32,51 @@ class ReviewServiceTest {
     @Mock
     UserRepository userRepository;
 
+    User user = User.builder().id(1L).point(10).build();
+    Book book = Book.builder().id(1L).isbn("1234567891234").build();
+    Review review = Review.builder()
+            .id(1L)
+            .user(user)
+            .book(book)
+            .title("제목")
+            .content("내용")
+            .score(BigDecimal.valueOf(4.5))
+            .point(5)
+            .build();
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this); //@Mock이 붙은 객체를 생성, 초기화
         reviewService = new ReviewService(reviewRepository, bookRepository);
+
+        given(reviewRepository.save(any(Review.class))).willReturn(review);
+
+        given(reviewRepository.findByIdAndDeletedIsFalse(1L)).willReturn(Optional.of(review));
+
+        given(userRepository.save(user)).willReturn(user);
     }
 
     @Test
     void 리뷰작성시_유저_포인트_증가() {
         //given
-        User user = User.builder().id(1L).point(0).build();
-        Book book = Book.builder().id(1L).isbn("1234567891234").build();
-        given(reviewRepository.save(any(Review.class))).will(invocation -> {
-            Review review = Review.builder()
-                    .id(1L)
-                    .user(user)
-                    .book(book)
-                    .title("제목")
-                    .content("내용")
-                    .score(BigDecimal.valueOf(4.5))
-                    .build();
-            return review;
-        });
+        int prePoint = user.getPoint();
         ReviewRequestData reviewRequestData = ReviewRequestData.builder()
-                .userId(1L)
-                .score(BigDecimal.valueOf(4.5))
-                .content("반갑습니당")
-                .point(5)
+                .point(review.getPoint())
                 .build();
         //when
         reviewService.createReview(user, book, reviewRequestData);
         //then
-        assertThat(user.getPoint()).isEqualTo(5);
+        assertThat(user.getPoint()).isEqualTo(prePoint + review.getPoint());
     }
 
     @Test
     void 리뷰삭제시_유저_포인트_감소() {
         //given
-        User user = User.builder().id(1L).point(10).build();
-        Book book = Book.builder().id(1L).isbn("1234567891234").build();
-        given(reviewRepository.findByIdAndDeletedIsFalse(1L)).will(invocation -> {
-            Review review = Review.builder()
-                    .id(1L)
-                    .user(user)
-                    .book(book)
-                    .title("제목")
-                    .content("내용")
-                    .point(7)
-                    .score(BigDecimal.valueOf(4.5))
-                    .build();
-            return Optional.of(review);
-        });
-        given(userRepository.save(user)).will(invocation -> {
-            return User.builder()
-                    .id(user.getId())
-                    .point(user.getPoint())
-                    .build();
-        });
+        int prePoint = user.getPoint();
         //when
-        reviewService.deleteReview(1L);
+        reviewService.deleteReview(review.getId());
         //then
-        assertThat(user.getPoint()).isEqualTo(3);
+        assertThat(user.getPoint()).isEqualTo(prePoint - review.getPoint());
     }
 
 }
