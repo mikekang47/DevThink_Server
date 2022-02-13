@@ -121,6 +121,7 @@ public class PostService {
      * @return Post 삭제된 게시글
      */
     public Post deletePost(Post post){
+        getPostById(post.getId());
         post.setDeleted(true);
         return post;
     }
