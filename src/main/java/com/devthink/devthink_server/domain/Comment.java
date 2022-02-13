@@ -51,9 +51,7 @@ public class Comment extends BaseTimeEntity {
     public CommentResponseData toCommentResponseData() {
         return CommentResponseData.builder()
                 .commentId(id)
-                .userId(user.getId())
-                .userNickname(user.getNickname())
-                .userImageUrl(user.getImageUrl())
+                .userProfile(user.toUserProfileData())
                 .content(content)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
