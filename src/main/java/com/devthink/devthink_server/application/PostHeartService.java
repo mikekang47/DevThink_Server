@@ -27,12 +27,17 @@ public class PostHeartService {
 
     public PostHeart createPostHeart(Long postId, Long userId) {
         Post post = findPost(postId);
+        User user = findUser(userId);
+
         if(postheartRepository.existsByPostIdAndUserId(postId, userId)) {
             throw new HeartAlreadyExistsException();
         }
-        post.updateHeart(post.getHeartCnt()+1);
-        User user = findUser(userId);
-        PostHeart postHeart = PostHeart.builder().user(user).post(post).build();
+
+        post.updateHeart(post.getHeartCnt() + 1);
+        PostHeart postHeart = PostHeart.builder()
+                .user(user)
+                .post(post)
+                .build();
         return postheartRepository.save(postHeart);
     }
 
