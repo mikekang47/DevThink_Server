@@ -4,6 +4,7 @@ import com.devthink.devthink_server.domain.Book;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
+import com.devthink.devthink_server.dto.ReviewModificationData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
 import com.devthink.devthink_server.errors.AlreadyReviewedException;
@@ -13,8 +14,6 @@ import com.devthink.devthink_server.infra.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 
 @Service
 @Transactional(readOnly = true)
@@ -49,6 +48,7 @@ public class ReviewService {
                         .point(reviewRequestData.getPoint())
                         .build()
         );
+        // 책에 리뷰를 추가하고 평점을 다시 계산합니다.
         review.getBook().addReview(review);
         review.getBook().setScoreAvg(bookRepository.calcScoreAvg(book.getId()));
         user.upPoint(reviewRequestData.getPoint()); // 유저에게 포인트를 적립합니다.
@@ -67,30 +67,21 @@ public class ReviewService {
     }
 
     /**
-     * 전달된 리뷰의 내용을 수정합니다.
+     * 전달된 리뷰의 정보를 수정합니다.
      *
      * @param id      (수정할 리뷰 식별자)
-     * @param content (수정할 내용)
+     * @param reviewModificationData (수정할 내용을 담은 객체)
      * @return 수정된 리뷰
      */
     @Transactional
-    public ReviewResponseData updateContent(Long id, String content) {
+    public ReviewResponseData update(Long id, ReviewModificationData reviewModificationData) {
         Review review = getReviewById(id);
-        review.setContent(content);
-        return review.toReviewResponseData();
-    }
-
-    /**
-     * 전달된 리뷰의 별점을 수정합니다.
-     *
-     * @param id    (수정할 리뷰 식별자)
-     * @param score (수정할 점수)
-     * @return 수정된 리뷰
-     */
-    @Transactional
-    public ReviewResponseData updateScore(Long id, BigDecimal score) {
-        Review review = getReviewById(id);
-        review.setScore(score);
+        review.setTitle(reviewModificationData.getTitle());
+        review.setContent(reviewModificationData.getContent());
+        if (review.getScore() != reviewModificationData.getScore()){ // 별점을 수정할 경우 평점 계산을 다시 합니다.
+            review.setScore(reviewModificationData.getScore());
+            review.getBook().setScoreAvg(bookRepository.calcScoreAvg(review.getBook().getId()));
+        }
         return review.toReviewResponseData();
     }
 
