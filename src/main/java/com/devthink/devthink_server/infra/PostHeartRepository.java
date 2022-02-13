@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface PostHeartRepository extends JpaRepository<PostHeart, Long> {
     PostHeart save(PostHeart postHeart);
+
+    Optional<PostHeart> findByPostIdAndUserId(Long postId, Long userId);
 }
