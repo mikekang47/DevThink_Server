@@ -33,7 +33,7 @@ public class Review extends BaseTimeEntity {
     private Book book;
 
     @ManyToOne(fetch = LAZY)
-    private Heart heart;
+    private ReviewHeart heart;
 
     private String content;
 

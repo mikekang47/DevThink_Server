@@ -29,7 +29,7 @@ public class Post extends BaseTimeEntity {
     private String title;
 
     @ManyToOne(fetch = LAZY)
-    private Heart heart;
+    private PostHeart heart;
 
     @Builder.Default
     private String subTitle = ""; // 프로젝트 구인글 용
