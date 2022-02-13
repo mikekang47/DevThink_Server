@@ -1,8 +1,10 @@
 package com.devthink.devthink_server.application;
 
+import com.devthink.devthink_server.domain.Heart;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.PostHeart;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.errors.HeartNotFoundException;
 import com.devthink.devthink_server.errors.PostNotFoundException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
 import com.devthink.devthink_server.infra.PostHeartRepository;
@@ -40,4 +42,16 @@ public class PostHeartService {
     }
 
 
+    /**
+     * 전달받은 좋아요 식별자를 찾아 삭제합니다.
+     * @param postId 삭제하고자하는 게시글 식별자
+     */
+    public void destroyPostHeart(Long postId, Long userId) {
+        Post post = findPost(postId);
+        PostHeart postHeart = postheartRepository.findByPostIdAndUserId(postId, userId)
+                .orElseThrow(() -> new HeartNotFoundException());
+
+        post.updateHeart(post.getHeartCnt()-1);
+        postheartRepository.deleteById(postHeart.getId());
+    }
 }
