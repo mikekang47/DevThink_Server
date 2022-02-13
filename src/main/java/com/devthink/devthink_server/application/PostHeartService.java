@@ -4,6 +4,7 @@ import com.devthink.devthink_server.domain.Heart;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.PostHeart;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.errors.HeartAlreadyExistsException;
 import com.devthink.devthink_server.errors.HeartNotFoundException;
 import com.devthink.devthink_server.errors.PostNotFoundException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
@@ -26,6 +27,9 @@ public class PostHeartService {
 
     public PostHeart createPostHeart(Long postId, Long userId) {
         Post post = findPost(postId);
+        if(postheartRepository.existsByPostIdAndUserId(postId, userId)) {
+            throw new HeartAlreadyExistsException();
+        }
         post.updateHeart(post.getHeartCnt()+1);
         User user = findUser(userId);
         PostHeart postHeart = PostHeart.builder().user(user).post(post).build();
