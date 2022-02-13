@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Builder
-public class PostHeart {
+public class PostHeart extends BaseTimeEntity{
     @Id
     @GeneratedValue
     private Long id;
