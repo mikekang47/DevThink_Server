@@ -76,11 +76,10 @@ public class Post extends BaseTimeEntity {
 
     public PostResponseData toPostResponseData() {
         return PostResponseData.builder()
-                .userId(user.getId())
+                .userProfile(user.toUserProfileData())
                 .imageUrl(imageUrl)
                 .id(id)
                 .subTitle(subTitle)
-                .nickname(user.getNickname())
                 .categoryId(category.getId())
                 .deleted(deleted)
                 .createAt(getCreateAt())
