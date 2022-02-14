@@ -121,6 +121,7 @@ public class ReplyController {
     @ApiImplicitParam(name = "replyId", value = "삭제할 Reply의 식별자")
     @DeleteMapping("/{replyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
     public void deleteReply(@PathVariable("replyId") Long replyId) {
         replyService.deleteReply(replyId);
     }
