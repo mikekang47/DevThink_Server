@@ -165,6 +165,7 @@ public class CommentController {
     @ApiImplicitParam(name = "commentId", value = "수정할 댓글의 식별자")
     @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public CommentResponseData updateComment(@PathVariable("commentId") Long commentId,
                                              @Valid @RequestBody CommentRequestData commentRequestData){
         return commentService.updateComment(commentId, commentRequestData.getContent());
