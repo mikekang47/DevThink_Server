@@ -179,6 +179,7 @@ public class CommentController {
     @ApiImplicitParam(name = "commentId", value = "삭제할 Comment의 식별자")
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
     public void deleteComment(@PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);
     }
