@@ -70,15 +70,16 @@ public class CommentController {
 
     /**
      * 특정 사용자가 Post에 등록한 Comment를 모두 조회합니다.
-     * @param userIdx 댓글을 조회할 사용자의 식별자
      * @return 특정 사용자가 작성한 Comment 리스트
      */
     @ApiOperation(value = "사용자의 게시글 댓글 조회",
             notes = "특정 사용자가 게시글에 등록한 댓글을 모두 조회합니다.",
             response = List.class)
     @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
-    @GetMapping("/user/{userIdx}/post")
-    public List<CommentResponseData> getUserPostComments(@PathVariable("userIdx") Long userIdx) {
+    @GetMapping("/user/post")
+    @PreAuthorize("isAuthenticated()")
+    public List<CommentResponseData> getUserPostComments(UserAuthentication userAuthentication) {
+        Long userIdx = userAuthentication.getUserId();
         return commentService.getUserPostComments(userIdx);
     }
 
