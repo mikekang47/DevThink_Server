@@ -107,6 +107,7 @@ public class ReplyController {
     @ApiImplicitParam(name = "replyId", value = "수정할 대댓글의 식별자")
     @PatchMapping("/{replyId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public ReplyResponseData updateReply(@PathVariable("replyId") Long replyId,
                                              @Valid @RequestBody ReplyRequestData replyRequestData){
         return replyService.updateReply(replyId, replyRequestData.getContent());
