@@ -7,6 +7,9 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostRequestData;
 import com.devthink.devthink_server.dto.PostResponseData;
+import com.devthink.devthink_server.errors.PostReportAlreadyRequestException;
+import com.devthink.devthink_server.errors.PostReportBadRequestException;
+import com.devthink.devthink_server.errors.UserNotMatchException;
 import com.devthink.devthink_server.errors.PostNotFoundException;
 import com.devthink.devthink_server.infra.PostReportRepository;
 import com.devthink.devthink_server.infra.PostRepository;
@@ -110,8 +113,16 @@ public class PostService {
      * @param post 게시글
      * @param postRequestData 업데이트한 게시글 내용
      */
-    public Post update(Post post, PostRequestData postRequestData){
-        post.update(postRequestData.getSubTitle(), postRequestData.getTitle(), postRequestData.getContent());
+    public Post update(User user, Post post, PostRequestData postRequestData){
+        // 만약 지우려는 유저 아이디와 게시글의 유저 아이디가 같다면
+        if(user.getId() == post.getUser().getId()) {
+            post.update(postRequestData.getSubTitle(), postRequestData.getTitle(), postRequestData.getContent());
+        }
+        // 만약 지우려는 유저 아이디와 게시글의 유저 아이디가 다르다면
+        else {
+            // 예외를 반환한다.
+            throw new UserNotMatchException();
+        }
         return post;
     }
 
@@ -120,9 +131,16 @@ public class PostService {
      * @param post 삭제할 게시글
      * @return Post 삭제된 게시글
      */
-    public Post deletePost(Post post){
+    public Post deletePost(User user, Post post){
         getPostById(post.getId());
-        post.setDeleted(true);
+        // 만약 유저 아이디와 게시글의 유저 아이디가 같다면
+        if(user.getId() == post.getUser().getId()) {
+            post.setDeleted(true);
+        }
+        // 다르다면
+        else {
+            throw new UserNotMatchException();
+        }
         return post;
     }
 
@@ -160,13 +178,28 @@ public class PostService {
      * @param user 게시글 작성자
      * @return String 신고된 게시글 번호
      */
-    public String report(User user, Post post, User reportUser){
-        reportUser.setReported();
-        PostReport postReport = PostReport.builder()
-                .post(post)
-                .user(user)
-                .build();
-        postReportRepository.save(postReport);
+    public String report(User user, Post post, User reportUser) {
+        // 만약 신고한 유저가 게시글의 유저라면
+        if (user.getId() == reportUser.getId()) {
+            // 자신의 게시글을 신고할수 없는 예외를 반환한다
+            throw new PostReportBadRequestException();
+        }
+        // 만약 신고한 유저가 게시글의 유저와 다르다면
+        else {
+            // 만약 신고한 유저가 해당 게시글을 신고한 기록이 있다면
+            if (checkPostReport(user, post)) {
+                // 이미 신고한 게시글이라는 예외를 반환한다
+                throw new PostReportAlreadyRequestException();
+            } else {
+                // 신고한 기록이 없으면 신고한다
+                reportUser.setReported();
+                PostReport postReport = PostReport.builder()
+                        .post(post)
+                        .user(user)
+                        .build();
+                postReportRepository.save(postReport);
+            }
+        }
         return reportUser.getId().toString();
     }
 
