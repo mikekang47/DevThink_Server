@@ -11,9 +11,11 @@ import com.devthink.devthink_server.dto.CommentRequestData;
 import com.devthink.devthink_server.dto.CommentResponseData;
 import com.devthink.devthink_server.errors.PostCommentBadRequestException;
 import com.devthink.devthink_server.errors.ReviewCommentBadRequestException;
+import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -53,15 +55,16 @@ public class CommentController {
 
     /**
      * 특정 사용자가 Review에 등록한 Comment를 모두 조회합니다.
-     * @param userIdx 댓글을 조회할 사용자의 식별자
      * @return 특정 사용자가 작성한 Comment 리스트
      */
     @ApiOperation(value = "사용자의 리뷰 댓글 조회",
             notes = "특정 사용자가 리뷰에 등록한 댓글을 모두 조회합니다.",
             response = List.class)
     @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
-    @GetMapping("/user/{userIdx}/review")
-    public List<CommentResponseData> getUserReviewComments(@PathVariable("userIdx") Long userIdx) {
+    @GetMapping("/user/review")
+    @PreAuthorize("isAuthenticated()")
+    public List<CommentResponseData> getUserReviewComments(UserAuthentication userAuthentication) {
+        Long userIdx = userAuthentication.getUserId();
         return commentService.getUserReviewComments(userIdx);
     }
 
