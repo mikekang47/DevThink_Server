@@ -81,12 +81,14 @@ public class ReplyController {
     @ApiOperation(value = "대댓글 등록", notes = "입력된 대댓글 정보로 새로운 대댓글을 등록합니다.", response = String.class)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ReplyResponseData createReply(@Valid @RequestBody ReplyRequestData replyRequestData){
+    @PreAuthorize("isAuthenticated()")
+    public ReplyResponseData createReply(@Valid @RequestBody ReplyRequestData replyRequestData,
+                                         UserAuthentication userAuthentication){
         Long commentId = replyRequestData.getCommentId();
         // request상에 CommentId 값이 들어있는지 확인합니다.
         if (commentId != null) {
             // userId 값을 통하여 userRepository에서 User를 가져옵니다.
-            User user = userService.getUser(replyRequestData.getUserId());
+            User user = userService.getUser(userAuthentication.getUserId());
             // commentId 값을 통하여 commentRepository에서 Comment를 가져옵니다.
             Comment comment = commentService.getComment(commentId);
             return replyService.createReply(user, comment, replyRequestData.getContent());
