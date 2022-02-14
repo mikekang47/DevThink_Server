@@ -133,21 +133,27 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(PostDeleteBadRequestException.class)
-    public ErrorResponse handlePostDeleteBadRequest() {
-        return new ErrorResponse("Can't delete Post with invalid userId");
+    @ExceptionHandler(UserNotMatchException.class)
+    public ErrorResponse handleUserNotMatch() {
+        return new ErrorResponse("The user ID of the post doesn't match");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PostReportAlreadyRequestException.class)
+    public ErrorResponse handlePostReportAlreadyRequest() {
+        return new ErrorResponse("can't report the same post twice");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(LetterUserNotFoundException.class)
+    public ErrorResponse handleLetterUserNotFound() {
+        return new ErrorResponse("The user of the nickname could not be found");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(PostReportBadRequestException.class)
     public ErrorResponse handlePostReportBadRequest() {
-        return new ErrorResponse("can't report post with invalid approach");
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(LetterUserNotFoundException.class)
-    public ErrorResponse handleLetterUserNotFoundException() {
-        return new ErrorResponse("The user of the nickname could not be found");
+        return new ErrorResponse("can't report own posts");
     }
 
 }
