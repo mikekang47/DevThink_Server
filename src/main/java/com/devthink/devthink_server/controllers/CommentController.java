@@ -117,12 +117,14 @@ public class CommentController {
     @ApiOperation(value = "리뷰 댓글 등록", notes = "입력된 댓글 정보로 리뷰에 새로운 댓글을 등록합니다.", response = String.class)
     @PostMapping("/review")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentResponseData createReviewComment(@Valid @RequestBody CommentRequestData commentRequestData){
+    @PreAuthorize("isAuthenticated()")
+    public CommentResponseData createReviewComment(@Valid @RequestBody CommentRequestData commentRequestData,
+                                                   UserAuthentication authentication) {
         Long reviewId = commentRequestData.getReviewId();
         // request상에 reviewId 값이 들어있는지 확인합니다.
         if (reviewId != null) {
             // userId 값을 통하여 userRepository에서 User를 가져옵니다.
-            User user = userService.getUser(commentRequestData.getUserId());
+            User user = userService.getUser(authentication.getUserId());
             // reviewId 값을 통하여 reviewRepository에서 Review를 가져옵니다.
             Review review = reviewService.getReviewById(reviewId);
             return commentService.createReviewComment(user, review, commentRequestData.getContent());
