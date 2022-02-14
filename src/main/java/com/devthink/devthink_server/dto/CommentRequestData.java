@@ -20,8 +20,6 @@ public class CommentRequestData {
     @NotNull
     private final Long userId;
 
-    //private final String userToken;
-
     @ApiModelProperty(value = "게시글 식별자", example = "1")
     private final Long postId;
 
