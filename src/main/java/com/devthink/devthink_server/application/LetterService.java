@@ -65,14 +65,10 @@ public class LetterService {
     /**
      * 전달받은 유저 아이디의 방 메시지 리스트를 불러옵니다.
      * @param user 유저 정보
-     * @param pageable 페이징 정보
      * @return List<LetterListData> 메시지 리스트
      */
-    public List<LetterListData> getMessageList(User user, Pageable pageable) {
-        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 8, Sort.by(Sort.Direction.DESC, "id"));
-
-        List<Letter> messageList = letterRepository.getMessageList(user.getId(), pageable).getContent();
+    public List<LetterListData> getMessageList(User user) {
+        List<Letter> messageList = letterRepository.getMessageList(user.getId());
 
         List<LetterListData> letterListData = messageList.stream()
                 .map(Letter::toLetterListData)
