@@ -15,4 +15,6 @@ public interface UserStackRepository extends JpaRepository<UserStack, Long> {
     List<UserStack> findAllByUserId(Long userId);
 
     Optional<UserStack> findById(Long stackId);
+
+    void delete(UserStack userStack);
 }

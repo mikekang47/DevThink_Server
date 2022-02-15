@@ -50,10 +50,6 @@ public class UserRegistrationData extends BaseTimeEntity {
     @ApiParam(value = "사용자 수준", required = true, example = "주니어")
     private String role;
 
-//    @Mapping("stack")
-//    @ApiParam(value = "사용자가 사용하는 기술", example = "C++, Java, Spring")
-//    private List<Long> stack;
-
     @Mapping("blogAddr")
     @ApiParam(value = "사용자의 기술 블로그 주소", example = "mirrorofcode.tistory.com")
     private String blogAddr;
@@ -67,7 +63,6 @@ public class UserRegistrationData extends BaseTimeEntity {
     private Integer point;
 
     public UserRegistrationData() {
-//        this.stack = new ArrayList<>();
         this.blogAddr = "";
         this.gitNickname = "";
         this.point = 0;

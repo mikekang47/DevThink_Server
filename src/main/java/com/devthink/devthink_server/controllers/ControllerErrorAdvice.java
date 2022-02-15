@@ -84,6 +84,12 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Heart not found");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HeartAlreadyExistsException.class)
+    public ErrorResponse handleHeartBadRequest() {
+        return new ErrorResponse("Heart already exists.");
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CategoryNotFoundException.class)
     public ErrorResponse handleCategoryNotFound() {
