@@ -129,8 +129,8 @@ public class PostController {
     @GetMapping("/search/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "카테고리별 게시글 검색", notes = "사용자로부터 제목을 받아, 카테고리별 제목이 담긴 게시글을 반환합니다.")
-    public List<PostResponseData> search(@PathVariable("categoryId") Long categoryId, @RequestParam String keyword, Pageable pageable) {
-        return postService.search(categoryId, keyword, pageable);
+    public List<PostResponseData> search(@PathVariable("categoryId") Long categoryId, @RequestParam String keyword) {
+        return postService.search(categoryId, keyword);
     }
 
     /**
