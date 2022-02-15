@@ -1,9 +1,6 @@
 package com.devthink.devthink_server.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Generated;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,6 +11,7 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 @Getter
 @Entity
+@Builder
 public class ReplyHeart extends BaseTimeEntity{
     @Id
     @Generated
