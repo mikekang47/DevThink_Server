@@ -31,7 +31,7 @@ public class ReviewService {
      */
     @Transactional
     public Review createReview(User user, Book book, ReviewRequestData reviewRequestData) {
-        if (!reviewRepository.findByBookAndUserAndDeletedIsFalse(book, user).isEmpty()) {
+        if (reviewRepository.existsByBookIdAndUserIdAndDeletedIsFalse(book.getId(), user.getId())) {
             /*
             주어진 책에 대해 주어진 사용자가 이미리뷰를 작성했는지 확인합니다.
             삭제한 경우는 작성하지 않은 것으로 간주합니다.
