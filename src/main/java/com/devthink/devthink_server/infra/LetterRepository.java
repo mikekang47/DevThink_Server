@@ -18,7 +18,7 @@ public interface LetterRepository extends JpaRepository<Letter, Long> {
     // 방 별 메시지 리스트 가져오기
     @Query("select u from Letter u where u.id " +
             "in (select max(p.id) from Letter p group by p.room.roomId) " +
-            "and (u.sender.id = :userId or u.target.id = :userId)")
+            "and (u.sender.id = :userId or u.target.id = :userId) order by u.id desc")
     List<Letter> getMessageList(Long userId);
 
     // 안읽은 메시지 개수 가져오기
