@@ -19,7 +19,7 @@ public interface LetterRepository extends JpaRepository<Letter, Long> {
     @Query("select u from Letter u where u.id " +
             "in (select max(p.id) from Letter p group by p.room.roomId) " +
             "and (u.sender.id = :userId or u.target.id = :userId)")
-    Page<Letter> getMessageList(Long userId, Pageable pageable);
+    List<Letter> getMessageList(Long userId);
 
     // 안읽은 메시지 개수 가져오기
     @Query("select count(u.id) from Letter u where u.target.id = :userId and u.readCheck = false and u.room.roomId=:roomId")
