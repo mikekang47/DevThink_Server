@@ -88,7 +88,7 @@ public class PostService {
      * @return List<PostListData> 조회된 게시글
      */
     public List<PostListData> getPosts(Long categoryId){
-        List<Post> postPage = postRepository.findByDeletedIsFalse(categoryId);
+        List<Post> postPage = postRepository.findByDeletedIsFalseOrderByIdDesc(categoryId);
         return postPage.stream()
                 .map(Post::toPostListData)
                 .collect(Collectors.toList());
@@ -146,10 +146,8 @@ public class PostService {
      * @param categoryId 카테고리 아이디
      * @return List<PostResponseData> 게시글 정보
      */
-    public List<PostResponseData> search(Long categoryId, String keyword, Pageable pageable){
-        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "id"));
-        List<Post> posts = postRepository.findByCategory_IdAndTitleContainingAndDeletedIsFalse(categoryId, keyword, pageable).getContent();
+    public List<PostResponseData> search(Long categoryId, String keyword){
+        List<Post> posts = postRepository.findByCategory_IdAndTitleContainingAndDeletedIsFalseOrderByIdDesc(categoryId, keyword);
         return posts.stream()
                 .map(Post::toPostResponseData)
                 .collect(Collectors.toList());
