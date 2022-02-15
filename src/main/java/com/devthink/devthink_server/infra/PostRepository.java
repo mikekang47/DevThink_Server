@@ -16,7 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByCategory_IdAndTitleContainingAndDeletedIsFalse(Long categoryId, String keyword, Pageable pageable);
 
     @Query("select p from Post p where p.category.id = :category")
-    List<Post> findByDeletedIsFalse(Long category, Pageable pageable);
+    List<Post> findByDeletedIsFalse(Long category);
 
     Post save(Post post);
 
