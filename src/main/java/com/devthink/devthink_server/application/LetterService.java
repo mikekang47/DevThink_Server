@@ -1,7 +1,6 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Letter;
-import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.domain.UserRoom;
 import com.devthink.devthink_server.dto.LetterResultData;
@@ -11,16 +10,10 @@ import com.devthink.devthink_server.errors.LetterUserNotFoundException;
 import com.devthink.devthink_server.infra.LetterRepository;
 import com.devthink.devthink_server.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.expression.spel.support.ReflectivePropertyAccessor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
