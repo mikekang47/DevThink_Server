@@ -83,16 +83,12 @@ public class PostService {
     }
 
     /**
-     * page에 해당하는 게시글을 반환합니다.
+     * 게시글을 전체 반환합니다.
      * @param categoryId 카테고리 아이디
-     * @param pageable 페이지 정보
      * @return List<PostListData> 조회된 게시글
      */
-    public List<PostListData> getPosts(Long categoryId, Pageable pageable){
-        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "id"));
-
-        List<Post> postPage = postRepository.findByDeletedIsFalse(categoryId, pageable);
+    public List<PostListData> getPosts(Long categoryId){
+        List<Post> postPage = postRepository.findByDeletedIsFalse(categoryId);
         return postPage.stream()
                 .map(Post::toPostListData)
                 .collect(Collectors.toList());
