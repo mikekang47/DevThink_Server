@@ -20,7 +20,7 @@ public class ReviewResponseData {
     private Long userId;
 
     @ApiModelProperty(value = "책 isbn 번호", example = "8960773417")
-    private Integer bookIsbn;
+    private String bookIsbn;
 
     @ApiModelProperty(value = "작성된 리뷰 내용", example = "★ 스프링의 3대 핵심 기술인 IoC/DI, PSA, AOP를 빠르고 효과적으로 배울 수 있는 실전 예제 중심의 설명\n" +
             "\n" +
