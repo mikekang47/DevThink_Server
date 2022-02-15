@@ -111,10 +111,8 @@ public class ReplyService {
      * @param replyId 삭제할 Reply의 식별자
      */
     public void deleteReply(Long replyId) {
-        if (replyRepository.existsById(replyId))
-            replyRepository.deleteById(replyId);
-        else
-            throw new ReplyNotFoundException(replyId);
+        getReply(replyId);
+        replyRepository.deleteById(replyId);
     }
 
     /**
