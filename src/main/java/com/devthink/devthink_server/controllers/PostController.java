@@ -32,14 +32,14 @@ public class PostController {
 
     /**
      * 페이지를 요청하면 카테고리별 페이지의 게시글을 가져옵니다.
-     * [GET] /posts/list/:categoryId?page= &size= &sort= ,정렬방식
-     * @return Pageable 기준에 따라 정렬된 페이지 리스트
+     * [GET] /posts/list/:categoryId
+     * @return List<PostListData> 카테고리별 게시글 리스트
      */
     @GetMapping("/list/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "카테고리별 게시글 리스트 조회", notes = "게시글 전체 리스트를 전달된 pageable 파라미터에 따라 카테고리별 게시글을 정렬하여 조회합니다.")
-    public List<PostListData> list(@PathVariable("categoryId") Long categoryId, Pageable pageable) {
-        return postService.getPosts(categoryId, pageable);
+    @ApiOperation(value = "카테고리별 게시글 리스트 조회", notes = "게시글 전체 리스트를 전달된 카테고리별로 조회합니다.")
+    public List<PostListData> list(@PathVariable("categoryId") Long categoryId) {
+        return postService.getPosts(categoryId);
     }
 
     /**
