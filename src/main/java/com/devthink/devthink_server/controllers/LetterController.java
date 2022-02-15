@@ -61,12 +61,10 @@ public class LetterController {
     @GetMapping("/lists")
     @PreAuthorize("isAuthenticated()")
     @ApiOperation(value = "쪽지 리스트", notes = "유저 Id를 받아 쪽지 리스트를 반환합니다.")
-    public List<LetterListData> messageList(Pageable pageable,
-                                            UserAuthentication userAuthentication
-    ) throws AccessDeniedException {
+    public List<LetterListData> messageList(UserAuthentication userAuthentication) throws AccessDeniedException {
         Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
-        return letterService.getMessageList(user, pageable);
+        return letterService.getMessageList(user);
     }
 
     /**
