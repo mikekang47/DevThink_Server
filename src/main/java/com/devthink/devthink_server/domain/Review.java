@@ -32,6 +32,9 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
+    @ManyToOne(fetch = LAZY)
+    private ReviewHeart heart;
+
     private String content;
 
     private BigDecimal score;
