@@ -15,8 +15,7 @@ public class PostListData {
     @ApiModelProperty(notes = "게시글 번호", example = "1")
     private Long id;
 
-    @ApiModelProperty(notes = "유저 아이디", example = "1")
-    private Long userId;
+    private UserProfileData userProfile;
 
     @ApiModelProperty(notes = "카테고리 아이디", example = "1")
     private Long categoryId;
@@ -26,9 +25,6 @@ public class PostListData {
 
     @ApiModelProperty(notes = "이미지 포함여부", example = "false")
     private boolean Image;
-
-    @ApiModelProperty(notes = "유저 닉네임", example = "test12")
-    private String nickname;
 
     @ApiModelProperty(notes = "제목", example = "test")
     private String title;
