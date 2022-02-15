@@ -44,12 +44,11 @@ public class ReviewController {
         User user = userService.getUser(reviewRequestData.getUserId());
         Book book = bookService.getOrCreateBook(reviewRequestData.getBook());
         int point = reviewRequestData.getPoint();
-        if(point == 0 || point == 5 || point == 7){ // point 값이 0, 5, 7 중 하나여야 합니다.
-            Review review = reviewService.createReview(user, book, reviewRequestData);
-            return review.toReviewResponseData();
-        } else {
+        if (point != 0 && point != 5 && point != 7) { // point 값이 0, 5, 7 중 하나여야 합니다.
             throw new PointNotValidException();
         }
+        Review review = reviewService.createReview(user, book, reviewRequestData);
+        return review.toReviewResponseData();
     }
 
 
