@@ -4,6 +4,7 @@ import com.devthink.devthink_server.domain.Reply;
 import com.devthink.devthink_server.domain.ReplyHeart;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.errors.HeartAlreadyExistsException;
+import com.devthink.devthink_server.errors.HeartNotFoundException;
 import com.devthink.devthink_server.errors.ReplyNotFoundException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
 import com.devthink.devthink_server.infra.ReplyHeartRepository;
@@ -44,5 +45,14 @@ public class ReplyHeartService {
     private User findUser(Long userId) {
         return userRepository.findByIdAndDeletedIsFalse(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    public void destroy(Long replyId, Long userId) {
+        Reply reply = findReply(replyId);
+        ReplyHeart replyHeart = replyHeartRepository.findByReplyIdAndUserId(replyId, userId)
+                .orElseThrow(() -> new HeartNotFoundException());
+
+        reply.updateHeart(reply.getHeartCnt() - 1);
+        replyHeartRepository.deleteById(replyHeart.getId());
     }
 }
