@@ -76,12 +76,8 @@ public class ReviewService {
     @Transactional
     public ReviewResponseData update(Long id, ReviewModificationData reviewModificationData) {
         Review review = getReviewById(id);
-        review.setTitle(reviewModificationData.getTitle());
-        review.setContent(reviewModificationData.getContent());
-        if (review.getScore() != reviewModificationData.getScore()){ // 별점을 수정할 경우 평점 계산을 다시 합니다.
-            review.setScore(reviewModificationData.getScore());
-            review.getBook().setScoreAvg(bookRepository.calcScoreAvg(review.getBook().getId()));
-        }
+        review.update(reviewModificationData);
+        review.getBook().setScoreAvg(bookRepository.calcScoreAvg(review.getBook().getId())); // 평점을 다시 계산합니다.
         return review.toReviewResponseData();
     }
 
