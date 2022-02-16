@@ -2,10 +2,7 @@ package com.devthink.devthink_server.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +11,7 @@ import javax.persistence.ManyToOne;
 @Builder
 public class ReplyHeart extends BaseTimeEntity{
     @Id
-    @Generated
+    @GeneratedValue
     Long id;
 
     @ManyToOne
