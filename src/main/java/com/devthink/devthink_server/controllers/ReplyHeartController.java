@@ -28,6 +28,15 @@ public class ReplyHeartController {
         return getReplyHeartData(replyHeart);
     }
 
+    @DeleteMapping("/{replyId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
+    public void destroyReplyHeart(@PathVariable Long replyId, UserAuthentication authentication) {
+        Long userId = authentication.getUserId();
+        replyHeartService.destroy(replyId, userId);
+
+    }
+
     private ReplyHeartResponseData getReplyHeartData(ReplyHeart replyHeart) {
         return ReplyHeartResponseData.builder()
                 .id(replyHeart.getId())
