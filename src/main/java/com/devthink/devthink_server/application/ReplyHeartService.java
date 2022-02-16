@@ -31,6 +31,7 @@ public class ReplyHeartService {
         if(replyHeartRepository.existsByReplyIdAndUserId(replyId, userId)) {
             throw new HeartAlreadyExistsException();
         }
+        reply.
         return null;
     }
 
