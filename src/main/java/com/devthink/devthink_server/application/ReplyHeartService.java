@@ -25,14 +25,15 @@ public class ReplyHeartService {
     }
 
     public ReplyHeart create(Long replyId, Long userId) {
-        User user = findUser(userId);
         Reply reply = findReply(replyId);
-
+        User user = findUser(userId);
+        
         if(replyHeartRepository.existsByReplyIdAndUserId(replyId, userId)) {
             throw new HeartAlreadyExistsException();
         }
-        reply.
-        return null;
+        reply.updateHeart(reply.getHeartCnt() + 1);
+        ReplyHeart replyHeart = ReplyHeart.builder().user(user).reply(reply).build();
+        return replyHeartRepository.save(replyHeart);
     }
 
     private Reply findReply(Long replyId) {
