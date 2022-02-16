@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface ReplyHeartRepository extends JpaRepository<ReplyHeart, Long> {
 
     boolean existsByReplyIdAndUserId(Long replyId, Long userId);
+
+    ReplyHeart save(ReplyHeart replyHeart);
 }
