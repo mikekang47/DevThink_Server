@@ -5,6 +5,7 @@ import com.devthink.devthink_server.domain.ReplyHeart;
 import com.devthink.devthink_server.dto.ReplyHeartResponseData;
 import com.devthink.devthink_server.security.UserAuthentication;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,11 @@ public class ReplyHeartController {
         this.replyHeartService = replyHeartService;
     }
 
+    @ApiOperation(
+            value ="답글 좋아요 생성",
+            notes = "좋아요를 생성하려는 답글의 식별자와 사용자 토큰으로 새로운 답글 좋아요를 생성하여, 그 정보를 리턴합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            response = ReplyHeartResponseData.class
+    )
     @PostMapping("/{replyId}")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
@@ -28,6 +34,11 @@ public class ReplyHeartController {
         return getReplyHeartData(replyHeart);
     }
 
+    @ApiOperation(
+            value = "답글 좋아요 취소",
+            notes = "좋아요를 생성하려는 답글의 식별자와 사용자 토큰으로 답글 좋아요를 취소하고 204을 반환합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            response = ReplyHeartResponseData.class
+    )
     @DeleteMapping("/{replyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("isAuthenticated()")
