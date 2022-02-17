@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -15,12 +14,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @ApiModel("대댓글 등록 정보")
 public class ReplyRequestData {
-
-    @ApiModelProperty(value = "회원 식별자", required = true, example = "1")
-    @NotNull
-    private final Long userId;
-
-    //private final String userToken;
 
     @ApiModelProperty(value = "댓글 식별자", example = "1")
     private final Long commentId;
