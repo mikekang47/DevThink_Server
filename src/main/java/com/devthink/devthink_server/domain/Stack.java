@@ -14,6 +14,7 @@ import javax.persistence.Id;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Stack {
     @Id
     @GeneratedValue

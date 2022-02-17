@@ -1,6 +1,5 @@
 package com.devthink.devthink_server.controllers;
 
-import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.CategoryService;
 import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.application.UserService;
@@ -10,6 +9,7 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostRequestData;
 import com.devthink.devthink_server.dto.PostResponseData;
+import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -31,14 +32,14 @@ public class PostController {
 
     /**
      * 페이지를 요청하면 카테고리별 페이지의 게시글을 가져옵니다.
-     * [GET] /posts/list/:categoryId?page= &size= &sort= ,정렬방식
-     * @return Pageable 기준에 따라 정렬된 페이지 리스트
+     * [GET] /posts/list/:categoryId
+     * @return List<PostListData> 카테고리별 게시글 리스트
      */
     @GetMapping("/list/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "카테고리별 게시글 리스트 조회", notes = "게시글 전체 리스트를 전달된 pageable 파라미터에 따라 카테고리별 게시글을 정렬하여 조회합니다.")
-    public List<PostListData> list(@PathVariable("categoryId") Long categoryId, Pageable pageable) {
-        return postService.getPosts(categoryId, pageable);
+    @ApiOperation(value = "카테고리별 게시글 리스트 조회", notes = "게시글 전체 리스트를 전달된 카테고리별로 조회합니다.")
+    public List<PostListData> list(@PathVariable("categoryId") Long categoryId) {
+        return postService.getPosts(categoryId);
     }
 
     /**
@@ -65,8 +66,11 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "게시글 등록", notes = "카테고리별 게시글을 등록합니다.")
     @PreAuthorize("isAuthenticated()")
-    public PostResponseData write(@RequestBody @Valid PostRequestData postRequestData) {
-        User user = userService.getUser(postRequestData.getUserId());
+    public PostResponseData write(@RequestBody @Valid PostRequestData postRequestData,
+                                  UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
+        User user = userService.getUser(userId);
         Category category = categoryService.getCategory(postRequestData.getCategoryId());
         Post post = postService.savePost(user, category, postRequestData);
         return post.toPostResponseData();
@@ -82,9 +86,15 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 수정", notes = "식별자 값과 게시글의 정보를 받아, 게시글을 입력한 정보로 변경합니다.")
     @PreAuthorize("isAuthenticated()")
-    public PostResponseData update(@PathVariable("id") Long id, @RequestBody @Valid PostRequestData postRequestData) {
+    public PostResponseData update(@PathVariable("id") Long id,
+                                   @RequestBody @Valid PostRequestData postRequestData,
+                                   UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
+        User user = userService.getUser(userId);
         Post post = postService.getPostById(id);
-        postService.update(post, postRequestData);
+
+        postService.update(user, post, postRequestData);
         return post.toPostResponseData();
     }
 
@@ -98,9 +108,14 @@ public class PostController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "게시글 삭제", notes = "입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.")
     @PreAuthorize("isAuthenticated()")
-    public PostResponseData deletePost(@PathVariable("id") Long id) {
+    public PostResponseData deletePost(@PathVariable("id") Long id,
+                                       UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
+        User user = userService.getUser(userId);
         Post post = postService.getPostById(id);
-        postService.deletePost(post);
+
+        postService.deletePost(user, post);
         return post.toPostResponseData();
     }
 
@@ -114,8 +129,8 @@ public class PostController {
     @GetMapping("/search/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "카테고리별 게시글 검색", notes = "사용자로부터 제목을 받아, 카테고리별 제목이 담긴 게시글을 반환합니다.")
-    public List<PostResponseData> search(@PathVariable("categoryId") Long categoryId, @RequestParam String keyword, Pageable pageable) {
-        return postService.search(categoryId, keyword, pageable);
+    public List<PostResponseData> search(@PathVariable("categoryId") Long categoryId, @RequestParam String keyword) {
+        return postService.search(categoryId, keyword);
     }
 
     /**
@@ -135,19 +150,21 @@ public class PostController {
     /**
      * 게시글 신고 API
      * [GET] /posts/report/:id
-     * @param userId 유저 아이디
      * @param postId 게시글 아이디
      * @return String 신고당한 유저 아이디
      */
-    @PutMapping("/report/{userId}/{postId}")
+    @PutMapping("/report/{postId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 신고", notes = "게시글을 신고합니다.")
     @PreAuthorize("isAuthenticated()")
-    public String report(@PathVariable("userId") Long userId, @PathVariable("postId") Long postId) {
+    public String report(@PathVariable("postId") Long postId,
+                         UserAuthentication userAuthentication
+    ) throws AccessDeniedException {
+        Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
         Post post = postService.getPostById(postId);
         User reportUser = userService.getUser(post.getUser().getId());
-        return postService.report(reportUser);
+        return postService.report(user, post, reportUser);
     }
 
 }

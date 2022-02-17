@@ -11,6 +11,7 @@ import com.github.dozermapper.core.Mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,13 +83,13 @@ class UserServiceTest {
     }
 
     @Test
-    void 올바른_정보로_사용자정보를_수정하려는_경우() {
+    void 올바른_정보로_사용자정보를_수정하려는_경우() throws AccessDeniedException {
         UserModificationData modificationData = UserModificationData.builder()
                 .nickname("test")
                 .role("senior")
                 .build();
         Long userId = 1L;
-        User user = userService.updateUser(userId, modificationData);
+        User user = userService.updateUser(userId, modificationData, userId);
 
         assertThat(user.getId()).isEqualTo(1L);
         assertThat(user.getNickname()).isEqualTo("test");
@@ -105,7 +106,7 @@ class UserServiceTest {
                 .role("senior")
                 .build();
 
-        assertThatThrownBy(() ->userService.updateUser(NOT_EXISTED_ID, modificationData))
+        assertThatThrownBy(() ->userService.updateUser(NOT_EXISTED_ID, modificationData, NOT_EXISTED_ID))
                 .isInstanceOf(UserNotFoundException.class);
         
         verify(userRepository).findByIdAndDeletedIsFalse(NOT_EXISTED_ID);
@@ -119,7 +120,7 @@ class UserServiceTest {
                 .build();
         Long userId = DELETED_ID;
         assertThatThrownBy(
-                () -> userService.updateUser(userId, modificationData)
+                () -> userService.updateUser(userId, modificationData, userId)
         )
                 .isInstanceOf(UserNotFoundException.class);
     }

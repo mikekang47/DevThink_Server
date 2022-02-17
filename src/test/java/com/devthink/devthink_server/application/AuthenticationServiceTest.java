@@ -27,8 +27,16 @@ class AuthenticationServiceTest {
 
         JwtUtil jwtUtil = new JwtUtil(secret);
         authenticationService = new AuthenticationService(userRepository, jwtUtil);
-        User user = User.builder().password("test1234567").build();
-        given(userRepository.findByEmail("tester@email.com")).willReturn(Optional.of(user));
+        
+        User user = User.builder()
+                .id(1L)
+                .email("tester@email.com")
+                .password("test1234567")
+                .build();
+
+        given(userRepository.findByEmail("tester@email.com"))
+                .willReturn(Optional.of(user));
+
     }
     
     @Test
