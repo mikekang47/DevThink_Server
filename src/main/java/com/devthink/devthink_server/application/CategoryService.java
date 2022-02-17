@@ -44,6 +44,10 @@ public class CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException(id));
     }
 
+    /**
+     * 저장된 모든 카테고리를 가져옵니다.
+     * @return List<CategoryData> 모든 카테고리
+     */
     public List<CategoryData> getAllCategory() {
         List<Category> categories = categoryRepository.findAllByDeletedIsFalse();
         return categories.stream()
@@ -68,4 +72,5 @@ public class CategoryService {
     public void delete(Category category) {
         category.destroy();
     }
+
 }
