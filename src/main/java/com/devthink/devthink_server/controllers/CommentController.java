@@ -58,9 +58,8 @@ public class CommentController {
      * @return 특정 사용자가 작성한 Comment 리스트
      */
     @ApiOperation(value = "사용자의 리뷰 댓글 조회",
-            notes = "특정 사용자가 리뷰에 등록한 댓글을 모두 조회합니다.",
+            notes = "특정 사용자가 리뷰에 등록한 댓글을 모두 조회합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = List.class)
-    @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
     @GetMapping("/user/review")
     @PreAuthorize("isAuthenticated()")
     public List<CommentResponseData> getUserReviewComments(UserAuthentication userAuthentication) {
@@ -73,9 +72,8 @@ public class CommentController {
      * @return 특정 사용자가 작성한 Comment 리스트
      */
     @ApiOperation(value = "사용자의 게시글 댓글 조회",
-            notes = "특정 사용자가 게시글에 등록한 댓글을 모두 조회합니다.",
+            notes = "특정 사용자가 게시글에 등록한 댓글을 모두 조회합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = List.class)
-    @ApiImplicitParam(name = "userIdx", value = "댓글을 조회할 사용자의 식별자")
     @GetMapping("/user/post")
     @PreAuthorize("isAuthenticated()")
     public List<CommentResponseData> getUserPostComments(UserAuthentication userAuthentication) {
@@ -114,7 +112,9 @@ public class CommentController {
      * @param commentRequestData 생성하려는 Comment의 요청 정보
      * @return 생성된 Comment
      */
-    @ApiOperation(value = "리뷰 댓글 등록", notes = "입력된 댓글 정보로 리뷰에 새로운 댓글을 등록합니다.", response = String.class)
+    @ApiOperation(value = "리뷰 댓글 등록",
+            notes = "입력된 댓글 정보로 리뷰에 새로운 댓글을 등록합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            response = String.class)
     @PostMapping("/review")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
@@ -138,7 +138,9 @@ public class CommentController {
      * @param commentRequestData 생성하려는 Comment의 요청 정보
      * @return 생성된 Comment
      */
-    @ApiOperation(value = "게시글 댓글 등록", notes = "입력된 댓글 정보로 게시글에 새로운 댓글을 등록합니다.", response = String.class)
+    @ApiOperation(value = "게시글 댓글 등록",
+            notes = "입력된 댓글 정보로 게시글에 새로운 댓글을 등록합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            response = String.class)
     @PostMapping("/post")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
@@ -162,7 +164,7 @@ public class CommentController {
      * @return Comment 수정 결과 response
      */
     @ApiOperation(value = "댓글 수정",
-            notes = "입력된 댓글의 식별자로 수정할 댓글을 찾아, 주어진 데이터로 댓글의 정보를 갱신합니다.",
+            notes = "입력된 댓글의 식별자로 수정할 댓글을 찾아, 주어진 데이터로 댓글의 정보를 갱신합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = CommentResponseData.class)
     @ApiImplicitParam(name = "commentId", value = "수정할 댓글의 식별자")
     @PatchMapping("/{commentId}")
@@ -177,7 +179,7 @@ public class CommentController {
      * commentId를 통하여 기존의 Comment를 삭제합니다.
      * @param commentId 삭제할 Comment의 식별자
      */
-    @ApiOperation(value = "댓글 삭제", notes = "입력된 댓글의 식별자로 댓글을 찾아 삭제합니다.")
+    @ApiOperation(value = "댓글 삭제", notes = "입력된 댓글의 식별자로 댓글을 찾아 삭제합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
     @ApiImplicitParam(name = "commentId", value = "삭제할 Comment의 식별자")
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
