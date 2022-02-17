@@ -133,6 +133,34 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PostUpdateBadRequestException.class)
+    public ErrorResponse handlePostUpdateBadRequest() {
+        return new ErrorResponse("Can't update Post with invalid userId");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserNotMatchException.class)
+    public ErrorResponse handleUserNotMatch() {
+        return new ErrorResponse("The user ID of the post doesn't match");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PostReportAlreadyRequestException.class)
+    public ErrorResponse handlePostReportAlreadyRequest() {
+        return new ErrorResponse("can't report the same post twice");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(LetterUserNotFoundException.class)
+    public ErrorResponse handleLetterUserNotFound() {
+        return new ErrorResponse("The user of the nickname could not be found");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PostReportBadRequestException.class)
+    public ErrorResponse handlePostReportBadRequest() {
+        return new ErrorResponse("can't report own posts");
+
     @ExceptionHandler(PointNotValidException.class)
     public ErrorResponse handlePointNotValidException() {
         return new ErrorResponse("User can get 0 or 5 or 7 points from review");

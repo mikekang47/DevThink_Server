@@ -6,12 +6,10 @@ import com.devthink.devthink_server.domain.UserRoom;
 import com.devthink.devthink_server.dto.LetterResultData;
 import com.devthink.devthink_server.dto.LetterSendData;
 import com.devthink.devthink_server.dto.LetterListData;
+import com.devthink.devthink_server.errors.LetterUserNotFoundException;
 import com.devthink.devthink_server.infra.LetterRepository;
 import com.devthink.devthink_server.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,6 +23,16 @@ public class LetterService {
 
     private final LetterRepository letterRepository;
     private final UserRepository userRepository;
+
+    /**
+     * 유저 닉네임을 통해 유저 아이디를 반환합니다.
+     * @param nickname 유저 닉네임
+     * @return Long 유저 아이디
+     */
+    public User findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new LetterUserNotFoundException());
+    }
 
     /**
      * 메시지 정보를 받아 메시지를 등록합니다.
@@ -50,14 +58,10 @@ public class LetterService {
     /**
      * 전달받은 유저 아이디의 방 메시지 리스트를 불러옵니다.
      * @param user 유저 정보
-     * @param pageable 페이징 정보
      * @return List<LetterListData> 메시지 리스트
      */
-    public List<LetterListData> getMessageList(User user, Pageable pageable) {
-        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 8, Sort.by(Sort.Direction.DESC, "id"));
-
-        List<Letter> messageList = letterRepository.getMessageList(user.getId(), pageable).getContent();
+    public List<LetterListData> getMessageList(User user) {
+        List<Letter> messageList = letterRepository.getMessageList(user.getId());
 
         List<LetterListData> letterListData = messageList.stream()
                 .map(Letter::toLetterListData)
