@@ -34,7 +34,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findAllByNameContaining(String search, Pageable pageable);
 
     // start 부터 end 까지 작성 된 리뷰가 가장 많은 5개의 책 리스트를 가져옵니다.
-   @Query("select b from Book b left outer join Review r on b.id = r.book.id " +
+   @Query("select b from Book b join Review r on b.id = r.book.id " +
            "where (r.createAt between :start and :end ) and r.deleted = false " +
            "group by r.book.id " +
            "order by count(r) desc")
