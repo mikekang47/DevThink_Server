@@ -51,9 +51,8 @@ public class ReplyController {
      * @return 특정 사용자가 작성한 Reply 리스트
      */
     @ApiOperation(value = "사용자의 대댓글 조회",
-            notes = "특정 사용자가 등록한 대댓글을 모두 조회합니다.",
+            notes = "특정 사용자가 등록한 대댓글을 모두 조회합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = List.class)
-    @ApiImplicitParam(name = "userIdx", value = "대댓글을 조회할 사용자의 식별자")
     @GetMapping("/user")
     @PreAuthorize("isAuthenticated()")
     public List<ReplyResponseData> getUserReplies(UserAuthentication userAuthentication) {
@@ -78,7 +77,9 @@ public class ReplyController {
      * @param replyRequestData 생성하려는 Reply의 요청 정보
      * @return 생성된 Reply
      */
-    @ApiOperation(value = "대댓글 등록", notes = "입력된 대댓글 정보로 새로운 대댓글을 등록합니다.", response = String.class)
+    @ApiOperation(value = "대댓글 등록",
+            notes = "입력된 대댓글 정보로 새로운 대댓글을 등록합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            response = String.class)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
@@ -102,7 +103,7 @@ public class ReplyController {
      * @return Reply 수정 결과 response
      */
     @ApiOperation(value = "대댓글 수정",
-            notes = "입력된 대댓글의 식별자로 수정할 대댓글을 찾아, 주어진 데이터로 대댓글의 정보를 갱신합니다.",
+            notes = "입력된 대댓글의 식별자로 수정할 대댓글을 찾아, 주어진 데이터로 대댓글의 정보를 갱신합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = ReplyResponseData.class)
     @ApiImplicitParam(name = "replyId", value = "수정할 대댓글의 식별자")
     @PatchMapping("/{replyId}")
@@ -117,8 +118,8 @@ public class ReplyController {
      * replyId를 통하여 기존의 Reply를 삭제합니다.
      * @param replyId 삭제할 Reply의 식별자
      */
-    @ApiOperation(value = "대댓글 삭제", notes = "입력된 대댓글의 식별자로 대댓글을 찾아 삭제합니다.")
-    @ApiImplicitParam(name = "replyId", value = "삭제할 Reply의 식별자")
+    @ApiOperation(value = "대댓글 삭제", notes = "입력된 대댓글의 식별자로 대댓글을 찾아 삭제합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
+    @ApiImplicitParam(name = "replyId", value = "삭제할 대댓글의 식별자")
     @DeleteMapping("/{replyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("isAuthenticated()")
