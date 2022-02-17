@@ -7,6 +7,7 @@ import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.CommentModificationData;
 import com.devthink.devthink_server.dto.CommentRequestData;
 import com.devthink.devthink_server.dto.CommentResponseData;
 import com.devthink.devthink_server.errors.PostCommentBadRequestException;
@@ -171,8 +172,8 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
     public CommentResponseData updateComment(@PathVariable("commentId") Long commentId,
-                                             @Valid @RequestBody CommentRequestData commentRequestData){
-        return commentService.updateComment(commentId, commentRequestData.getContent());
+                                             @Valid @RequestBody CommentModificationData commentModificationData){
+        return commentService.updateComment(commentId, commentModificationData.getContent());
     }
 
     /**
