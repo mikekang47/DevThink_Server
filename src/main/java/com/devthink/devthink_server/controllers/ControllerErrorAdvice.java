@@ -101,7 +101,7 @@ public class ControllerErrorAdvice {
     public ErrorResponse handleUserRoomNotFound() {
         return new ErrorResponse("UserRoom not found");
     }
-  
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CommentNotFoundException.class)
     public ErrorResponse handleCommentNotFound() {
@@ -160,6 +160,10 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(PostReportBadRequestException.class)
     public ErrorResponse handlePostReportBadRequest() {
         return new ErrorResponse("can't report own posts");
+
+    @ExceptionHandler(PointNotValidException.class)
+    public ErrorResponse handlePointNotValidException() {
+        return new ErrorResponse("User can get 0 or 5 or 7 points from review");
     }
 
 }

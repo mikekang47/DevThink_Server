@@ -1,12 +1,10 @@
 package com.devthink.devthink_server.controllers;
 
-import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.UserModificationData;
 import com.devthink.devthink_server.dto.UserRegistrationData;
 import com.devthink.devthink_server.errors.UserNotFoundException;
-import com.github.dozermapper.core.Mapping;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
