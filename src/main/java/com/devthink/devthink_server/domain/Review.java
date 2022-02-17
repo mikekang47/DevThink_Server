@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
+import com.devthink.devthink_server.dto.ReviewModificationData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
 import lombok.*;
 
@@ -59,16 +60,10 @@ public class Review extends BaseTimeEntity {
         book.getReviews().add(this);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setScore(BigDecimal score) {
-        this.score = score;
+    public void update(ReviewModificationData reviewModificationData){
+        this.title = reviewModificationData.getTitle();
+        this.content = reviewModificationData.getContent();
+        this.score = reviewModificationData.getScore();
     }
 
     public void setDeleted(boolean deleted) {
