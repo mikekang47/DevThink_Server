@@ -34,9 +34,7 @@ public class Reply extends BaseTimeEntity {
     public ReplyResponseData toReplyResponseData() {
         return ReplyResponseData.builder()
                 .replyId(id)
-                .userId(user.getId())
-                .userNickname(user.getNickname())
-                .userImageUrl(user.getImageUrl())
+                .userProfile(user.toUserProfileData())
                 .content(content)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())

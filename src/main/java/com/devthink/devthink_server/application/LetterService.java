@@ -1,7 +1,6 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Letter;
-import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.domain.UserRoom;
 import com.devthink.devthink_server.dto.LetterResultData;

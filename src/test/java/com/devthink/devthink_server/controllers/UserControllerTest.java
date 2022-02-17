@@ -1,12 +1,10 @@
 package com.devthink.devthink_server.controllers;
 
-import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.UserModificationData;
 import com.devthink.devthink_server.dto.UserRegistrationData;
 import com.devthink.devthink_server.errors.UserNotFoundException;
-import com.github.dozermapper.core.Mapping;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+
+import java.nio.file.AccessDeniedException;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,8 +33,25 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private AuthenticationService authenticationService;
+    private final String VALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.KiNUK70RDCTWeRMqfN6YY_SAkkb8opFsAh_fwAntt4";
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws AccessDeniedException {
+        User user = User.builder()
+                .id(1L)
+                .email("test123@email.com")
+                .password("1234567890")
+                .role("string")
+                .gitNickname("123124")
+                .nickname("test")
+                .name("123124")
+                .phoneNum("01012341234")
+                .build();
+        
+        given(userService.getUser(1L)).willReturn(user);
+        
         given(userService.registerUser(any(UserRegistrationData.class)))
                 .will(invocation -> {
                     UserRegistrationData registrationData = invocation.getArgument(0);
@@ -51,7 +68,7 @@ class UserControllerTest {
                 });
 
 
-        given(userService.updateUser(eq(1L), any(UserModificationData.class)))
+        given(userService.updateUser(eq(1L), any(UserModificationData.class), eq(1L)))
                 .will(invocation -> {
                     Long id = invocation.getArgument(0);
                     UserModificationData modificationData =
@@ -67,15 +84,28 @@ class UserControllerTest {
                             .build();
                 });
 
-        given(userService.updateUser(eq(100L), any(UserModificationData.class)))
+        given(userService.updateUser(eq(100L), any(UserModificationData.class), eq(1L)))
                 .willThrow(new UserNotFoundException(100L));
 
         given(userService.deleteUser(100L))
                 .willThrow(new UserNotFoundException(100L));
+
+        given(authenticationService.parseToken(VALID_TOKEN)).willReturn(1L);
     }
 
     @Test
-    void registerUserWithValidAttributes() throws Exception {
+    void 존재하는_특정_사용자를_조회하는_경우() throws Exception {
+        mockMvc.perform(
+                get("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"test123@email.com\", \"name\":\"test\"}")
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
+                )
+                .andExpect(status().isOk());
+    }
+    
+    @Test
+    void 올바른_정보로_가입하려는_경우() throws Exception {
         mockMvc.perform(
                         post("/users")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +127,7 @@ class UserControllerTest {
     }
 
     @Test
-    void registerUserWithInvalidAttributes() throws Exception {
+    void 올바르지_않은_정보로_가입하려는_경우() throws Exception {
         mockMvc.perform(
                         post("/users")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,11 +137,12 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUserWithValidAttributes() throws Exception {
+    void 올바른_정보로_사용자_정보를_수정하려는_경우() throws Exception {
         mockMvc.perform(
                         patch("/users/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"password\":\"test987654321\",\"role\":\"senior\",\"nickname\":\"test\",\"phoneNum\":\"01012341234\"}")
+                                .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string(
@@ -121,11 +152,11 @@ class UserControllerTest {
                         containsString("\"name\":\"TEST\"")
                 ));
 
-        verify(userService).updateUser(eq(1L), any(UserModificationData.class));
+        verify(userService).updateUser(eq(1L), any(UserModificationData.class), eq(1L));
     }
 
     @Test
-    void updateUserWithInvalidAttributes() throws Exception {
+    void 올바르지_않은_정보로_사용자_정보를_수정하려는_경우() throws Exception {
         mockMvc.perform(
                         patch("/users/1")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -135,29 +166,33 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUserWithNotExsitedId() throws Exception {
+    void 존재하지_않는_사용자의_정보를_수정하려는_경우() throws Exception {
         mockMvc.perform(
                         patch("/users/100")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"password\":\"test987654321\",\"role\":\"senior\",\"nickname\":\"test\",\"phoneNum\":\"01012341234\"}")
+                                .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                 .andExpect(status().isNotFound());
 
         verify(userService)
-                .updateUser(eq(100L), any(UserModificationData.class));
+                .updateUser(eq(100L), any(UserModificationData.class), eq(1L));
     }
 
     @Test
-    void destroyWithExistedId() throws Exception {
-        mockMvc.perform(delete("/users/1"))
+    void 존재하는_사용자를_삭제하려는_경우() throws Exception {
+        mockMvc.perform(delete("/users/1")
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
+                )
                 .andExpect(status().isNoContent());
 
         verify(userService).deleteUser(1L);
     }
 
     @Test
-    void destroyWithNotExistedId() throws Exception {
-        mockMvc.perform(delete("/users/100"))
+    void 존재하지_않는_사용자를_삭제하려는_경우() throws Exception {
+        mockMvc.perform(delete("/users/100")
+                        .header("Authorization", "Bearer " + VALID_TOKEN))
                 .andExpect(status().isNotFound());
 
         verify(userService).deleteUser(100L);

@@ -1,24 +1,27 @@
 package com.devthink.devthink_server.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
-@Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
 @Builder
-public class Stack {
+public class PostHeart extends BaseTimeEntity{
     @Id
     @GeneratedValue
     private Long id;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 }

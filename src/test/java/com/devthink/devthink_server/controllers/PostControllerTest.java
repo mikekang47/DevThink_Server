@@ -1,5 +1,6 @@
 package com.devthink.devthink_server.controllers;
 
+import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.application.CategoryService;
 import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.application.UserService;
@@ -41,6 +42,9 @@ class PostControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private AuthenticationService authenticationService;
 
     @BeforeEach
     void setup(){
