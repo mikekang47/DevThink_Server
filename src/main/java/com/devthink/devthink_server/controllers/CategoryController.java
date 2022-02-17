@@ -33,7 +33,7 @@ public class CategoryController {
     }
 
     /**
-     * 카테고리의 id를 검색하여 게시글을 가져옵니다.
+     * 카테고리의 id를 검색하여 카테고리를 가져옵니다.
      * [GET] categories/:id
      * @param id 카테고리의 고유 id값
      * @return id의 카테고리

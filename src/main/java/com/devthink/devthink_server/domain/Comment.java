@@ -37,6 +37,9 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "review_id")
     private Review review;
 
+    @ManyToOne(fetch = LAZY)
+    private CommentHeart heart;
+
     private String content;
 
     private String status;

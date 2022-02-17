@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.domain;
 
 import com.devthink.devthink_server.dto.ReviewDetailResponseData;
+import com.devthink.devthink_server.dto.ReviewModificationData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
 import lombok.*;
 
@@ -32,9 +33,17 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
+
+    private String title;
+
+    @ManyToOne(fetch = LAZY)
+    private ReviewHeart heart;
+
     private String content;
 
     private BigDecimal score;
+
+    private Integer point;
 
     @Builder.Default
     private Boolean deleted = Boolean.FALSE;
@@ -51,12 +60,10 @@ public class Review extends BaseTimeEntity {
         book.getReviews().add(this);
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setScore(BigDecimal score) {
-        this.score = score;
+    public void update(ReviewModificationData reviewModificationData){
+        this.title = reviewModificationData.getTitle();
+        this.content = reviewModificationData.getContent();
+        this.score = reviewModificationData.getScore();
     }
 
     public void setDeleted(boolean deleted) {
@@ -72,8 +79,10 @@ public class Review extends BaseTimeEntity {
                 .id(id)
                 .userId(user.getId())
                 .bookIsbn(book.getIsbn())
+                .title(title)
                 .content(content)
                 .score(score)
+                .heartCnt(heartCnt)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
                 .build();

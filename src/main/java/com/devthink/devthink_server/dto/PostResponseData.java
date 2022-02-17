@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -40,6 +42,10 @@ public class PostResponseData {
 
     @ApiModelProperty(notes = "좋아요 수", example = "1")
     private Integer heartCnt;
+
+    @ApiModelProperty(notes = "게시글 댓글")
+    @Builder.Default
+    private List<CommentDetailResponseData> comments = new ArrayList<>();
 
     @ApiModelProperty(notes = "생성 시각", example = "2022-01-26T22:07:17.0831141")
     private LocalDateTime createAt;

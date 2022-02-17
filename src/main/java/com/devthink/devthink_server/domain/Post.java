@@ -2,9 +2,14 @@ package com.devthink.devthink_server.domain;
 
 import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostResponseData;
+import com.devthink.devthink_server.dto.ReviewDetailResponseData;
 import lombok.*;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -28,6 +33,9 @@ public class Post extends BaseTimeEntity {
 
     private String title;
 
+    @ManyToOne(fetch = LAZY)
+    private PostHeart heart;
+
     @Builder.Default
     private String subTitle = ""; // 프로젝트 구인글 용
 
@@ -41,6 +49,10 @@ public class Post extends BaseTimeEntity {
 
     @Builder.Default
     private Integer heartCnt = 0;
+
+    @OneToMany(mappedBy = "post")
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
 
     public void update(String subTitle, String title, String content) {
         this.subTitle = subTitle;
@@ -58,8 +70,8 @@ public class Post extends BaseTimeEntity {
 
     public PostListData toPostListData() {
         return PostListData.builder()
-                .userId(user.getId())
                 .categoryId(category.getId())
+                .userProfile(user.toUserProfileData())
                 .subTitle(subTitle)
                 .content(content)
                 .title(title)
@@ -70,7 +82,6 @@ public class Post extends BaseTimeEntity {
                 .id(id)
                 .imageUrl(imageUrl)
                 .Image(isImage())
-                .nickname(user.getNickname())
                 .build();
     }
 
@@ -88,6 +99,8 @@ public class Post extends BaseTimeEntity {
                 .content(content)
                 .Image(isImage())
                 .title(title)
+                .comments(comments.stream().map(Comment::toCommentDetailResponseData).collect(Collectors.toList()))
                 .build();
     }
+
 }
