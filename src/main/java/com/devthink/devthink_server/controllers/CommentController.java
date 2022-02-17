@@ -8,7 +8,8 @@ import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.Review;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.CommentModificationData;
-import com.devthink.devthink_server.dto.CommentRequestData;
+import com.devthink.devthink_server.dto.CommentPostRequestData;
+import com.devthink.devthink_server.dto.CommentReviewRequestData;
 import com.devthink.devthink_server.dto.CommentResponseData;
 import com.devthink.devthink_server.errors.PostCommentBadRequestException;
 import com.devthink.devthink_server.errors.ReviewCommentBadRequestException;
@@ -110,7 +111,7 @@ public class CommentController {
 
     /**
      * 입력된 comment 정보로 Review에 등록할 새로운 Comment를 생성합니다.
-     * @param commentRequestData 생성하려는 Comment의 요청 정보
+     * @param commentReviewRequestData 생성하려는 Review Comment의 요청 정보
      * @return 생성된 Comment
      */
     @ApiOperation(value = "리뷰 댓글 등록",
@@ -119,16 +120,16 @@ public class CommentController {
     @PostMapping("/review")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
-    public CommentResponseData createReviewComment(@Valid @RequestBody CommentRequestData commentRequestData,
+    public CommentResponseData createReviewComment(@Valid @RequestBody CommentReviewRequestData commentReviewRequestData,
                                                    UserAuthentication authentication) {
-        Long reviewId = commentRequestData.getReviewId();
+        Long reviewId = commentReviewRequestData.getReviewId();
         // request상에 reviewId 값이 들어있는지 확인합니다.
         if (reviewId != null) {
             // userId 값을 통하여 userRepository에서 User를 가져옵니다.
             User user = userService.getUser(authentication.getUserId());
             // reviewId 값을 통하여 reviewRepository에서 Review를 가져옵니다.
             Review review = reviewService.getReviewById(reviewId);
-            return commentService.createReviewComment(user, review, commentRequestData.getContent());
+            return commentService.createReviewComment(user, review, commentReviewRequestData.getContent());
         } else {
             throw new ReviewCommentBadRequestException();
         }
@@ -136,7 +137,7 @@ public class CommentController {
 
     /**
      * 입력된 comment 정보로 Post에 등록할 새로운 Comment를 생성합니다.
-     * @param commentRequestData 생성하려는 Comment의 요청 정보
+     * @param commentPostRequestData 생성하려는 Post Comment의 요청 정보
      * @return 생성된 Comment
      */
     @ApiOperation(value = "게시글 댓글 등록",
@@ -145,16 +146,16 @@ public class CommentController {
     @PostMapping("/post")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
-    public CommentResponseData createPostComment(@Valid @RequestBody CommentRequestData commentRequestData,
+    public CommentResponseData createPostComment(@Valid @RequestBody CommentPostRequestData commentPostRequestData,
                                                  UserAuthentication authentication){
-        Long postId = commentRequestData.getPostId();
+        Long postId = commentPostRequestData.getPostId();
         // request상에 postId 값이 들어있는지 확인합니다.
         if (postId != null) {
             // userId 값을 통하여 userRepository에서 User를 가져옵니다.
             User user = userService.getUser(authentication.getUserId());
             // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
             Post post = postService.getPostById(postId);
-            return commentService.createPostComment(user, post, commentRequestData.getContent());
+            return commentService.createPostComment(user, post, commentPostRequestData.getContent());
         } else {
             throw new PostCommentBadRequestException();
         }
