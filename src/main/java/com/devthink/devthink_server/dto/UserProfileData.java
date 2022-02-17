@@ -19,6 +19,9 @@ public class UserProfileData {
     @ApiModelProperty(value = "사용자 프로필 이미지", example = "www.img.com")
     private String imageUrl;
 
+    @ApiModelProperty(value = "사용자 직무", example = "프론트엔드")
+    private String role;
+
     @ApiModelProperty(value = "사용자 삭제 여부", example = "false")
     private Boolean deleted;
 
