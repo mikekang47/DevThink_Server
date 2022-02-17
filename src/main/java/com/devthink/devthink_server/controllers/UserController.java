@@ -4,6 +4,7 @@ package com.devthink.devthink_server.controllers;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.UserModificationData;
+import com.devthink.devthink_server.dto.UserProfileData;
 import com.devthink.devthink_server.dto.UserResultData;
 import com.devthink.devthink_server.dto.UserRegistrationData;
 import com.devthink.devthink_server.security.UserAuthentication;
@@ -65,6 +66,22 @@ public class UserController {
     public UserResultData detail(UserAuthentication userAuthentication) {
         User user = userService.getUser(userAuthentication.getUserId());
         return getUserResultData(user);
+    }
+
+    @GetMapping("/profile/{userNickName}")
+    @ApiOperation(value="사용자 프로필 조회", notes="사용자의 프로필 정보를 조회하여 리턴합니다.")
+    public UserProfileData getProfile(@PathVariable String userNickName) {
+        User user = userService.getUserProfile(userNickName);
+        return getUserProfileData(user);
+    }
+
+    private UserProfileData getUserProfileData(User user) {
+        return UserProfileData.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .imageUrl(user.getImageUrl())
+                .role(user.getRole())
+                .build();
     }
 
     /**

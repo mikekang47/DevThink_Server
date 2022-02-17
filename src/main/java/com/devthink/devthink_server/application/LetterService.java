@@ -30,7 +30,7 @@ public class LetterService {
      * @return Long 유저 아이디
      */
     public User findByNickname(String nickname) {
-        return userRepository.findByNickname(nickname)
+        return userRepository.findByNicknameAndDeletedIsFalse(nickname)
                 .orElseThrow(() -> new LetterUserNotFoundException());
     }
 
