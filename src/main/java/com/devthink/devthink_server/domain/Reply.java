@@ -31,6 +31,9 @@ public class Reply extends BaseTimeEntity {
 
     private String status;
 
+    @Builder.Default
+    Integer heartCnt = 0;
+
     public ReplyResponseData toReplyResponseData() {
         return ReplyResponseData.builder()
                 .replyId(id)
@@ -39,6 +42,10 @@ public class Reply extends BaseTimeEntity {
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
                 .build();
+    }
+
+    public void updateHeart(int heartCnt) {
+        this.heartCnt = heartCnt;
     }
 
     public void setContent(String content) {
