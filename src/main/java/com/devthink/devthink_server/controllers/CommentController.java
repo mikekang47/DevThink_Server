@@ -141,12 +141,14 @@ public class CommentController {
     @ApiOperation(value = "게시글 댓글 등록", notes = "입력된 댓글 정보로 게시글에 새로운 댓글을 등록합니다.", response = String.class)
     @PostMapping("/post")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentResponseData createPostComment(@Valid @RequestBody CommentRequestData commentRequestData){
+    @PreAuthorize("isAuthenticated()")
+    public CommentResponseData createPostComment(@Valid @RequestBody CommentRequestData commentRequestData,
+                                                 UserAuthentication authentication){
         Long postId = commentRequestData.getPostId();
         // request상에 postId 값이 들어있는지 확인합니다.
         if (postId != null) {
             // userId 값을 통하여 userRepository에서 User를 가져옵니다.
-            User user = userService.getUser(commentRequestData.getUserId());
+            User user = userService.getUser(authentication.getUserId());
             // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
             Post post = postService.getPostById(postId);
             return commentService.createPostComment(user, post, commentRequestData.getContent());
