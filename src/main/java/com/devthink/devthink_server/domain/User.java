@@ -2,9 +2,13 @@ package com.devthink.devthink_server.domain;
 
 
 import com.devthink.devthink_server.dto.UserProfileData;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
 
 
 @Getter
@@ -62,9 +66,18 @@ public class User extends BaseTimeEntity {
         return !deleted && password.equals(this.password);
     }
 
+    public void upPoint(int point) {
+        this.point += point;
+    }
+
+    public void downPoint(int point) {
+        this.point -= point;
+    }
+
     /**
      * User 객체를 UserProfileData 객체로 변환합니다.
      * 탈퇴한 회원의 경우 삭제여부(deleted)컬럼 외의 나머지 정보는 null 값으로 채워 전달합니다.
+     *
      * @return 변환된 UserProfileData 객체
      */
     public UserProfileData toUserProfileData() {

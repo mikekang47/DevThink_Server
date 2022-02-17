@@ -32,12 +32,17 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
+
+    private String title;
+
     @ManyToOne(fetch = LAZY)
     private ReviewHeart heart;
 
     private String content;
 
     private BigDecimal score;
+
+    private Integer point;
 
     @Builder.Default
     private Boolean deleted = Boolean.FALSE;
@@ -52,6 +57,10 @@ public class Review extends BaseTimeEntity {
     public void setBook(Book book) {
         this.book = book;
         book.getReviews().add(this);
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setContent(String content) {
@@ -75,8 +84,10 @@ public class Review extends BaseTimeEntity {
                 .id(id)
                 .userId(user.getId())
                 .bookIsbn(book.getIsbn())
+                .title(title)
                 .content(content)
                 .score(score)
+                .heartCnt(heartCnt)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
                 .build();

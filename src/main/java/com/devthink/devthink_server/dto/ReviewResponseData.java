@@ -2,7 +2,9 @@ package com.devthink.devthink_server.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,7 +24,10 @@ public class ReviewResponseData {
     @ApiModelProperty(value = "책 isbn 번호", example = "8960773417")
     private String bookIsbn;
 
-    @ApiModelProperty(value = "작성된 리뷰 내용", example = "★ 스프링의 3대 핵심 기술인 IoC/DI, PSA, AOP를 빠르고 효과적으로 배울 수 있는 실전 예제 중심의 설명\n" +
+    @ApiModelProperty(value = "제목", example = "스프링 개념의 바이블!")
+    private String title;
+
+    @ApiModelProperty(value = "내용", example = "★ 스프링의 3대 핵심 기술인 IoC/DI, PSA, AOP를 빠르고 효과적으로 배울 수 있는 실전 예제 중심의 설명\n" +
             "\n" +
             "개발 현장에서 매일 만나는 평범한 자바코드를 스프링의 핵심 기술을 적용해서 깔끔하고 스프링다운 코드로 개선해나가는 과정을 상세하게 보여줌으로써 스프링의 핵심 원리와 적용 방법을 이해할 수 있게 해준다.\n" +
             "\n" +
@@ -33,6 +38,9 @@ public class ReviewResponseData {
 
     @ApiModelProperty(value = "별점", example = "4.5")
     private BigDecimal score;
+
+    @ApiModelProperty(value = "좋아요 수", example = "75")
+    private Integer heartCnt;
 
     @ApiModelProperty(value = "생성일자", example = "2022-01-24T16:19:01.359146")
     private LocalDateTime createAt;
