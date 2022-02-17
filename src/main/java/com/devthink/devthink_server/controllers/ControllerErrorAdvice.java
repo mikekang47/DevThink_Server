@@ -160,6 +160,7 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(PostReportBadRequestException.class)
     public ErrorResponse handlePostReportBadRequest() {
         return new ErrorResponse("can't report own posts");
+    }
 
     @ExceptionHandler(PointNotValidException.class)
     public ErrorResponse handlePointNotValidException() {
