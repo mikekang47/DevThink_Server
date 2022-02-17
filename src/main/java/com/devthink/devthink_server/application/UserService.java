@@ -121,4 +121,8 @@ public class UserService {
     }
 
 
+    public User getUserProfile(String userNickName) {
+        User user = userRepository.findByNicknameAndDeletedIsFalse(userNickName).orElseThrow(() -> new UserNotFoundException());
+        return user;
+    }
 }
