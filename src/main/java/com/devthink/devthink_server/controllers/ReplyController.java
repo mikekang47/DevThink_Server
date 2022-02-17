@@ -5,6 +5,7 @@ import com.devthink.devthink_server.application.ReplyService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.Comment;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.ReplyModificationData;
 import com.devthink.devthink_server.dto.ReplyRequestData;
 import com.devthink.devthink_server.dto.ReplyResponseData;
 import com.devthink.devthink_server.errors.ReplyBadRequestException;
@@ -110,8 +111,8 @@ public class ReplyController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
     public ReplyResponseData updateReply(@PathVariable("replyId") Long replyId,
-                                             @Valid @RequestBody ReplyRequestData replyRequestData){
-        return replyService.updateReply(replyId, replyRequestData.getContent());
+                                             @Valid @RequestBody ReplyModificationData replyModificationData){
+        return replyService.updateReply(replyId, replyModificationData.getContent());
     }
 
     /**
