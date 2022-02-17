@@ -108,7 +108,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "게시글 삭제", notes = "입력한 게시글의 식별자 값을 받아 게시글을 삭제합니다.")
     @PreAuthorize("isAuthenticated()")
-    public PostResponseData deletePost(@PathVariable("id") Long id,
+    public void deletePost(@PathVariable("id") Long id,
                                        UserAuthentication userAuthentication
     ) throws AccessDeniedException {
         Long userId = userAuthentication.getUserId();
@@ -116,7 +116,6 @@ public class PostController {
         Post post = postService.getPostById(id);
 
         postService.deletePost(user, post);
-        return post.toPostResponseData();
     }
 
     /**
