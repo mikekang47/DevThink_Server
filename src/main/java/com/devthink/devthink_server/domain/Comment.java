@@ -37,6 +37,9 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "review_id")
     private Review review;
 
+    @ManyToOne(fetch = LAZY)
+    private CommentHeart heart;
+
     private String content;
 
     private String status;
@@ -51,9 +54,7 @@ public class Comment extends BaseTimeEntity {
     public CommentResponseData toCommentResponseData() {
         return CommentResponseData.builder()
                 .commentId(id)
-                .userId(user.getId())
-                .userNickname(user.getNickname())
-                .userImageUrl(user.getImageUrl())
+                .userProfile(user.toUserProfileData())
                 .content(content)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())

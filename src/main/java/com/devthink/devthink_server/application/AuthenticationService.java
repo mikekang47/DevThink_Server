@@ -29,7 +29,7 @@ public class AuthenticationService {
         if(!user.authenticate(password)) {
             throw new LoginFailException(email);
         }
-        return jwtUtil.encode(1L);
+        return jwtUtil.encode(user.getId());
     }
 
     public Long parseToken(String token) {

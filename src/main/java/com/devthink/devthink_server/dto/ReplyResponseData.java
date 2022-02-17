@@ -24,16 +24,7 @@ public class ReplyResponseData {
     @NotNull
     private final Long replyId;
 
-    @ApiModelProperty(value = "사용자 식별자", example = "1")
-    @NotNull
-    private final Long userId;
-
-    @ApiModelProperty(value = "사용자 닉네임", example = "싱크싱크")
-    @NotBlank
-    private final String userNickname;
-
-    @ApiModelProperty(value = "사용자 프로필 이미지 주소", example = "https://picsum.photos/200")
-    private final String userImageUrl;
+    private UserProfileData userProfile;
 
     @ApiModelProperty(value = "댓글 내용", example = "안녕하세요")
     @NotBlank

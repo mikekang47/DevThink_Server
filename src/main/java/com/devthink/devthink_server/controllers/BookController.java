@@ -90,5 +90,4 @@ public class BookController {
         return bookService.getTop5BooksInPeriod();
     }
 
-
 }
