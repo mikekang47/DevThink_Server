@@ -9,6 +9,7 @@ import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
 import com.devthink.devthink_server.errors.AlreadyReviewedException;
 import com.devthink.devthink_server.errors.ReviewNotFoundException;
+import com.devthink.devthink_server.errors.UserNotMatchException;
 import com.devthink.devthink_server.infra.BookRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -69,13 +70,15 @@ public class ReviewService {
     /**
      * 전달된 리뷰의 정보를 수정합니다.
      *
-     * @param id      (수정할 리뷰 식별자)
+     * @param reviewId (수정할 리뷰 식별자)
+     * @param userId (요청한 사용자 식별자 )
      * @param reviewModificationData (수정할 내용을 담은 객체)
      * @return 수정된 리뷰
      */
     @Transactional
-    public ReviewResponseData update(Long id, ReviewModificationData reviewModificationData) {
-        Review review = getReviewById(id);
+    public ReviewResponseData update(long reviewId, long userId, ReviewModificationData reviewModificationData) {
+        Review review = getReviewById(reviewId);
+        checkMatchUser(review, userId); // 리뷰 작성자와 수정하려는 사용자가 같은지 확인합니다.
         review.update(reviewModificationData);
         review.getBook().setScoreAvg(bookRepository.calcScoreAvg(review.getBook().getId())); // 평점을 다시 계산합니다.
         return review.toReviewResponseData();
@@ -86,11 +89,13 @@ public class ReviewService {
      * 사용자의 포인트를 회수합니다.
      *
      * @param id (삭제할 리뷰 식별자)
+     * @param userId (요청한 사용자 식별자)
      * @return 수정된 리뷰
      */
     @Transactional
-    public void deleteReview(long id) {
+    public void deleteReview(long id, long userId) {
         Review review = getReviewById(id);
+        checkMatchUser(review, userId); // 리뷰 작성자와 수정하려는 사용자가 같은지 확인합니다.
         review.setDeleted(true);
         review.getBook().downReviewCnt(); // 책의 리뷰수를 감소시킵니다.
         review.getBook().setScoreAvg(bookRepository.calcScoreAvg(review.getBook().getId()));    // 책의 평점을 다시 계산합니다.
@@ -103,9 +108,21 @@ public class ReviewService {
      * @param id (리뷰 식별자)
      * @return 조회된 리뷰
      */
-    public Review getReviewById(Long id) {
+    public Review getReviewById(long id) {
         return reviewRepository.findByIdAndDeletedIsFalse(id)
                 .orElseThrow(() -> new ReviewNotFoundException(id));
+    }
+
+    /**
+     * 리뷰 작성자와 로그인 유저가 같은지 확인합니다.
+     *
+     * @param review (리뷰)
+     * @param loginUserId (로그인 사용자 식별자)
+     */
+    public void checkMatchUser(Review review, long loginUserId) {
+        if (review.getUser().getId() != loginUserId) {
+            throw new UserNotMatchException();
+        }
     }
 
 }

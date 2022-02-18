@@ -12,6 +12,7 @@ import com.devthink.devthink_server.dto.ReviewModificationData;
 import com.devthink.devthink_server.dto.ReviewRequestData;
 import com.devthink.devthink_server.dto.ReviewResponseData;
 import com.devthink.devthink_server.errors.PointNotValidException;
+import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,9 @@ public class ReviewController {
     @PostMapping
     @ApiOperation(value = "리뷰 등록", notes = "전달된 정보에 따라 리뷰를 등록합니다.")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewResponseData create(@Valid @RequestBody ReviewRequestData reviewRequestData) {
-        User user = userService.getUser(reviewRequestData.getUserId());
+    @PreAuthorize("isAuthenticated()")
+    public ReviewResponseData create(@Valid @RequestBody ReviewRequestData reviewRequestData, UserAuthentication authentication) {
+        User user = userService.getUser(authentication.getUserId());
         Book book = bookService.getOrCreateBook(reviewRequestData.getBook());
         int point = reviewRequestData.getPoint();
         if (point != 0 && point != 5 && point != 7) { // point 값이 0, 5, 7 중 하나여야 합니다.
@@ -63,7 +65,7 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 상세 조회", notes = "식별자 값의 리뷰를 상세 조회합니다.")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ReviewDetailResponseData detail(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id) {
+    public ReviewDetailResponseData detail(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, UserAuthentication authentication) {
         return reviewService.getReviewDetailById(id);
     }
 
@@ -77,8 +79,9 @@ public class ReviewController {
     @PutMapping("/{id}")
     @ApiOperation(value = "리뷰 수정", notes = "식별자 값의 리뷰를 수정합니다.")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseData update(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, @Valid @RequestBody ReviewModificationData reviewModificationData) {
-        return reviewService.update(id, reviewModificationData);
+    @PreAuthorize("isAuthenticated()")
+    public ReviewResponseData update(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, @Valid @RequestBody ReviewModificationData reviewModificationData, UserAuthentication authentication) {
+        return reviewService.update(id, authentication.getUserId(), reviewModificationData);
     }
 
 
@@ -93,8 +96,8 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 삭제", notes = "식별자 값의 리뷰를 삭제합니다.")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
-    public void destroy(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id) {
-        reviewService.deleteReview(id);
+    public void destroy(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, UserAuthentication authentication) {
+        reviewService.deleteReview(id, authentication.getUserId());
     }
 
 }
