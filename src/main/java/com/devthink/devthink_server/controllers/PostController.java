@@ -94,8 +94,8 @@ public class PostController {
         User user = userService.getUser(userId);
         Post post = postService.getPostById(id);
 
-        postService.update(user, post, postRequestData);
-        return post.toPostResponseData();
+        Post update = postService.update(user, post, postRequestData);
+        return update.toPostResponseData();
     }
 
     /**
