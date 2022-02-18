@@ -39,7 +39,7 @@ public class ReviewController {
      * @return 새로 생성된 리뷰 아이디
      */
     @PostMapping
-    @ApiOperation(value = "리뷰 등록", notes = "전달된 정보에 따라 리뷰를 등록합니다.")
+    @ApiOperation(value = "리뷰 생성", notes = "전달된 정보에 따라 리뷰를 생성합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
     public ReviewResponseData create(@Valid @RequestBody ReviewRequestData reviewRequestData, UserAuthentication authentication) {
@@ -77,7 +77,7 @@ public class ReviewController {
      * @return ReviewResponseDto (삭제된 리뷰 )
      */
     @PutMapping("/{id}")
-    @ApiOperation(value = "리뷰 수정", notes = "식별자 값의 리뷰를 수정합니다.")
+    @ApiOperation(value = "리뷰 수정", notes = "식별자 값의 리뷰를 수정합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
     public ReviewResponseData update(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, @Valid @RequestBody ReviewModificationData reviewModificationData, UserAuthentication authentication) {
@@ -93,7 +93,7 @@ public class ReviewController {
      * @return review(삭제된 리뷰 정보)
      */
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "리뷰 삭제", notes = "식별자 값의 리뷰를 삭제합니다.")
+    @ApiOperation(value = "리뷰 삭제", notes = "식별자 값의 리뷰를 삭제합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
     public void destroy(@PathVariable("id") @ApiParam(value = "리뷰 식별자 값") Long id, UserAuthentication authentication) {
