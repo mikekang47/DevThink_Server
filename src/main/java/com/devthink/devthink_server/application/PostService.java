@@ -126,6 +126,7 @@ public class PostService {
 
     /**
      * 게시글을 삭제합니다.
+     * @Param User 삭제하는 유저
      * @param post 삭제할 게시글
      * @return Post 삭제된 게시글
      */
