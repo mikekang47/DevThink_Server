@@ -148,7 +148,7 @@ public class PostController {
 
     /**
      * 게시글 신고 API
-     * [GET] /posts/report/:id
+     * [PUT] /posts/report/:id
      * @param postId 게시글 아이디
      * @return String 신고당한 유저 아이디
      */
