@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.in;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -124,8 +125,45 @@ class PostControllerTest {
                             .content(postRequestData.getContent())
                             .imageUrl(postRequestData.getImageUrl())
                             .build();
-
                 });
+
+        given(postService.search(eq(1L), eq("test")))
+                .will(invocation -> {
+                    User user = User.builder().id(1L).build();
+                    Category category = Category.builder().id(1L).build();
+
+                    Post post = Post.builder()
+                            .id(1L)
+                            .user(user)
+                            .category(category)
+                            .title("test")
+                            .content("test")
+                            .build();
+
+                    List<Post> posts = new ArrayList<>();
+                    posts.add(post);
+                    return posts;
+                });
+
+        given(postService.getBestPost(any(Category.class)))
+                .will(invocation -> {
+                    User user = User.builder().id(1L).build();
+                    Category category = invocation.getArgument(0);
+
+                    Post post = Post.builder()
+                            .id(1L)
+                            .user(user)
+                            .category(category)
+                            .title("test")
+                            .content("test")
+                            .heartCnt(1)
+                            .build();
+
+                    List<Post> posts = new ArrayList<>();
+                    posts.add(post);
+                    return posts;
+                });
+
 
         given(postService.getPostById(eq(100L)))
                 .willThrow(new PostNotFoundException(100L));
@@ -253,9 +291,9 @@ class PostControllerTest {
     @Test
     void 올바른_정보로_카테고리별_게시글을_불러오는_경우() throws Exception {
         mvc.perform(
-                get("/posts/list/1")
+                        get("/posts/list/1")
 
-        )
+                )
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"id\":1")
@@ -276,8 +314,39 @@ class PostControllerTest {
     @Test
     void 올바르지_않은_정보로_카테고리별_게시글을_불러오는_경우() throws Exception {
         mvc.perform(
-                get("/posts/list/100")
-        )
+                        get("/posts/list/100")
+                )
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void 올바른_정보로_제목을_검색하는_경우() throws Exception {
+        mvc.perform(
+                        get("/posts/search/1").param("keyword", "test")
+
+                )
+
+                .andExpect(status().isOk())
+
+                .andExpect(content().string(
+                        containsString("\"title\":\"test\"")
+                ));
+        verify(postService).search(1L, "test");
+
+    }
+
+    @Test
+    void 올바른_정보로_베스트_게시글을_가져오는_경우() throws Exception {
+
+        mvc.perform(
+                        get("/posts/best/1")
+                )
+                .andExpect(status().isOk())
+
+                .andExpect(content().string(
+                        containsString("\"heartCnt\":1")
+                ));
+        verify(postService).getBestPost(any(Category.class));
+    }
+
 }
