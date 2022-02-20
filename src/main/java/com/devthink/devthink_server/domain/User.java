@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
@@ -21,11 +23,14 @@ public class User extends BaseTimeEntity {
     @GeneratedValue
     private Long id;
 
-    private String email;
+    @Builder.Default
+    private String email = "";
 
-    private String password;
+    @Builder.Default
+    private String password = "";
 
-    private String name;
+    @Builder.Default
+    private String name = "";
 
     private String nickname;
 
@@ -99,4 +104,9 @@ public class User extends BaseTimeEntity {
         reported = reported + 1;
     }
 
+    public void changePassword(String password) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.password = passwordEncoder.encode(password);
+
+    }
 }
