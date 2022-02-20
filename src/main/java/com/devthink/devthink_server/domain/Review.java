@@ -33,7 +33,6 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-
     private String title;
 
     @ManyToOne(fetch = LAZY)

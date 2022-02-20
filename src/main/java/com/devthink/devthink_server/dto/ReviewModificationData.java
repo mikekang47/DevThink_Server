@@ -17,10 +17,6 @@ import java.math.BigDecimal;
 @ApiModel(value="리뷰 수정 요청 정보")
 public class ReviewModificationData {
 
-    @NotNull
-    @ApiModelProperty(value = "사용자 식별자", required = true, example = "1")
-    private Long userId;
-
     @ApiModelProperty(value = "제목", required = true, example = "스프링 개념의 바이블!")
     @NotBlank(message = "제목을 입력해주세요.")
     private String title;
