@@ -1,6 +1,5 @@
 package com.devthink.devthink_server.config;
 
-
 import com.devthink.devthink_server.application.AuthenticationService;
 import com.devthink.devthink_server.filters.AuthenticationErrorFilter;
 import com.devthink.devthink_server.filters.JwtAuthenticationFilter;
@@ -43,5 +42,5 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-    } 
+    }
 }
