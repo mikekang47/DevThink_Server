@@ -44,7 +44,7 @@ class UserTest {
     }
 
     @Test
-    void 인증() {
+    void 존재하는_사용자_인증() {
         User user = User.builder()
                 .password("test")
                 .deleted(true)
@@ -54,4 +54,8 @@ class UserTest {
         assertThat(user.authenticate("xxx")).isFalse();
 
     }
+
+
+
+
 }
