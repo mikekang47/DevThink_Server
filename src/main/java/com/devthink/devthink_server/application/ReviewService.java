@@ -76,7 +76,7 @@ public class ReviewService {
      * @return 수정된 리뷰
      */
     @Transactional
-    public ReviewResponseData update(long reviewId, long userId, ReviewModificationData reviewModificationData) {
+    public ReviewResponseData update(Long reviewId, Long userId, ReviewModificationData reviewModificationData) {
         Review review = getReviewById(reviewId);
         checkMatchUser(review, userId); // 리뷰 작성자와 수정하려는 사용자가 같은지 확인합니다.
         review.update(reviewModificationData);
@@ -93,7 +93,7 @@ public class ReviewService {
      * @return 수정된 리뷰
      */
     @Transactional
-    public void deleteReview(long id, long userId) {
+    public void deleteReview(Long id, Long userId) {
         Review review = getReviewById(id);
         checkMatchUser(review, userId); // 리뷰 작성자와 수정하려는 사용자가 같은지 확인합니다.
         review.setDeleted(true);
@@ -108,7 +108,7 @@ public class ReviewService {
      * @param id (리뷰 식별자)
      * @return 조회된 리뷰
      */
-    public Review getReviewById(long id) {
+    public Review getReviewById(Long id) {
         return reviewRepository.findByIdAndDeletedIsFalse(id)
                 .orElseThrow(() -> new ReviewNotFoundException(id));
     }
@@ -119,7 +119,7 @@ public class ReviewService {
      * @param review (리뷰)
      * @param loginUserId (로그인 사용자 식별자)
      */
-    public void checkMatchUser(Review review, long loginUserId) {
+    public void checkMatchUser(Review review, Long loginUserId) {
         if (review.getUser().getId() != loginUserId) {
             throw new UserNotMatchException();
         }
