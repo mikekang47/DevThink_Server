@@ -67,8 +67,8 @@ public class User extends BaseTimeEntity {
         deleted = true;
     }
 
-    public boolean authenticate(String password) {
-        return !deleted && password.equals(this.password);
+    public boolean authenticate(String password, PasswordEncoder passwordEncoder) {
+        return !deleted && passwordEncoder.matches(password, this.password);
     }
 
     public void upPoint(int point) {
@@ -104,8 +104,7 @@ public class User extends BaseTimeEntity {
         reported = reported + 1;
     }
 
-    public void changePassword(String password) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public void changePassword(String password, PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
 
     }
