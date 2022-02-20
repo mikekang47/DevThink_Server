@@ -14,11 +14,23 @@ class UserTest {
                 User.builder()
                         .nickname("Test")
                         .role("senior")
+                        .password("TEST")
                         .build()
         );
 
         assertThat(user.getNickname()).isEqualTo("Test");
         assertThat(user.getRole()).isEqualTo("senior");
+        assertThat(user.getPassword()).isNotEqualTo("");
+    }
+
+    @Test
+    void 비밀번호_변경() {
+        User user = User.builder().build();
+
+        user.changePassword("TEST");
+
+        assertThat(user.getPassword()).isNotEmpty();
+        assertThat(user.getPassword()).isNotEqualTo("TEST");
     }
 
     @Test
