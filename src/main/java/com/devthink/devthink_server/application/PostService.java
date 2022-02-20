@@ -85,7 +85,7 @@ public class PostService {
     }
 
     /**
-     * 게시글을 전체 반환합니다.
+     * 게시글을 최신순으로(게시글 id별 내림차순) 전체 반환합니다.
      * @param categoryId 카테고리 아이디
      * @return List<PostListData> 조회된 게시글
      */
