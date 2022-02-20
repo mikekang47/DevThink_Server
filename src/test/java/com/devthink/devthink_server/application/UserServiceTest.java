@@ -72,6 +72,7 @@ class UserServiceTest {
         UserRegistrationData registrationData = UserRegistrationData.builder()
                 .nickname("tester")
                 .email("test@email.com")
+                .password("test")
                 .build();
 
         User user = userService.registerUser(registrationData);
