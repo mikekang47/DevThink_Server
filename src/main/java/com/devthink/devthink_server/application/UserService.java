@@ -52,6 +52,8 @@ public class UserService {
             throw new UserNickNameDuplicationException(nickname);
         }
         User user = mapper.map(userRegistrationData, User.class);
+        user.changePassword(userRegistrationData.getPassword());
+        
         return userRepository.save(user);
     }
 
