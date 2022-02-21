@@ -10,6 +10,8 @@ import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.nio.file.AccessDeniedException;
 import java.util.Optional;
@@ -35,8 +37,9 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         Mapper mapper = DozerBeanMapperBuilder.buildDefault();
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        userService = new UserService(userRepository, mapper);
+        userService = new UserService(userRepository, mapper, passwordEncoder);
 
         given(userRepository.save(any(User.class))).will(invocation -> {
             User user = User.builder()
@@ -72,6 +75,7 @@ class UserServiceTest {
         UserRegistrationData registrationData = UserRegistrationData.builder()
                 .nickname("tester")
                 .email("test@email.com")
+                .password("test")
                 .build();
 
         User user = userService.registerUser(registrationData);
