@@ -42,7 +42,9 @@ public class PostService {
 
     /**
      * 해당 유저가 해당 게시글을 신고한 기록이 있는지 확인합니다.
-     *
+     * @param user 게시글을 신고한 유저
+     * @param post 유저가 신고한 게시글
+     * @return boolean 신고 기록 여부
      */
     public boolean checkPostReport(User user, Post post){
         return postReportRepository.existsPostReport(user.getId(), post.getId());
@@ -124,10 +126,11 @@ public class PostService {
 
     /**
      * 게시글을 삭제합니다.
+     * @Param User 삭제하는 유저
      * @param post 삭제할 게시글
      * @return Post 삭제된 게시글
      */
-    public Post deletePost(User user, Post post){
+    public void deletePost(User user, Post post){
         getPostById(post.getId());
         // 만약 유저 아이디와 게시글의 유저 아이디가 같다면
         if(user.getId() == post.getUser().getId()) {
@@ -137,7 +140,6 @@ public class PostService {
         else {
             throw new UserNotMatchException();
         }
-        return post;
     }
 
     /**

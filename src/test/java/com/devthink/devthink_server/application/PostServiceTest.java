@@ -5,6 +5,7 @@ import com.devthink.devthink_server.domain.Post;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.PostRequestData;
 import com.devthink.devthink_server.errors.PostNotFoundException;
+import com.devthink.devthink_server.infra.PostReportRepository;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
@@ -22,12 +23,13 @@ class PostServiceTest {
 
     private PostService postService;
     private PostRepository postRepository = mock(PostRepository.class);
+    private PostReportRepository postReportRepository = mock(PostReportRepository.class);
 
     @BeforeEach
     void setup(){
         Mapper mapper = DozerBeanMapperBuilder.buildDefault();
 
-        postService = new PostService(postRepository, mapper);
+        postService = new PostService(postRepository, postReportRepository, mapper);
 
 
         given(postRepository.save(any(Post.class))).will(invocation -> {
@@ -55,7 +57,6 @@ class PostServiceTest {
         Category category = Category.builder().id(1L).build();
 
         PostRequestData postRequestData = PostRequestData.builder()
-                .userId(1L)
                 .categoryId(1L)
                 .title("테스트")
                 .content("테스트")
@@ -74,7 +75,6 @@ class PostServiceTest {
         User user = User.builder().id(1L).build();
         Category category = Category.builder().id(1L).build();
         PostRequestData postRequestData = PostRequestData.builder()
-                .userId(1L)
                 .categoryId(1L)
                 .title("test22")
                 .content("test22")
@@ -82,7 +82,7 @@ class PostServiceTest {
                 .build();
 
         Post postData = Post.builder().id(1L).user(user).category(category).build();
-        Post post = postService.update(postData, postRequestData);
+        Post post = postService.update(user, postData, postRequestData);
 
         assertThat(post.getUser().getId()).isEqualTo(1L);
         assertThat(post.getTitle()).isEqualTo("test22");

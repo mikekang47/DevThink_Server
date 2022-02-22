@@ -15,6 +15,8 @@ import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,9 +38,10 @@ class ReplyHeartServiceTest {
     @BeforeEach
     void setUp() {
         replyHeartService = new ReplyHeartService(userRepository,replyRepository, replyHeartRepository);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         Mapper mapper = DozerBeanMapperBuilder.buildDefault();
 
-        userService = new UserService(userRepository, mapper);
+        userService = new UserService(userRepository, mapper, passwordEncoder);
 
         given(userRepository.save(any(User.class))).will(invocation -> {
             User user = User.builder()
@@ -60,10 +63,5 @@ class ReplyHeartServiceTest {
         });
 
     }
-
-    @Test
-    void create() {
-        
-
-    }
+    
 }

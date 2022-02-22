@@ -21,14 +21,14 @@ public class CategoryController {
     /**
      * 카테고리 작성 API
      * [Post] /categories
-     * @param categorydata (카테고리 id, 이름)
+     * @param categoryData (카테고리 id, 이름)
      * @return categoryData (카테고리 id, 이름)
      */
     @PostMapping
     @ApiOperation(value = "카테고리 저장", notes = "카테고리 정보를 받아 카테고리 작성하기")
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryData save(@RequestBody CategoryData categorydata){
-        Category category = categoryService.save(categorydata);
+    public CategoryData save(@RequestBody CategoryData categoryData){
+        Category category = categoryService.save(categoryData);
         return category.toCategoryData();
     }
 
@@ -36,7 +36,7 @@ public class CategoryController {
      * 카테고리의 id를 검색하여 카테고리를 가져옵니다.
      * [GET] categories/:id
      * @param id 카테고리의 고유 id값
-     * @return id의 카테고리
+     * @return CategoryData 해당 id의 카테고리
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "카테고리 검색", notes = "카테고리의 id를 검색하여 게시글을 가져옵니다.")
@@ -62,7 +62,7 @@ public class CategoryController {
      * 입력한 카테고리의 식별자 값과 valid한 카테고리의 정보를 받아, 기존의 게시글을 입력한 정보로 변경합니다.
      * [PUT] /categories/:id
      * @param id 카테고리의 식별자
-     * @return 기존 게시글의 정보 수정
+     * @return CategoryData 정보 수정된 카테고리 정보
      */
     @PutMapping("/{id}")
     @ApiOperation(value = "카테고리 변경", notes = "입력한 카테고리의 고유 식별자 값과 카테고리의 정보를 받아, 기존의 카테고리를 변경합니다.")

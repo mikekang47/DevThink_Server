@@ -88,9 +88,8 @@ class ReviewServiceTest {
         given(bookRepository.calcScoreAvg(book.getId())).willReturn(reviewModificationData.getScore());
         given(bookRepository.save(any(Book.class))).willReturn(book);
         given(reviewRepository.save(any(Review.class))).willReturn(modifiedReview);
-        BigDecimal preScoreAvg = book.getScoreAvg();
         //when
-        reviewService.update(1L, reviewModificationData);
+        reviewService.update(1L, user.getId(), reviewModificationData);
         //then
         assertThat(review.getTitle()).isEqualTo(reviewModificationData.getTitle()); // title 변경
         assertThat(review.getContent()).isEqualTo(reviewModificationData.getContent()); // content 변경
@@ -106,7 +105,7 @@ class ReviewServiceTest {
         given(reviewRepository.findByIdAndDeletedIsFalse(any(Long.class))).willReturn(Optional.of(review));
         given(bookRepository.calcScoreAvg(book.getId())).willReturn(BigDecimal.valueOf(0));
         //when
-        reviewService.deleteReview(review.getId());
+        reviewService.deleteReview(review.getId(),user.getId());
         //then
         assertThat(review.getDeleted()).isEqualTo(true); // 리뷰 deleted == false
         assertThat(user.getPoint()).isEqualTo(prePoint - review.getPoint()); // 유저 포인트 감소
