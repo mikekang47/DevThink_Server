@@ -18,7 +18,7 @@ public class CommentReviewRequestData {
 
 
     @ApiModelProperty(value = "리뷰 식별자", example = "1")
-    @NotNull
+    @NotNull(message = "Can't create comment with null reviewId")
     private final Long reviewId;
 
     @ApiModelProperty(value = "댓글 내용", required = true, example = "안녕하세요")
