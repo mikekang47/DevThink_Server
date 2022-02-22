@@ -62,7 +62,7 @@ class ReviewServiceTest {
         given(reviewRepository.save(any(Review.class))).willReturn(review);
         given(userRepository.save(any(User.class))).willReturn(user);
         given(bookRepository.save(any(Book.class))).willReturn(book);
-        given(bookRepository.calcScoreAvg(book.getId())).willReturn(BigDecimal.valueOf(3.75));
+        given(reviewRepository.calcScoreAvg(book.getId())).willReturn(BigDecimal.valueOf(3.75));
         //when
         reviewService.createReview(user, book, reviewRequestData);
         //then
@@ -85,7 +85,7 @@ class ReviewServiceTest {
                 .point(5)
                 .build();
         given(reviewRepository.findByIdAndDeletedIsFalse(any(Long.class))).willReturn(Optional.of(review));
-        given(bookRepository.calcScoreAvg(book.getId())).willReturn(reviewModificationData.getScore());
+        given(reviewRepository.calcScoreAvg(book.getId())).willReturn(reviewModificationData.getScore());
         given(bookRepository.save(any(Book.class))).willReturn(book);
         given(reviewRepository.save(any(Review.class))).willReturn(modifiedReview);
         BigDecimal preScoreAvg = book.getScoreAvg();
@@ -104,7 +104,7 @@ class ReviewServiceTest {
         int prePoint = user.getPoint();
         int preReviewCnt = book.getReviewCnt();
         given(reviewRepository.findByIdAndDeletedIsFalse(any(Long.class))).willReturn(Optional.of(review));
-        given(bookRepository.calcScoreAvg(book.getId())).willReturn(BigDecimal.valueOf(0));
+        given(reviewRepository.calcScoreAvg(book.getId())).willReturn(BigDecimal.valueOf(0));
         //when
         reviewService.deleteReview(review.getId());
         //then

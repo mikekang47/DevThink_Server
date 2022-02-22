@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +24,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     // 리뷰 수가 가장 많은 책을 가져옵니다.
     Optional<Book> findTopByOrderByReviewCntDesc();
-
-    // 주어진 책 id값에 대한 리뷰들의 평점을 계산하여 가져옵니다.
-    @Query("select avg(score) from Review where book.id = :id and deleted = false")
-    BigDecimal calcScoreAvg(@Param("id") long id);
 
     // 책 이름에 검색어가 포함 된 책 리스트를 pageable 규칙에 따라 가져옵니다.
     Page<Book> findAllByNameContaining(String search, Pageable pageable);
