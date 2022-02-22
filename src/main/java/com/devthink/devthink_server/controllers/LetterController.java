@@ -60,6 +60,7 @@ public class LetterController {
      */
     @GetMapping("/lists")
     @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "쪽지 리스트", notes = "유저 Id를 받아 쪽지 리스트를 반환합니다.")
     public List<LetterListData> messageList(UserAuthentication userAuthentication) throws AccessDeniedException {
         Long userId = userAuthentication.getUserId();
@@ -76,6 +77,7 @@ public class LetterController {
     @GetMapping("/lists/rooms/{roomId}")
     @ApiOperation(value = "쪽지 내용 가져오기", notes = "방 id를 받아서 받은 쪽지를 읽습니다.")
     @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(HttpStatus.OK)
     public List<LetterResultData> getMessage(@PathVariable("roomId") Long roomId,
                                              UserAuthentication userAuthentication
     ) throws AccessDeniedException {
