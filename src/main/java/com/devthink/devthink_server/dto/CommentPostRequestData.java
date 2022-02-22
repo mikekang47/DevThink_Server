@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 public class CommentPostRequestData {
 
     @ApiModelProperty(value = "게시글 식별자", example = "1")
-    @NotNull
+    @NotNull(message = "Can't create comment with null postId")
     private final Long postId;
 
     @ApiModelProperty(value = "댓글 내용", required = true, example = "안녕하세요")

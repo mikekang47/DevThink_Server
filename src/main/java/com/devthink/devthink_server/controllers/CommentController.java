@@ -11,7 +11,6 @@ import com.devthink.devthink_server.dto.CommentModificationData;
 import com.devthink.devthink_server.dto.CommentPostRequestData;
 import com.devthink.devthink_server.dto.CommentReviewRequestData;
 import com.devthink.devthink_server.dto.CommentResponseData;
-import com.devthink.devthink_server.errors.PostCommentBadRequestException;
 import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -143,16 +142,11 @@ public class CommentController {
     public CommentResponseData createPostComment(@Valid @RequestBody CommentPostRequestData commentPostRequestData,
                                                  UserAuthentication authentication){
         Long postId = commentPostRequestData.getPostId();
-        // request상에 postId 값이 들어있는지 확인합니다.
-        if (postId != null) {
-            // userId 값을 통하여 userRepository에서 User를 가져옵니다.
-            User user = userService.getUser(authentication.getUserId());
-            // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
-            Post post = postService.getPostById(postId);
-            return commentService.createPostComment(user, post, commentPostRequestData.getContent());
-        } else {
-            throw new PostCommentBadRequestException();
-        }
+        // userId 값을 통하여 userRepository에서 User를 가져옵니다.
+        User user = userService.getUser(authentication.getUserId());
+        // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
+        Post post = postService.getPostById(postId);
+        return commentService.createPostComment(user, post, commentPostRequestData.getContent());
     }
 
     /**
