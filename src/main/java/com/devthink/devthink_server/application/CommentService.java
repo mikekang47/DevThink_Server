@@ -153,10 +153,8 @@ public class CommentService {
      * @param commentId 삭제할 Comment의 식별자
      */
     public void deleteComment(Long commentId) {
-        if (commentRepository.existsById(commentId))
-            commentRepository.deleteById(commentId);
-        else
-            throw new CommentNotFoundException(commentId);
+        getComment(commentId);
+        commentRepository.deleteById(commentId);
     }
 
 
