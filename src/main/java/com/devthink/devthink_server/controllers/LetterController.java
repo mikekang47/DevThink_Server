@@ -33,11 +33,13 @@ public class LetterController {
     /**
      * 닉네임을 통한 쪽지 전송 API
      * [POST] /messages
+     *
      * @param letterSendData 쪽지 데이터
      * @return LetterResultData 보낸 쪽지
      */
     @PostMapping
-    @ApiOperation(value = "쪽지 전송", notes = "쪽지 정보를 받아 쪽지 리스트에서 쪽지를 보냅니다.")
+    @ApiOperation(value = "쪽지 전송", notes = "쪽지 정보를 받아 쪽지 리스트에서 쪽지를 보냅니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            response = LetterResultData.class)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
     public LetterResultData createMessage(@RequestBody @Valid LetterSendData letterSendData,
@@ -55,13 +57,14 @@ public class LetterController {
     /**
      * 쪽지 리스트 API
      * [GET] /messages/lists?page= &size= &sort= ,정렬방식
-     * @Param pageable 페이지 정렬 방식
+     *
      * @return List<LetterResultData> 쪽지 리스트
+     * @Param pageable 페이지 정렬 방식
      */
     @GetMapping("/lists")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "쪽지 리스트", notes = "유저 Id를 받아 쪽지 리스트를 반환합니다.")
+    @ApiOperation(value = "쪽지 리스트", notes = "유저 Id를 받아 쪽지 리스트를 반환합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
     public List<LetterListData> messageList(UserAuthentication userAuthentication) throws AccessDeniedException {
         Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
@@ -71,11 +74,12 @@ public class LetterController {
     /**
      * 쪽지 읽기 API
      * [GET] /messages/lists/rooms/:roomId
+     *
      * @param roomId 방 아이디
      * @return List<LetterResultData> 읽은 쪽지
      */
     @GetMapping("/lists/rooms/{roomId}")
-    @ApiOperation(value = "쪽지 내용 가져오기", notes = "방 id를 받아서 받은 쪽지를 읽습니다.")
+    @ApiOperation(value = "쪽지 내용 가져오기", notes = "방 id를 받아서 받은 쪽지를 읽습니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
     public List<LetterResultData> getMessage(@PathVariable("roomId") Long roomId,
@@ -89,9 +93,10 @@ public class LetterController {
 
     /**
      * 쪽지를 보낼때, 유저의 방을 설정합니다.
+     *
      * @param letterSendData 쪽지 데이터
-     * @param sender 쪽지 보낸 사람 데이터
-     * @param target 쪽지 받는 사람 데이터
+     * @param sender         쪽지 보낸 사람 데이터
+     * @param target         쪽지 받는 사람 데이터
      * @return UserRoom 유저의 방 데이터
      */
     private UserRoom getUserRoom(LetterSendData letterSendData, User sender, User target) {
