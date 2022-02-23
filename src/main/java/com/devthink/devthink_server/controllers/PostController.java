@@ -156,14 +156,14 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 신고", notes = "게시글을 신고합니다.")
     @PreAuthorize("isAuthenticated()")
-    public String report(@PathVariable("postId") Long postId,
+    public void report(@PathVariable("postId") Long postId,
                          UserAuthentication userAuthentication
     ) throws AccessDeniedException {
         Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
         Post post = postService.getPostById(postId);
         User reportUser = userService.getUser(post.getUser().getId());
-        return postService.report(user, post, reportUser);
+        postService.report(user, post, reportUser);
     }
 
 }
