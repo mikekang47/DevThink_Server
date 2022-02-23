@@ -5,12 +5,15 @@ import com.devthink.devthink_server.application.ReplyService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.Comment;
 import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.dto.ReplyModificationData;
 import com.devthink.devthink_server.dto.ReplyRequestData;
 import com.devthink.devthink_server.dto.ReplyResponseData;
 import com.devthink.devthink_server.errors.ReplyBadRequestException;
+import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -46,15 +49,15 @@ public class ReplyController {
 
     /**
      * 특정 사용자가 등록한 Reply를 모두 조회합니다.
-     * @param userIdx 대댓글을 조회할 사용자의 식별자
      * @return 특정 사용자가 작성한 Reply 리스트
      */
     @ApiOperation(value = "사용자의 대댓글 조회",
-            notes = "특정 사용자가 등록한 대댓글을 모두 조회합니다.",
+            notes = "특정 사용자가 등록한 대댓글을 모두 조회합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = List.class)
-    @ApiImplicitParam(name = "userIdx", value = "대댓글을 조회할 사용자의 식별자")
-    @GetMapping("/user/{userIdx}")
-    public List<ReplyResponseData> getUserReplies(@PathVariable("userIdx") Long userIdx) {
+    @GetMapping("/user")
+    @PreAuthorize("isAuthenticated()")
+    public List<ReplyResponseData> getUserReplies(UserAuthentication userAuthentication) {
+        Long userIdx = userAuthentication.getUserId();
         return replyService.getUserReplies(userIdx);
     }
 
@@ -75,15 +78,19 @@ public class ReplyController {
      * @param replyRequestData 생성하려는 Reply의 요청 정보
      * @return 생성된 Reply
      */
-    @ApiOperation(value = "대댓글 등록", notes = "입력된 대댓글 정보로 새로운 대댓글을 등록합니다.", response = String.class)
+    @ApiOperation(value = "대댓글 등록",
+            notes = "입력된 대댓글 정보로 새로운 대댓글을 등록합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
+            response = String.class)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ReplyResponseData createReply(@Valid @RequestBody ReplyRequestData replyRequestData){
+    @PreAuthorize("isAuthenticated()")
+    public ReplyResponseData createReply(@Valid @RequestBody ReplyRequestData replyRequestData,
+                                         UserAuthentication userAuthentication){
         Long commentId = replyRequestData.getCommentId();
         // request상에 CommentId 값이 들어있는지 확인합니다.
         if (commentId != null) {
             // userId 값을 통하여 userRepository에서 User를 가져옵니다.
-            User user = userService.getUser(replyRequestData.getUserId());
+            User user = userService.getUser(userAuthentication.getUserId());
             // commentId 값을 통하여 commentRepository에서 Comment를 가져옵니다.
             Comment comment = commentService.getComment(commentId);
             return replyService.createReply(user, comment, replyRequestData.getContent());
@@ -97,24 +104,26 @@ public class ReplyController {
      * @return Reply 수정 결과 response
      */
     @ApiOperation(value = "대댓글 수정",
-            notes = "입력된 대댓글의 식별자로 수정할 대댓글을 찾아, 주어진 데이터로 대댓글의 정보를 갱신합니다.",
+            notes = "입력된 대댓글의 식별자로 수정할 대댓글을 찾아, 주어진 데이터로 대댓글의 정보를 갱신합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.",
             response = ReplyResponseData.class)
     @ApiImplicitParam(name = "replyId", value = "수정할 대댓글의 식별자")
     @PatchMapping("/{replyId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public ReplyResponseData updateReply(@PathVariable("replyId") Long replyId,
-                                             @Valid @RequestBody ReplyRequestData replyRequestData){
-        return replyService.updateReply(replyId, replyRequestData.getContent());
+                                             @Valid @RequestBody ReplyModificationData replyModificationData){
+        return replyService.updateReply(replyId, replyModificationData.getContent());
     }
 
     /**
      * replyId를 통하여 기존의 Reply를 삭제합니다.
      * @param replyId 삭제할 Reply의 식별자
      */
-    @ApiOperation(value = "대댓글 삭제", notes = "입력된 대댓글의 식별자로 대댓글을 찾아 삭제합니다.")
-    @ApiImplicitParam(name = "replyId", value = "삭제할 Reply의 식별자")
+    @ApiOperation(value = "대댓글 삭제", notes = "입력된 대댓글의 식별자로 대댓글을 찾아 삭제합니다. 헤더에 사용자 토큰 주입을 필요로 합니다.")
+    @ApiImplicitParam(name = "replyId", value = "삭제할 대댓글의 식별자")
     @DeleteMapping("/{replyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
     public void deleteReply(@PathVariable("replyId") Long replyId) {
         replyService.deleteReply(replyId);
     }

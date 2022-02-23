@@ -18,10 +18,6 @@ import java.math.BigDecimal;
 @ApiModel(value="리뷰 등록 요청 정보")
 public class ReviewRequestData {
 
-    @NotNull
-    @ApiModelProperty(value = "사용자 식별자", required = true, example = "1")
-    private Long userId;
-
     @Valid
     private BookRequestData book;
 

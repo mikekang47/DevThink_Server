@@ -13,19 +13,12 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @AllArgsConstructor
-@ApiModel("댓글 등록 정보")
-public class CommentRequestData {
+@ApiModel("리뷰 댓글 등록 정보")
+public class CommentReviewRequestData {
 
-    @ApiModelProperty(value = "회원 식별자", required = true, example = "1")
-    @NotNull
-    private final Long userId;
-
-    //private final String userToken;
-
-    @ApiModelProperty(value = "게시글 식별자", example = "1")
-    private final Long postId;
 
     @ApiModelProperty(value = "리뷰 식별자", example = "1")
+    @NotNull(message = "Can't create comment with null reviewId")
     private final Long reviewId;
 
     @ApiModelProperty(value = "댓글 내용", required = true, example = "안녕하세요")

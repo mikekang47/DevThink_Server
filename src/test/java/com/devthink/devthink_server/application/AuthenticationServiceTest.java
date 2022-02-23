@@ -6,6 +6,8 @@ import com.devthink.devthink_server.errors.LoginFailException;
 import com.devthink.devthink_server.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -24,15 +26,16 @@ class AuthenticationServiceTest {
 
     @BeforeEach
     void setUp() {
-
         JwtUtil jwtUtil = new JwtUtil(secret);
-        authenticationService = new AuthenticationService(userRepository, jwtUtil);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        authenticationService = new AuthenticationService(userRepository, jwtUtil, passwordEncoder);
         
         User user = User.builder()
                 .id(1L)
                 .email("tester@email.com")
-                .password("test1234567")
                 .build();
+        user.changePassword("test1234567", passwordEncoder);
 
         given(userRepository.findByEmail("tester@email.com"))
                 .willReturn(Optional.of(user));

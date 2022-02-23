@@ -1,6 +1,7 @@
 package com.devthink.devthink_server.application;
 
 import com.devthink.devthink_server.domain.Book;
+import com.devthink.devthink_server.dto.BookBestListResponseData;
 import com.devthink.devthink_server.dto.BookDetailResponseData;
 import com.devthink.devthink_server.dto.BookRequestData;
 import com.devthink.devthink_server.dto.BookResponseData;
@@ -9,10 +10,13 @@ import com.devthink.devthink_server.infra.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,7 +66,7 @@ public class BookService {
      * @param id
      * @return 조회된 Book 객체
      */
-    public BookDetailResponseData getBookDetailById(long id) {
+    public BookDetailResponseData getBookDetailById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
         return book.toBookDetailResponseData();
@@ -109,6 +113,31 @@ public class BookService {
                 .map(Book::toBookResponseData)
                 .collect(Collectors.toList());
         return new PageImpl<>(bookResponseData, pageable, bookPage.getTotalElements());
+    }
+
+    /**
+     * 아래의 파라미터 세개를 생성하여 'findTop5InPeriod' 를 호출하여 top5 책 리스트를 조회합니다.
+     * 1. 리뷰 집계 시작 시간 (start) : 저번 주 시작 시간
+     * 2. 리뷰 집계 끝 시간 (end) : 이번 주 시작 시간
+     * 3. Pageable 객체 : 5개의 데이터를 가지고 오도록 한다.
+     *
+     * @return 가공된 BookBestListResponseData ( start, end, top5책 리스트 )
+     */
+    public BookBestListResponseData getTop5BooksInPeriod() {
+        LocalDate currentDate = LocalDate.now();
+        int day = currentDate.getDayOfWeek().getValue();
+        LocalDateTime end = currentDate.minusDays(day-1).atStartOfDay();
+        LocalDateTime start = end.minusDays(7);
+        Pageable pageable = PageRequest.of(0,5);
+        List<BookResponseData> books = bookRepository.findTop5InPeriod(start, end, pageable)
+                .stream()
+                .map(Book::toBookResponseData)
+                .collect(Collectors.toList());
+        return BookBestListResponseData.builder()
+                .start(start)
+                .end(end)
+                .books(books)
+                .build();
     }
 
 }

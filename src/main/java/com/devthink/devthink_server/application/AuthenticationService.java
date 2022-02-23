@@ -7,6 +7,7 @@ import com.devthink.devthink_server.errors.InvalidTokenException;
 import com.devthink.devthink_server.errors.LoginFailException;
 import com.devthink.devthink_server.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,10 +16,13 @@ import javax.transaction.Transactional;
 public class AuthenticationService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationService(UserRepository userRepository, JwtUtil jwtUtil) {
+    public AuthenticationService(UserRepository userRepository,
+                                 JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -26,7 +30,7 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new LoginFailException(email));
 
-        if(!user.authenticate(password)) {
+        if(!user.authenticate(password, passwordEncoder)) {
             throw new LoginFailException(email);
         }
         return jwtUtil.encode(user.getId());

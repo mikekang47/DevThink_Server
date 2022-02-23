@@ -8,6 +8,7 @@ import com.devthink.devthink_server.errors.UserEmailDuplicationException;
 import com.devthink.devthink_server.errors.UserNickNameDuplicationException;
 import com.devthink.devthink_server.errors.UserNotFoundException;
 import com.github.dozermapper.core.Mapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,11 +22,13 @@ import java.nio.file.AccessDeniedException;
 public class UserService {
     private final UserRepository userRepository;
     private final Mapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public UserService(UserRepository userRepository, Mapper mapper) {
+    public UserService(UserRepository userRepository, Mapper mapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -52,6 +55,8 @@ public class UserService {
             throw new UserNickNameDuplicationException(nickname);
         }
         User user = mapper.map(userRegistrationData, User.class);
+        user.changePassword(userRegistrationData.getPassword(), passwordEncoder);
+        
         return userRepository.save(user);
     }
 
@@ -121,4 +126,8 @@ public class UserService {
     }
 
 
+    public User getUserProfile(String userNickName) {
+        User user = userRepository.findByNicknameAndDeletedIsFalse(userNickName).orElseThrow(() -> new UserNotFoundException());
+        return user;
+    }
 }
