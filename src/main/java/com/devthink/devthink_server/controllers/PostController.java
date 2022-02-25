@@ -9,11 +9,9 @@ import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostRequestData;
 import com.devthink.devthink_server.dto.PostResponseData;
-import com.devthink.devthink_server.dto.ReviewResponseData;
 import com.devthink.devthink_server.security.UserAuthentication;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +51,8 @@ public class PostController {
      */
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "게시글 검색", notes = "게시글의 id를 검색하여 게시글을 가져옵니다.")
+    @ApiOperation(value = "게시글 검색", notes = "게시글의 id를 검색하여 게시글을 가져옵니다.",
+            response = PostResponseData.class)
     public PostResponseData getPost(@PathVariable("id") Long id) {
         Post post = postService.getPostById(id);
         return post.toPostResponseData();
