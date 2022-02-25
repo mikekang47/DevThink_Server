@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.in;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -59,6 +60,14 @@ public class LetterControllerTest {
         given(letterService.findByNickname(eq("test"))).willReturn(target);
 
         given(userRoomService.existChat(eq(1L), eq(2L))).willReturn(0);
+
+        given(userRoomService.getUserRoom(eq(1L))).willReturn(
+                UserRoom.builder()
+                        .user1(sender)
+                        .user2(target)
+                        .roomId(1L)
+                        .build()
+        );
 
         given(userRoomService.getMaxRoom()).willReturn(null);
 
@@ -118,6 +127,30 @@ public class LetterControllerTest {
                 }
         );
 
+        given(letterService.getMessage(any(User.class), any(UserRoom.class))).will(
+                invocation -> {
+                    User user = invocation.getArgument(0);
+                    UserRoom userRoom = invocation.getArgument(1);
+
+                    Letter letter = Letter.builder()
+                            .sender(user)
+                            .target(target)
+                            .room(userRoom)
+                            .content("test")
+                            .readCheck(true)
+                            .build();
+
+                    List<Letter> letters = new ArrayList<>();
+                    letters.add(letter);
+
+                    List<LetterListData> letterList = letters.stream()
+                            .map(Letter::toLetterListData)
+                            .collect(Collectors.toList());
+
+                    return letterList;
+                }
+        );
+
         given(authenticationService.parseToken(VALID_TOKEN)).willReturn(1L);
 
     }
@@ -171,6 +204,28 @@ public class LetterControllerTest {
                 ))
                 .andExpect(content().string(
                         containsString("\"content\":\"test\"")
+                ));
+    }
+
+    @Test
+    void 올바른_정보로_쪽지를_읽음처리_하는_경우() throws Exception {
+        mvc.perform(
+                get("/messages/lists/rooms/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"roomId\":1")
+                ))
+                .andExpect(content().string(
+                        containsString("\"senderId\":1")
+                ))
+                .andExpect(content().string(
+                        containsString("\"targetId\":2")
+                ))
+                .andExpect(content().string(
+                        containsString("\"readCheck\":true")
                 ));
     }
 }
