@@ -18,11 +18,15 @@ import java.util.stream.Collectors;
 
 @Transactional
 @Service
-@RequiredArgsConstructor
 public class LetterService {
 
     private final LetterRepository letterRepository;
     private final UserRepository userRepository;
+
+    public LetterService(LetterRepository letterRepository, UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.letterRepository = letterRepository;
+    }
 
     /**
      * 유저 닉네임을 통해 유저 아이디를 반환합니다.
