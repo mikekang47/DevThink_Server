@@ -82,15 +82,25 @@ public class LetterService {
      * @return List<LetterResultData> 채팅방의 메시지 정보
      */
     public List<LetterResultData> getMessage(User user, UserRoom userRoom) {
-        List<Letter> unReadLists = letterRepository.getUnReadLists(user.getId(), userRoom.getRoomId());
-        for (Letter unreadList : unReadLists) {
-            unreadList.setReadCheck(true);
-        }
+        setReadCheck(user, userRoom);
 
         List<Letter> roomLists = letterRepository.getRoomLists(user.getId(), userRoom.getRoomId());
         return roomLists.stream()
                 .map(Letter::toLetterResultData)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 해당 유저 방에 있는 메시지를 읽음 처리 합니다.
+     * @param user 메시지를 읽는 유저
+     * @param userRoom 유저가 읽은 메시지 방
+     */
+    public List<Letter> setReadCheck(User user, UserRoom userRoom) {
+        List<Letter> unReadLists = letterRepository.getUnReadLists(user.getId(), userRoom.getRoomId());
+        for (Letter unreadList : unReadLists) {
+            unreadList.setReadCheck(true);
+        }
+        return unReadLists;
     }
 
     /**
