@@ -1,11 +1,10 @@
 package com.devthink.devthink_server.controllers;
 
 import com.devthink.devthink_server.application.CategoryService;
+import com.devthink.devthink_server.application.PostHeartService;
 import com.devthink.devthink_server.application.PostService;
 import com.devthink.devthink_server.application.UserService;
-import com.devthink.devthink_server.domain.Category;
-import com.devthink.devthink_server.domain.Post;
-import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.domain.*;
 import com.devthink.devthink_server.dto.PostListData;
 import com.devthink.devthink_server.dto.PostRequestData;
 import com.devthink.devthink_server.dto.PostResponseData;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,6 +29,7 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final PostHeartService postHeartService;
 
     /**
      * 페이지를 요청하면 카테고리별 페이지의 게시글을 가져옵니다.
@@ -51,9 +52,15 @@ public class PostController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "게시글 검색", notes = "게시글의 id를 검색하여 게시글을 가져옵니다.")
-    public PostResponseData getPost(@PathVariable("id") Long id) {
+    public PostResponseData getPost(@PathVariable("id") Long id, UserAuthentication authentication) {
+        Long userId = authentication.getUserId();
+        Boolean checkHeart = postHeartService.checkPostHeart(id, userId);
+
         Post post = postService.getPostById(id);
-        return post.toPostResponseData();
+
+
+
+        return post.toPostResponseData(checkHeart);
     }
 
     /**
@@ -73,7 +80,7 @@ public class PostController {
         User user = userService.getUser(userId);
         Category category = categoryService.getCategory(postRequestData.getCategoryId());
         Post post = postService.savePost(user, category, postRequestData);
-        return post.toPostResponseData();
+        return post.toPostResponseData(false);
     }
 
     /**
@@ -93,9 +100,10 @@ public class PostController {
         Long userId = userAuthentication.getUserId();
         User user = userService.getUser(userId);
         Post post = postService.getPostById(id);
+        Boolean checkHeart = postHeartService.checkPostHeart(id, userId);
 
         Post updatedPost = postService.update(user, post, postRequestData);
-        return updatedPost.toPostResponseData();
+        return updatedPost.toPostResponseData(checkHeart);
     }
 
     /**
@@ -128,8 +136,10 @@ public class PostController {
     @GetMapping("/search/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "카테고리별 게시글 검색", notes = "사용자로부터 제목을 받아, 카테고리별 제목이 담긴 게시글을 반환합니다.")
-    public List<PostResponseData> search(@PathVariable("categoryId") Long categoryId, @RequestParam String keyword) {
-        return postService.search(categoryId, keyword);
+    public List<PostResponseData> search(@PathVariable("categoryId") Long categoryId, @RequestParam String keyword, UserAuthentication userAuthentication) {
+        List<Post> posts = postService.search(categoryId, keyword);
+
+        return getPostResponseData(userAuthentication, posts);
     }
 
     /**
@@ -141,10 +151,14 @@ public class PostController {
     @GetMapping("/best/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "카테고리별 베스트 게시글 가져오기", notes = "사용자로부터 카테고리 id를 받아, 베스트 게시글을 가져옵니다.")
-    public List<PostResponseData> searchBest(@PathVariable("categoryId") Long categoryId) {
+    public List<PostResponseData> searchBest(@PathVariable("categoryId") Long categoryId, UserAuthentication userAuthentication) {
         Category category = categoryService.getCategory(categoryId);
-        return postService.getBestPost(category);
+        List<Post> posts = postService.getBestPost(category);
+
+        return getPostResponseData(userAuthentication, posts);
     }
+
+
 
     /**
      * 게시글 신고 API
@@ -166,4 +180,16 @@ public class PostController {
         return postService.report(user, post, reportUser);
     }
 
+
+    private List<PostResponseData> getPostResponseData(UserAuthentication userAuthentication, List<Post> posts) {
+        List<PostResponseData> postResponseDataList = new ArrayList<>();
+
+        Long userId = userAuthentication.getUserId();
+
+        for(Post post : posts) {
+            Boolean checkHeart = postHeartService.checkPostHeart(post.getId(), userId);
+            postResponseDataList.add(post.toPostResponseData(checkHeart));
+        }
+        return postResponseDataList;
+    }
 }

@@ -85,7 +85,7 @@ public class Post extends BaseTimeEntity {
                 .build();
     }
 
-    public PostResponseData toPostResponseData() {
+    public PostResponseData toPostResponseData(Boolean checkHeart) {
         return PostResponseData.builder()
                 .userProfile(user.toUserProfileData())
                 .imageUrl(imageUrl)
@@ -95,6 +95,7 @@ public class Post extends BaseTimeEntity {
                 .deleted(deleted)
                 .createAt(getCreateAt())
                 .heartCnt(heartCnt)
+                .heartPresent(checkHeart)
                 .updateAt(getUpdateAt())
                 .content(content)
                 .Image(isImage())

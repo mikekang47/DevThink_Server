@@ -148,11 +148,9 @@ public class PostService {
      * @param categoryId 카테고리 아이디
      * @return List<PostResponseData> 게시글 정보
      */
-    public List<PostResponseData> search(Long categoryId, String keyword){
+    public List<Post> search(Long categoryId, String keyword){
         List<Post> posts = postRepository.findByCategory_IdAndTitleContainingAndDeletedIsFalseOrderByIdDesc(categoryId, keyword);
-        return posts.stream()
-                .map(Post::toPostResponseData)
-                .collect(Collectors.toList());
+        return posts;
     }
 
     /**
@@ -160,13 +158,11 @@ public class PostService {
      * @param category 카테고리
      * @return List<PostResponseData> 베스트 게시글 정보
      */
-    public List<PostResponseData> getBestPost(Category category){
+    public List<Post> getBestPost(Category category){
         LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
         LocalDateTime end = LocalDateTime.now();
-        List<Post> bestPost = postRepository.getBestPost(category.getId(), start, end, PageRequest.of(0,1, Sort.by(Sort.Direction.DESC, "heartCnt")));
-        return bestPost.stream()
-                .map(Post::toPostResponseData)
-                .collect(Collectors.toList());
+        List<Post> bestPosts = postRepository.getBestPost(category.getId(), start, end, PageRequest.of(0,1, Sort.by(Sort.Direction.DESC, "heartCnt")));
+        return bestPosts;
    }
 
     /**

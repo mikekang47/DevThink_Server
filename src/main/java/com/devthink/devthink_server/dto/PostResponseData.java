@@ -31,6 +31,9 @@ public class PostResponseData {
     @ApiModelProperty(notes = "제목", example = "test")
     private String title;
 
+
+    private Boolean heartPresent;
+
     @ApiModelProperty(notes = "프로젝트 부제목", example = "test")
     private String subTitle;
 

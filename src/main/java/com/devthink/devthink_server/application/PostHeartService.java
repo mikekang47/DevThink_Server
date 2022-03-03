@@ -15,20 +15,32 @@ import org.springframework.stereotype.Service;
 @Service
 public class PostHeartService {
     private final UserRepository userRepository;
-    private final PostHeartRepository postheartRepository;
+    private final PostHeartRepository postHeartRepository;
     private final PostRepository postRepository;
 
-    public PostHeartService(UserRepository userRepository, PostHeartRepository postheartRepository, PostRepository postRepository) {
+    public PostHeartService(UserRepository userRepository, PostHeartRepository postHeartRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
-        this.postheartRepository = postheartRepository;
+        this.postHeartRepository = postHeartRepository;
         this.postRepository = postRepository;
+    }
+
+    public Boolean checkPostHeart(Long postId, Long userId) {
+        findPost(postId);
+        findUser(userId);
+
+        if(postHeartRepository.findByPostIdAndUserId(postId, userId).isPresent()) {
+            return true;
+        } else{
+            return false;
+        }
+
     }
 
     public PostHeart createPostHeart(Long postId, Long userId) {
         Post post = findPost(postId);
         User user = findUser(userId);
 
-        if(postheartRepository.existsByPostIdAndUserId(postId, userId)) {
+        if(postHeartRepository.existsByPostIdAndUserId(postId, userId)) {
             throw new HeartAlreadyExistsException();
         }
 
@@ -37,7 +49,7 @@ public class PostHeartService {
                 .user(user)
                 .post(post)
                 .build();
-        return postheartRepository.save(postHeart);
+        return postHeartRepository.save(postHeart);
     }
 
     private Post findPost(Long postId) {
@@ -56,10 +68,10 @@ public class PostHeartService {
      */
     public void destroyPostHeart(Long postId, Long userId) {
         Post post = findPost(postId);
-        PostHeart postHeart = postheartRepository.findByPostIdAndUserId(postId, userId)
+        PostHeart postHeart = postHeartRepository.findByPostIdAndUserId(postId, userId)
                 .orElseThrow(() -> new HeartNotFoundException());
 
         post.updateHeart(post.getHeartCnt()-1);
-        postheartRepository.deleteById(postHeart.getId());
+        postHeartRepository.deleteById(postHeart.getId());
     }
 }
