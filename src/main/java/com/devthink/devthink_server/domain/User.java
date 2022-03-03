@@ -2,10 +2,13 @@ package com.devthink.devthink_server.domain;
 
 
 import com.devthink.devthink_server.dto.UserProfileData;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+
 
 
 @Getter
@@ -30,9 +33,6 @@ public class User extends BaseTimeEntity {
 
     private String role;
 
-    @ElementCollection(targetClass = String.class)
-    private List<String> stack;
-
     private String blogAddr;
 
     private String gitNickname;
@@ -51,7 +51,7 @@ public class User extends BaseTimeEntity {
     public void changeWith(User source) {
         nickname = source.getNickname();
         role = source.getRole();
-        stack = source.getStack();
+        imageUrl = source.getImageUrl();
         gitNickname = source.getGitNickname();
         blogAddr = source.getBlogAddr();
         password = source.getPassword();
@@ -66,9 +66,18 @@ public class User extends BaseTimeEntity {
         return !deleted && password.equals(this.password);
     }
 
+    public void upPoint(int point) {
+        this.point += point;
+    }
+
+    public void downPoint(int point) {
+        this.point -= point;
+    }
+
     /**
      * User 객체를 UserProfileData 객체로 변환합니다.
      * 탈퇴한 회원의 경우 삭제여부(deleted)컬럼 외의 나머지 정보는 null 값으로 채워 전달합니다.
+     *
      * @return 변환된 UserProfileData 객체
      */
     public UserProfileData toUserProfileData() {
@@ -85,5 +94,9 @@ public class User extends BaseTimeEntity {
                     .build();
         }
     }
-}
 
+    public void setReported() {
+        reported = reported + 1;
+    }
+
+}

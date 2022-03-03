@@ -11,6 +11,7 @@ import com.github.dozermapper.core.Mapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.nio.file.AccessDeniedException;
 
 /**
  * 사용자의 요청을 받아, 실제 내부에서 작동하는 클래스 입니다.
@@ -86,7 +87,10 @@ public class UserService {
      * @param modificationData 수정할 사용자의 정보
      * @return 수정된 사용자.
      */
-    public User updateUser(Long id, UserModificationData modificationData) {
+    public User updateUser(Long id, UserModificationData modificationData, Long userId) throws AccessDeniedException {
+        if(!id.equals(userId)) {
+            throw new AccessDeniedException("Access denied");
+        }
         User user = findUser(id);
 
         User source = mapper.map(modificationData, User.class);
@@ -117,4 +121,8 @@ public class UserService {
     }
 
 
+    public User getUserProfile(String userNickName) {
+        User user = userRepository.findByNicknameAndDeletedIsFalse(userNickName).orElseThrow(() -> new UserNotFoundException());
+        return user;
+    }
 }

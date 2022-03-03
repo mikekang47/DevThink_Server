@@ -1,15 +1,17 @@
 package com.devthink.devthink_server.domain;
 
-import com.devthink.devthink_server.dto.CommentResponseDto;
+import com.devthink.devthink_server.dto.CommentDetailResponseData;
+import com.devthink.devthink_server.dto.CommentResponseData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -18,28 +20,55 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment {
+public class Comment extends BaseTimeEntity {
     @Id
-    @GeneratedValue
-    Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(targetEntity = User.class, fetch = LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(targetEntity = Post.class,fetch = LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @ManyToOne(targetEntity = Review.class, fetch = LAZY)
+    @JoinColumn(name = "review_id")
+    private Review review;
 
     @ManyToOne(fetch = LAZY)
-    User user;
+    private CommentHeart heart;
 
-    //Post post;
+    private String content;
 
-    @ManyToOne(fetch = LAZY)
-    Review review;
+    private String status;
 
-    String content;
+    @Builder.Default
+    Integer heartCnt = 0;
 
-    String status;
+    @OneToMany(mappedBy = "comment")
+    @Builder.Default
+    private final List<Reply> replys = new ArrayList<>();
 
-    public CommentResponseDto toCommentResponseDto() {
-        return CommentResponseDto.builder()
-                .user_nickname(user.getNickname())
-                .user_role(user.getRole())
+    public CommentResponseData toCommentResponseData() {
+        return CommentResponseData.builder()
+                .commentId(id)
+                .userProfile(user.toUserProfileData())
                 .content(content)
+                .createAt(getCreateAt())
+                .updateAt(getUpdateAt())
+                .build();
+    }
+
+    /**
+     * 답글 리스트가 추가 된 댓글 상세 정보로 변환합니다.
+     * @return 변환 된 CommentDetailResponseData 객체
+     */
+    public CommentDetailResponseData toCommentDetailResponseData() {
+        return CommentDetailResponseData.builder()
+                .comment(toCommentResponseData())
+                .replys(replys.stream().map(Reply::toReplyResponseData).collect(Collectors.toList()))
                 .build();
     }
 
@@ -47,4 +76,10 @@ public class Comment {
         this.content = content;
     }
 
+    public void updateHeart(int heartCnt) {
+        this.heartCnt = heartCnt;
+    }
+
 }
+
+

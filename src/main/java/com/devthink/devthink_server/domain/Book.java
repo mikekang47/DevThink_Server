@@ -20,7 +20,8 @@ public class Book extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer isbn;
+    @Column(length = 13)
+    private String isbn;
 
     private String name;
 

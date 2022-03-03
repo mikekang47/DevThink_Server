@@ -17,6 +17,6 @@ public class ReviewDetailResponseData {
     private ReviewResponseData review;
 
     @Builder.Default
-    private List<CommentResponseDto> comments = new ArrayList<>();
+    private List<CommentDetailResponseData> comments = new ArrayList<>();
 
 }
