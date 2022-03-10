@@ -55,11 +55,7 @@ public class PostController {
     public PostResponseData getPost(@PathVariable("id") Long id, UserAuthentication authentication) {
         Long userId = authentication.getUserId();
         Boolean checkHeart = postHeartService.checkPostHeart(id, userId);
-
         Post post = postService.getPostById(id);
-
-
-
         return post.toPostResponseData(checkHeart);
     }
 
@@ -136,10 +132,9 @@ public class PostController {
     @GetMapping("/search/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "카테고리별 게시글 검색", notes = "사용자로부터 제목을 받아, 카테고리별 제목이 담긴 게시글을 반환합니다.")
-    public List<PostResponseData> search(@PathVariable("categoryId") Long categoryId, @RequestParam String keyword, UserAuthentication userAuthentication) {
+    public List<PostListData> search(@PathVariable("categoryId") Long categoryId, @RequestParam String keyword, UserAuthentication userAuthentication) {
         List<Post> posts = postService.search(categoryId, keyword);
-
-        return getPostResponseData(userAuthentication, posts);
+        return getPostListData(posts);
     }
 
     /**
@@ -151,11 +146,11 @@ public class PostController {
     @GetMapping("/best/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "카테고리별 베스트 게시글 가져오기", notes = "사용자로부터 카테고리 id를 받아, 베스트 게시글을 가져옵니다.")
-    public List<PostResponseData> searchBest(@PathVariable("categoryId") Long categoryId, UserAuthentication userAuthentication) {
+    public List<PostListData> searchBest(@PathVariable("categoryId") Long categoryId, UserAuthentication userAuthentication) {
         Category category = categoryService.getCategory(categoryId);
         List<Post> posts = postService.getBestPost(category);
 
-        return getPostResponseData(userAuthentication, posts);
+        return getPostListData(posts);
     }
 
 
@@ -181,15 +176,12 @@ public class PostController {
     }
 
 
-    private List<PostResponseData> getPostResponseData(UserAuthentication userAuthentication, List<Post> posts) {
-        List<PostResponseData> postResponseDataList = new ArrayList<>();
-
-        Long userId = userAuthentication.getUserId();
+    private List<PostListData> getPostListData(List<Post> posts) {
+        List<PostListData> postDataList = new ArrayList<>();
 
         for(Post post : posts) {
-            Boolean checkHeart = postHeartService.checkPostHeart(post.getId(), userId);
-            postResponseDataList.add(post.toPostResponseData(checkHeart));
+            postDataList.add(post.toPostListData());
         }
-        return postResponseDataList;
+        return postDataList;
     }
 }
