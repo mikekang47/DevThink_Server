@@ -14,28 +14,22 @@ import java.util.List;
 @NoArgsConstructor
 public class PostResponseData {
 
+    @ApiModelProperty(notes = "카테고리 아이디", example = "1")
+    private Long categoryId;
+
     @ApiModelProperty(notes = "게시글 번호", example = "1")
     private Long id;
 
     private UserProfileData userProfile;
 
-    @ApiModelProperty(notes = "카테고리 아이디", example = "1")
-    private Long categoryId;
-
     @ApiModelProperty(notes = "이미지", example = "testst.com")
     private String imageUrl;
-
-    @ApiModelProperty(notes = "이미지 포함여부", example = "false")
-    private boolean Image;
 
     @ApiModelProperty(notes = "제목", example = "test")
     private String title;
 
-
+    @ApiModelProperty(notes = "사용자가 해당 게시글에 하트를 눌렀는지 확인 여부", example = "true")
     private Boolean heartPresent;
-
-    @ApiModelProperty(notes = "프로젝트 부제목", example = "test")
-    private String subTitle;
 
     @ApiModelProperty(notes = "내용", example = "Test")
     private String content;
