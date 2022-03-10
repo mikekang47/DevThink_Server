@@ -15,28 +15,17 @@ public class PostListData {
     @ApiModelProperty(notes = "게시글 번호", example = "1")
     private Long id;
 
-    private UserProfileData userProfile;
+    @ApiModelProperty(value = "사용자 식별자", example = "1")
+    private Long userId;
 
-    @ApiModelProperty(notes = "카테고리 아이디", example = "1")
-    private Long categoryId;
+    @ApiModelProperty(value = "사용자 닉네임", example = "싱크싱크")
+    private String nickname;
 
     @ApiModelProperty(notes = "이미지", example = "testst.com")
     private String imageUrl;
 
-    @ApiModelProperty(notes = "이미지 포함여부", example = "false")
-    private boolean Image;
-
     @ApiModelProperty(notes = "제목", example = "test")
     private String title;
-
-    @ApiModelProperty(notes = "프로젝트 게시판 부제목", example = "test")
-    private String subTitle;
-
-    @ApiModelProperty(notes = "내용", example = "Test")
-    private String content;
-
-    @ApiModelProperty(notes = "글 상태", example = "active")
-    private Boolean deleted;
 
     @ApiModelProperty(notes = "좋아요 수", example = "1")
     private Integer heartCnt;
