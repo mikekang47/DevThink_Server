@@ -70,18 +70,14 @@ public class Post extends BaseTimeEntity {
 
     public PostListData toPostListData() {
         return PostListData.builder()
-                .categoryId(category.getId())
-                .userProfile(user.toUserProfileData())
-                .subTitle(subTitle)
-                .content(content)
+                .userId(user.getId())
+                .nickname(user.getNickname())
                 .title(title)
-                .deleted(deleted)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
                 .heartCnt(heartCnt)
                 .id(id)
                 .imageUrl(imageUrl)
-                .Image(isImage())
                 .build();
     }
 
@@ -90,7 +86,6 @@ public class Post extends BaseTimeEntity {
                 .userProfile(user.toUserProfileData())
                 .imageUrl(imageUrl)
                 .id(id)
-                .subTitle(subTitle)
                 .categoryId(category.getId())
                 .deleted(deleted)
                 .createAt(getCreateAt())
@@ -98,7 +93,6 @@ public class Post extends BaseTimeEntity {
                 .heartPresent(checkHeart)
                 .updateAt(getUpdateAt())
                 .content(content)
-                .Image(isImage())
                 .title(title)
                 .comments(comments.stream().map(Comment::toCommentDetailResponseData).collect(Collectors.toList()))
                 .build();
