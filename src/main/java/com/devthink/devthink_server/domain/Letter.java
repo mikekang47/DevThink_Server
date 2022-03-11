@@ -55,13 +55,11 @@ public class Letter extends BaseTimeEntity {
 
     public LetterListData toLetterListData() {
         return LetterListData.builder()
-                .heart(isHeart())
                 .createAt(getCreateAt())
                 .roomId(room.getRoomId())
                 .content(content)
                 .senderId(sender.getId())
                 .targetId(target.getId())
-                .readCheck(readCheck)
                 .build();
     }
 }

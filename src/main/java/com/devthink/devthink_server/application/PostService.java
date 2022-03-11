@@ -14,6 +14,7 @@ import com.devthink.devthink_server.errors.PostNotFoundException;
 import com.devthink.devthink_server.infra.PostReportRepository;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.github.dozermapper.core.Mapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
