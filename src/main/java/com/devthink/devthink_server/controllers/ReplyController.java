@@ -4,6 +4,7 @@ import com.devthink.devthink_server.application.CommentService;
 import com.devthink.devthink_server.application.ReplyService;
 import com.devthink.devthink_server.application.UserService;
 import com.devthink.devthink_server.domain.Comment;
+import com.devthink.devthink_server.domain.Reply;
 import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.dto.ReplyModificationData;
 import com.devthink.devthink_server.dto.ReplyRequestData;
@@ -19,6 +20,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/replies")
@@ -44,7 +46,8 @@ public class ReplyController {
     @GetMapping
     @ApiIgnore
     public List<ReplyResponseData> getReplies() {
-        return replyService.getReplies();
+        List<Reply> replies = replyService.getReplies();
+        return replies.stream().map(Reply::toReplyResponseData).collect(Collectors.toList());
     }
 
     /**
@@ -58,7 +61,8 @@ public class ReplyController {
     @PreAuthorize("isAuthenticated()")
     public List<ReplyResponseData> getUserReplies(UserAuthentication userAuthentication) {
         Long userIdx = userAuthentication.getUserId();
-        return replyService.getUserReplies(userIdx);
+        List<Reply> replies = replyService.getUserReplies(userIdx);
+        return replies.stream().map(Reply::toReplyResponseData).collect(Collectors.toList());
     }
 
     /**
@@ -70,7 +74,8 @@ public class ReplyController {
     @ApiImplicitParam(name = "commentIdx", value = "조회할 대상 댓글의 식별자")
     @GetMapping("/comment/{commentIdx}")
     public List<ReplyResponseData> getCommentReplies(@PathVariable("commentIdx") Long commentIdx) {
-        return replyService.getCommentReplies(commentIdx);
+        List<Reply> replies = replyService.getCommentReplies(commentIdx);
+        return replies.stream().map(Reply::toReplyResponseData).collect(Collectors.toList());
     }
 
     /**
@@ -93,7 +98,8 @@ public class ReplyController {
             User user = userService.getUser(userAuthentication.getUserId());
             // commentId 값을 통하여 commentRepository에서 Comment를 가져옵니다.
             Comment comment = commentService.getComment(commentId);
-            return replyService.createReply(user, comment, replyRequestData.getContent());
+            Reply reply = replyService.createReply(user, comment, replyRequestData.getContent());
+            return reply.toReplyResponseData();
         } else {
             throw new ReplyBadRequestException();
         }
@@ -112,7 +118,8 @@ public class ReplyController {
     @PreAuthorize("isAuthenticated()")
     public ReplyResponseData updateReply(@PathVariable("replyId") Long replyId,
                                              @Valid @RequestBody ReplyModificationData replyModificationData){
-        return replyService.updateReply(replyId, replyModificationData.getContent());
+        Reply reply = replyService.updateReply(replyId, replyModificationData.getContent());
+        return reply.toReplyResponseData();
     }
 
     /**
