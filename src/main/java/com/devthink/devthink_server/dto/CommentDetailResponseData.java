@@ -16,6 +16,6 @@ public class CommentDetailResponseData {
     private CommentResponseData comment;
 
     @Builder.Default
-    private List<ReplyResponseData> replys = new ArrayList<>();
+    private List<ReplyResponseData> replies = new ArrayList<>();
 
 }
