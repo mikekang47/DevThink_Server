@@ -1,12 +1,7 @@
 package com.devthink.devthink_server.controllers;
 
-import com.devthink.devthink_server.application.CommentService;
-import com.devthink.devthink_server.application.PostService;
-import com.devthink.devthink_server.application.ReviewService;
-import com.devthink.devthink_server.application.UserService;
-import com.devthink.devthink_server.domain.Post;
-import com.devthink.devthink_server.domain.Review;
-import com.devthink.devthink_server.domain.User;
+import com.devthink.devthink_server.application.*;
+import com.devthink.devthink_server.domain.*;
 import com.devthink.devthink_server.dto.CommentModificationData;
 import com.devthink.devthink_server.dto.CommentPostRequestData;
 import com.devthink.devthink_server.dto.CommentReviewRequestData;
@@ -21,6 +16,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/comments")
@@ -50,7 +46,8 @@ public class CommentController {
     @GetMapping
     @ApiIgnore
     public List<CommentResponseData> getComments() {
-        return commentService.getComments();
+        List<Comment> comments = commentService.getComments();
+        return comments.stream().map(Comment::toCommentResponseData).collect(Collectors.toList());
     }
 
     /**
@@ -64,7 +61,8 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     public List<CommentResponseData> getUserReviewComments(UserAuthentication userAuthentication) {
         Long userIdx = userAuthentication.getUserId();
-        return commentService.getUserReviewComments(userIdx);
+        List<Comment> comments = commentService.getUserReviewComments(userIdx);
+        return comments.stream().map(Comment::toCommentResponseData).collect(Collectors.toList());
     }
 
     /**
@@ -78,7 +76,8 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     public List<CommentResponseData> getUserPostComments(UserAuthentication userAuthentication) {
         Long userIdx = userAuthentication.getUserId();
-        return commentService.getUserPostComments(userIdx);
+        List<Comment> comments = commentService.getUserPostComments(userIdx);
+        return comments.stream().map(Comment::toCommentResponseData).collect(Collectors.toList());
     }
 
     /**
@@ -91,7 +90,8 @@ public class CommentController {
     @GetMapping("/post/{postIdx}")
     @ApiIgnore
     public List<CommentResponseData> getPostComments(@PathVariable("postIdx") Long postIdx) {
-        return commentService.getPostComments(postIdx);
+        List<Comment> comments = commentService.getPostComments(postIdx);
+        return comments.stream().map(Comment::toCommentResponseData).collect(Collectors.toList());
     }
 
     /**
@@ -104,7 +104,8 @@ public class CommentController {
     @GetMapping("/review/{reviewIdx}")
     @ApiIgnore
     public List<CommentResponseData> getReviewComments(@PathVariable("reviewIdx") Long reviewIdx) {
-        return commentService.getReviewComments(reviewIdx);
+        List<Comment> comments = commentService.getReviewComments(reviewIdx);
+        return comments.stream().map(Comment::toCommentResponseData).collect(Collectors.toList());
     }
 
     /**
@@ -125,7 +126,8 @@ public class CommentController {
         User user = userService.getUser(authentication.getUserId());
         // reviewId 값을 통하여 reviewRepository에서 Review를 가져옵니다.
         Review review = reviewService.getReviewById(reviewId);
-        return commentService.createReviewComment(user, review, commentReviewRequestData.getContent());
+        Comment comment = commentService.createReviewComment(user, review, commentReviewRequestData.getContent());
+        return comment.toCommentResponseData();
     }
 
     /**
@@ -146,7 +148,8 @@ public class CommentController {
         User user = userService.getUser(authentication.getUserId());
         // postId 값을 통하여 postRepository에서 Post를 가져옵니다.
         Post post = postService.getPostById(postId);
-        return commentService.createPostComment(user, post, commentPostRequestData.getContent());
+        Comment comment = commentService.createPostComment(user, post, commentPostRequestData.getContent());
+        return comment.toCommentResponseData();
     }
 
     /**
@@ -162,7 +165,8 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     public CommentResponseData updateComment(@PathVariable("commentId") Long commentId,
                                              @Valid @RequestBody CommentModificationData commentModificationData){
-        return commentService.updateComment(commentId, commentModificationData.getContent());
+        Comment updatedComment = commentService.updateComment(commentId, commentModificationData.getContent());
+        return updatedComment.toCommentResponseData();
     }
 
     /**

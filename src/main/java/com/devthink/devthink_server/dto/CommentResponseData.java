@@ -30,11 +30,17 @@ public class CommentResponseData {
     @NotBlank
     private final String content;
 
-    @ApiModelProperty(value = "댓글 생성 시각", example = "")
+    @ApiModelProperty(notes = "좋아요 수", example = "1")
+    private Integer heartCnt;
+
+    @ApiModelProperty(notes = "좋아요 활성 여부", example = "true")
+    private Boolean heartPresent;
+
+    @ApiModelProperty(value = "댓글 생성 시각", example = "2022-01-26T22:07:17.0831141")
     @CreatedDate
     private LocalDateTime createAt;
 
-    @ApiModelProperty(value = "댓글 수정 시각", example = "")
+    @ApiModelProperty(value = "댓글 수정 시각", example = "2022-01-26T22:07:17.0831141")
     @LastModifiedDate
     private LocalDateTime updateAt;
 

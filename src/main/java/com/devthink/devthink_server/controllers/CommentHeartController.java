@@ -50,8 +50,9 @@ public class CommentHeartController {
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("isAuthenticated()")
-    public void destroyCommentHeart(@PathVariable Long commentId) {
-        commentHeartService.destroyCommentHeart(commentId);
+    public void destroyCommentHeart(@PathVariable Long commentId, UserAuthentication userAuthentication) {
+        Long userId = userAuthentication.getUserId();
+        commentHeartService.destroyCommentHeart(commentId, userId);
     }
 
     /**

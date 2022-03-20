@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -25,6 +28,7 @@ public class Reply extends BaseTimeEntity {
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "comment_id")
     private Comment comment;
 
     private String content;
@@ -34,11 +38,17 @@ public class Reply extends BaseTimeEntity {
     @Builder.Default
     Integer heartCnt = 0;
 
+    @OneToMany(mappedBy = "reply")
+    @Builder.Default
+    private final List<ReplyHeart> hearts = new ArrayList<>();
+
     public ReplyResponseData toReplyResponseData() {
         return ReplyResponseData.builder()
                 .replyId(id)
                 .userProfile(user.toUserProfileData())
                 .content(content)
+                .heartPresent(hearts.stream().anyMatch(heart -> heart.getUser().equals(user)))
+                .heartCnt(heartCnt)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
                 .build();
