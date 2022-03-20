@@ -44,9 +44,9 @@ public class CommentHeartService {
         return commentHeartRepository.save(commentHeart);
     }
 
-    public void destroyCommentHeart(Long commentId) {
+    public void destroyCommentHeart(Long commentId, Long userId) {
         Comment comment = findComment(commentId);
-        CommentHeart commentHeart = commentHeartRepository.findByCommentId(commentId)
+        CommentHeart commentHeart = commentHeartRepository.findByCommentIdAndUserId(commentId, userId)
                 .orElseThrow(HeartNotFoundException::new);
 
         comment.updateHeart(comment.getHeartCnt() - 1);
