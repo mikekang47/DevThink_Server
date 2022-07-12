@@ -53,4 +53,25 @@
 - 회원 간 쪽지 서비스
     **상부상조**
     시니어 개발자의 주된 유입원인 중 하나인 리쿠르팅을 빼놓을 수 없습니다. 개발자 지망생/주니어 개발자가 작성한 책 리뷰 글 혹은 게시글을 보고 시니어 개발자가 영입을 요청할 수 있도록 쪽지 서비스를 도입했습니다.
-    
+
+
+### 사용 기술
+---
+* Spring Boot
+* Spring MVC
+* Spring Data JPA
+* Maria DB
+* Docker
+* AWS EC2
+* RDS
+
+
+### 데모 영상
+
+<img src="https://user-images.githubusercontent.com/70617238/178531606-42ea70b7-04b1-487d-8fdf-5a26ef5d6508.gif">
+<img src="https://user-images.githubusercontent.com/70617238/178531606-42ea70b7-04b1-487d-8fdf-5a26ef5d6508.gif">
+<img src="https://user-images.githubusercontent.com/70617238/178531643-2c68fd78-ce5d-4550-8327-7f6378ff2fff.gif">
+
+
+
+
