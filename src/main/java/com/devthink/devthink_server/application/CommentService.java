@@ -1,18 +1,13 @@
 package com.devthink.devthink_server.application;
 
-import com.devthink.devthink_server.domain.Comment;
-import com.devthink.devthink_server.domain.Post;
-import com.devthink.devthink_server.dto.CommentResponseData;
+import com.devthink.devthink_server.domain.*;
 import com.devthink.devthink_server.errors.*;
 import com.devthink.devthink_server.infra.CommentRepository;
-import com.devthink.devthink_server.domain.Review;
-import com.devthink.devthink_server.domain.User;
 import com.devthink.devthink_server.infra.PostRepository;
 import com.devthink.devthink_server.infra.ReviewRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,8 +30,8 @@ public class CommentService {
      * 모든 Comment를 조회합니다.
      * @return 조회된 모든 Comment
      */
-    public List<CommentResponseData> getComments() {
-        return getCommentResponseDataList(commentRepository.findAll());
+    public List<Comment> getComments() {
+        return commentRepository.findAll();
     }
 
     /**
@@ -54,11 +49,11 @@ public class CommentService {
      * @param userIdx 댓글을 조회할 사용자의 식별자
      * @return 특정 사용자가 Review에 작성한 Comment 리스트
      */
-    public List<CommentResponseData> getUserReviewComments(Long userIdx) {
+    public List<Comment> getUserReviewComments(Long userIdx) {
         List<Comment> userComments = commentRepository.findByUserIdAndReviewIdIsNotNull(userIdx);
         if (userComments.isEmpty())
             throw new CommentNotFoundException();
-        return getCommentResponseDataList(userComments);
+        return userComments;
     }
 
     /**
@@ -66,11 +61,11 @@ public class CommentService {
      * @param userIdx 댓글을 조회할 사용자의 식별자
      * @return 특정 사용자가 Post에 작성한 Comment 리스트
      */
-    public List<CommentResponseData> getUserPostComments(Long userIdx) {
+    public List<Comment> getUserPostComments(Long userIdx) {
         List<Comment> userComments = commentRepository.findByUserIdAndPostIdIsNotNull(userIdx);
         if (userComments.isEmpty())
             throw new CommentNotFoundException();
-        return getCommentResponseDataList(userComments);
+        return userComments;
     }
 
     /**
@@ -78,13 +73,13 @@ public class CommentService {
      * @param postIdx 조회할 대상 게시글의 식별자
      * @return 특정 게시물에 작성된 Comment 리스트
      */
-    public List<CommentResponseData> getPostComments(Long postIdx) {
+    public List<Comment> getPostComments(Long postIdx) {
         if (!postRepository.existsById(postIdx))
             throw new PostNotFoundException(postIdx);
         List<Comment> postComments = commentRepository.findByPostId(postIdx);
         if (postComments.isEmpty())
             throw new CommentNotFoundException();
-        return getCommentResponseDataList(postComments);
+        return postComments;
     }
 
     /**
@@ -92,13 +87,13 @@ public class CommentService {
      * @param reviewIdx 조회할 대상 리뷰의 식별자
      * @return 특정 리뷰에 작성된 Comment 리스트
      */
-    public List<CommentResponseData> getReviewComments(Long reviewIdx) {
+    public List<Comment> getReviewComments(Long reviewIdx) {
         if (!reviewRepository.existsById(reviewIdx))
             throw new ReviewNotFoundException(reviewIdx);
         List<Comment> reviewComments = commentRepository.findByReviewId(reviewIdx);
         if (reviewComments.isEmpty())
             throw new CommentNotFoundException();
-        return getCommentResponseDataList(reviewComments);
+        return reviewComments;
     }
 
     /**
@@ -108,7 +103,7 @@ public class CommentService {
      * @param content Comment의 내용
      * @return 생성된 Comment의 결과 정보
      */
-    public CommentResponseData createReviewComment(User user, Review review, String content) {
+    public Comment createReviewComment(User user, Review review, String content) {
         // commentRepository에 새로운 댓글을 생성합니다.
         return commentRepository.save(
                 Comment.builder()
@@ -116,7 +111,7 @@ public class CommentService {
                 .review(review)
                 .content(content)
                 .build()
-        ).toCommentResponseData();
+        );
     }
 
     /**
@@ -126,7 +121,7 @@ public class CommentService {
      * @param content Comment의 내용
      * @return 생성된 Comment의 결과 정보
      */
-    public CommentResponseData createPostComment(User user, Post post, String content) {
+    public Comment createPostComment(User user, Post post, String content) {
         // commentRepository에 새로운 댓글을 생성합니다.
         return commentRepository.save(
                 Comment.builder()
@@ -134,7 +129,7 @@ public class CommentService {
                 .post(post)
                 .content(content)
                 .build()
-        ).toCommentResponseData();
+        );
     }
 
     /**
@@ -142,10 +137,10 @@ public class CommentService {
      * @param commentId 수정할 Comment의 식별자
      * @param content 수정할 content 내용
      */
-    public CommentResponseData updateComment(Long commentId, String content) {
+    public Comment updateComment(Long commentId, String content) {
         Comment comment = getComment(commentId);
         comment.setContent(content);
-        return commentRepository.save(comment).toCommentResponseData();
+        return commentRepository.save(comment);
     }
 
     /**
@@ -158,16 +153,4 @@ public class CommentService {
     }
 
 
-    /**
-     * entity List를 받아 dto List 데이터로 변환하여 반환합니다.
-     * @param comments entity List
-     * @return 입력된 dto 데이터로 변환된 list
-     */
-    private List<CommentResponseData> getCommentResponseDataList(List<Comment> comments) {
-        List<CommentResponseData> commentResponseData = new ArrayList<>();
-
-        for (Comment comment : comments)
-            commentResponseData.add(comment.toCommentResponseData());
-        return commentResponseData;
-    }
 }

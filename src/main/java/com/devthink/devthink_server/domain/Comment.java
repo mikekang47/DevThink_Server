@@ -37,8 +37,9 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "review_id")
     private Review review;
 
-    @ManyToOne(fetch = LAZY)
-    private CommentHeart heart;
+    @OneToMany(mappedBy = "comment")
+    @Builder.Default
+    private List<CommentHeart> hearts = new ArrayList<>();
 
     private String content;
 
@@ -49,13 +50,15 @@ public class Comment extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "comment")
     @Builder.Default
-    private final List<Reply> replys = new ArrayList<>();
+    private final List<Reply> replies = new ArrayList<>();
 
     public CommentResponseData toCommentResponseData() {
         return CommentResponseData.builder()
                 .commentId(id)
                 .userProfile(user.toUserProfileData())
                 .content(content)
+                .heartPresent(hearts.stream().anyMatch(heart -> heart.getUser().equals(user)))
+                .heartCnt(heartCnt)
                 .createAt(getCreateAt())
                 .updateAt(getUpdateAt())
                 .build();
@@ -68,7 +71,7 @@ public class Comment extends BaseTimeEntity {
     public CommentDetailResponseData toCommentDetailResponseData() {
         return CommentDetailResponseData.builder()
                 .comment(toCommentResponseData())
-                .replys(replys.stream().map(Reply::toReplyResponseData).collect(Collectors.toList()))
+                .replies(replies.stream().map(Reply::toReplyResponseData).collect(Collectors.toList()))
                 .build();
     }
 
